@@ -107,6 +107,7 @@ export default function InteractiveHomeDesktop() {
   const contactRef = useRef<HTMLDivElement>(null);
   const faqRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
@@ -356,7 +357,7 @@ export default function InteractiveHomeDesktop() {
       </div>
 
       {/* Testimonials */}
-      <div className="bg-[#002f48] relative shrink-0 w-full">
+      <div ref={testimonialsRef} className="bg-[#002f48] relative shrink-0 w-full">
         <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
           <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
             <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
@@ -751,6 +752,7 @@ export default function InteractiveHomeDesktop() {
                         else if (link === 'Contact') scrollToSection(contactRef);
                         else if (link === 'FAQ') scrollToSection(faqRef);
                         else if (link === 'About us') scrollToSection(aboutRef);
+                        else if (link === 'Testimonials') scrollToSection(testimonialsRef);
                       }}
                       className="relative shrink-0 hover:text-[#0b8483] transition-colors cursor-pointer"
                     >
@@ -778,13 +780,8 @@ export default function InteractiveHomeDesktop() {
                     </svg>
                   </div>
                 </div>
-                <div className="content-stretch flex font-['Inter:Regular',sans-serif] font-normal items-start justify-between leading-[1.5] not-italic relative shrink-0 text-[14px] text-white w-full whitespace-nowrap">
-                  <div className="content-stretch flex gap-[24px] items-start relative shrink-0">
-                    {['Privacy Policy', 'Terms of Service', 'Cookies Settings'].map((link, idx) => (
-                      <p key={idx} className="[text-decoration-skip-ink:none] decoration-solid relative shrink-0 underline hover:text-[#0b8483] transition-colors cursor-pointer">{link}</p>
-                    ))}
-                  </div>
-                  <p className="relative shrink-0">© 2025 Darren Aucoin's Plumbing LLC. All rights reserved.</p>
+                <div className="content-stretch flex font-['Inter:Regular',sans-serif] font-normal items-center justify-center leading-[1.5] not-italic relative shrink-0 text-[14px] text-white w-full whitespace-nowrap">
+                  <p className="relative shrink-0">© {new Date().getFullYear()} Darren Aucoin's Plumbing LLC. All rights reserved.</p>
                 </div>
               </div>
             </div>

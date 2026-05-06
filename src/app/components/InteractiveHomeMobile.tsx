@@ -112,6 +112,7 @@ export default function InteractiveHomeMobile() {
   const contactRef = useRef<HTMLDivElement>(null);
   const faqRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
@@ -187,7 +188,7 @@ export default function InteractiveHomeMobile() {
                   <div aria-hidden="true" className="absolute border-4 border-[#0b8483] border-solid inset-[-4px] rounded-[12px]" />
                 </div>
               </div>
-              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative text-[14px] text-white tracking-[-0.14px] whitespace-nowrap flex-1 min-w-0 px-[8px] text-center truncate">Darren Aucoin's Plumbing</p>
+              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative text-[14px] text-white tracking-[-0.14px] flex-1 min-w-0 px-[8px] text-center">D. Aucoin Plumbing</p>
               <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} className="content-stretch flex items-center justify-center relative shrink-0 size-[48px] cursor-pointer">
                 {menuOpen ? (
                   // X (close) icon
@@ -361,7 +362,7 @@ export default function InteractiveHomeMobile() {
       </div>
 
       {/* Testimonials */}
-      <div className="bg-[#002f48] relative shrink-0 w-full">
+      <div ref={testimonialsRef} className="bg-[#002f48] relative shrink-0 w-full">
         <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
           <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
             <div className="content-stretch flex flex-col gap-[48px] items-start max-w-[1280px] relative shrink-0 w-full">
@@ -725,6 +726,7 @@ export default function InteractiveHomeMobile() {
                           else if (link === 'Contact') scrollToSection(contactRef);
                           else if (link === 'FAQ') scrollToSection(faqRef);
                           else if (link === 'About us') scrollToSection(aboutRef);
+                          else if (link === 'Testimonials') scrollToSection(testimonialsRef);
                         }}
                         className="relative shrink-0 w-full text-left hover:text-[#0b8483] transition-colors cursor-pointer"
                       >
@@ -753,13 +755,8 @@ export default function InteractiveHomeMobile() {
                     </svg>
                   </div>
                 </div>
-                <div className="content-stretch flex flex-col font-['Inter:Regular',sans-serif] font-normal gap-[32px] items-start leading-[1.5] not-italic relative shrink-0 text-[14px] text-white w-full">
-                  <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 whitespace-nowrap">
-                    {['Privacy Policy', 'Terms of Service', 'Cookies Settings'].map((link, idx) => (
-                      <p key={idx} className="[text-decoration-skip-ink:none] decoration-solid relative shrink-0 underline hover:text-[#0b8483] transition-colors cursor-pointer">{link}</p>
-                    ))}
-                  </div>
-                  <p className="relative shrink-0 w-full">© 2025 Darren Aucoin's Plumbing LLC. All rights reserved.</p>
+                <div className="content-stretch flex flex-col font-['Inter:Regular',sans-serif] font-normal items-start leading-[1.5] not-italic relative shrink-0 text-[14px] text-white w-full">
+                  <p className="relative shrink-0 w-full">© {new Date().getFullYear()} Darren Aucoin's Plumbing LLC. All rights reserved.</p>
                 </div>
               </div>
             </div>
