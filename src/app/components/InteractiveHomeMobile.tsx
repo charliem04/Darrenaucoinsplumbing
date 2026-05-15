@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import svgPaths from "../../imports/HomeMobile/svg-9mn4mhofq0";
 import imgCompanyLogo from "../../imports/HomeMobile/6621e00db1f5dcbbe1342f61071d5f712fa2dd7a.png";
 import imgScreenshot20240605215222Gmail1 from "../../imports/HomeMobile/caef332c103340cf1afa0979e064e9a554d1c65c.png";
-import imgPlaceholderImage from "../../imports/HomeMobile/2f040ef1bc390e6d88de99a6b8d8e47d4ad2daeb.png";
-import imgPlaceholderImage1 from "../../imports/HomeMobile/4b2e149ba397c6d2eeb95c443c0bef4051469e12.png";
 import imgPlaceholderImage2 from "../../imports/HomeMobile/07eab3cc238566c0e60e8d0de26271ba140d7109.png";
 import imgCard from "../../imports/HomeMobile/ce4271df8c51d697d7f76ed74c5316e75b7e0860.png";
 import imgHero from "../../imports/header-1.jpg";
@@ -33,7 +31,7 @@ const tabContents: Record<ServiceTab, TabContent> = {
   },
   'Sewer work': {
     title: "Professional sewer line services",
-    description: "From simple cleanouts to complete line replacement. We have the equipment and expertise to handle any sewer problem with precision.",
+    description: "From simple cleanouts to complete line replacement, including camera sewer line inspection to pinpoint problems without guesswork. We have the equipment and expertise to handle any sewer issue with precision.",
     image: imgSewerWork,
     tagline: "Sewer work"
   },
@@ -69,8 +67,96 @@ const tabContents: Record<ServiceTab, TabContent> = {
   }
 };
 
+type SpecialtyService = {
+  key: string;
+  icon: string;
+  name: string;
+  meta: string;
+  badge?: string;
+  description: string;
+  bullets: string[];
+};
+
+const specialtyServices: SpecialtyService[] = [
+  {
+    key: 'construction',
+    icon: 'M3 21V8l9-5 9 5v13M3 21h18M9 21v-8h6v8',
+    name: 'New construction',
+    meta: 'Residential & commercial',
+    description: "Full plumbing system installation for new builds — residential homes and commercial properties alike. We coordinate with general contractors from rough-in through final fixtures, working to code and to the timeline of the project.",
+    bullets: [
+      'Rough-in through finish installation',
+      'Custom homes, multi-family, commercial',
+      'GC coordination & inspection support',
+    ],
+  },
+  {
+    key: 'camera',
+    icon: 'M23 7l-7 5 7 5V7zM14 5H3a2 2 0 00-2 2v10a2 2 0 002 2h11a2 2 0 002-2V7a2 2 0 00-2-2z',
+    name: 'Camera sewer line inspection',
+    meta: 'Diagnose without digging',
+    description: "High-resolution video inspection of sewer and drain lines. We see exactly what's happening underground — roots, breaks, bellies, blockages — so repairs are targeted instead of guessed at. Saves time, money, and your yard.",
+    bullets: [
+      'Pinpoint location of blockages & breaks',
+      'Pre-purchase home inspections',
+      'Recorded footage available',
+    ],
+  },
+  {
+    key: 'septic',
+    icon: 'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z',
+    name: 'Septic tank pump-outs',
+    meta: 'Tank service & maintenance',
+    description: "Routine septic tank pumping keeps your system running and prevents costly backups or drain field failure. Most tanks need service every 3–5 years; we'll inspect the tank while we're there and flag anything that needs attention.",
+    bullets: [
+      'Full tank pump-outs',
+      'System inspection included',
+      'Service reminders available',
+    ],
+  },
+  {
+    key: 'gas',
+    icon: 'M12 2c1 3 3 5 3 8a3 3 0 11-6 0c0-1 .5-2 1-3-2 2-4 5-4 8a6 6 0 1012 0c0-5-4-9-6-13z',
+    name: 'Gas lines',
+    meta: 'Licensed master gas fitter',
+    badge: 'Licensed master gas fitter',
+    description: "Gas line work isn't something to leave to an unlicensed handyman. Our master gas fitters are trained, licensed, and permitted to install and repair natural gas and LP lines — for ranges, water heaters, generators, outdoor kitchens, and more.",
+    bullets: [
+      'New gas line installation',
+      'Leak detection & repair',
+      'Appliance hookups & code-compliant permits',
+    ],
+  },
+  {
+    key: 'backflow',
+    icon: 'M7 16l-4-4m0 0l4-4m-4 4h18m-4 4l4-4m0 0l-4-4',
+    name: 'Backflow services',
+    meta: 'Certified installer & tester',
+    badge: 'Certified installer & tester',
+    description: "Backflow preventers keep contaminated water from flowing back into your clean water supply. Most municipalities require annual testing by a certified tester — that's us. We install, repair, and test, and we file the paperwork with your water authority.",
+    bullets: [
+      'Backflow preventer installation',
+      'Annual certification testing',
+      'Repairs and replacements',
+    ],
+  },
+  {
+    key: 'water-heater',
+    icon: 'M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07l-1.41 1.41M6.34 17.66l-1.41 1.41m12.73 0l-1.41-1.41M6.34 6.34L4.93 4.93M12 6a6 6 0 100 12 6 6 0 000-12z',
+    name: 'Water heaters',
+    meta: 'Tank & tankless install/repair',
+    description: "From traditional tank units to high-efficiency tankless systems, we install, replace, and repair every type. Not getting hot water? Running out too fast? We'll diagnose the issue and walk you through your options — including upgrade paths that pay for themselves.",
+    bullets: [
+      'Tank & tankless installation',
+      'Gas, electric, and hybrid units',
+      'Repair, flushing, anode replacement',
+    ],
+  },
+];
+
 export default function InteractiveHomeMobile() {
   const [activeTab, setActiveTab] = useState<ServiceTab>('Emergency');
+  const [openSpecialty, setOpenSpecialty] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showCallPopup, setShowCallPopup] = useState(false);
@@ -221,33 +307,47 @@ export default function InteractiveHomeMobile() {
         )}
       </div>
 
-      {/* Header */}
+      {/* Hero Section */}
       <div className="bg-[#0b8483] relative shrink-0 w-full">
-        <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col gap-[48px] items-center px-[20px] py-[64px] relative size-full">
-            <div className="h-[147px] pointer-events-none relative rounded-[32px] shrink-0 w-[326px]">
-              <img alt="Header" className="absolute inset-0 max-w-none object-cover rounded-[32px] size-full" src={imgScreenshot20240605215222Gmail1} />
-              <div aria-hidden="true" className="absolute border-8 border-[#002f48] border-solid inset-[-8px] rounded-[40px]" />
+        <div className="flex flex-col items-center w-full px-[20px] py-[48px]">
+          <div className="flex flex-col items-center gap-[32px] w-full max-w-[560px]">
+
+            {/* Text */}
+            <div className="flex flex-col gap-[20px] items-center text-center text-white w-full">
+              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px]">
+                Fast, honest plumbing when you need it most
+              </p>
+              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px]">
+                Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.
+              </p>
             </div>
-            <div className="content-stretch flex flex-col gap-[48px] items-start max-w-[1280px] relative shrink-0 w-full">
-              <div className="content-stretch flex flex-col gap-[24px] items-center max-w-[768px] relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-center text-white w-full">
-                  <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[40px] tracking-[-0.4px] w-full">Fast, honest plumbing when you need it most</p>
-                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.</p>
-                </div>
-                <div className="content-stretch flex gap-[16px] items-start relative shrink-0">
-                  <button onClick={handleCall} className="bg-white content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[#0077b6] hover:bg-gray-100 transition-colors cursor-pointer">
-                    <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
-                  </button>
-                  <button onClick={() => scrollToSection(servicesRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
-                    <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">Learn more</p>
-                  </button>
-                </div>
-              </div>
-              <div className="h-[157px] relative rounded-[16px] shrink-0 w-[335px]">
-                <img alt="Hero" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[16px] size-full brightness-110" src={imgHero} loading="eager" />
-              </div>
+
+            {/* Buttons — centered */}
+            <div className="flex flex-wrap gap-[12px] items-center justify-center w-full">
+              <button
+                  onClick={handleCall}
+                  className="bg-white border border-[#0077b6] rounded-[12px] px-[16px] py-[8px] hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
+              </button>
+              <button
+                  onClick={() => scrollToSection(servicesRef)}
+                  className="border border-[rgba(255,255,255,0.2)] rounded-[12px] px-[16px] py-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer"
+              >
+                <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[16px] text-white whitespace-nowrap">Learn more</p>
+              </button>
             </div>
+
+            {/* Hero photo */}
+            <div className="w-full rounded-[16px] overflow-hidden">
+              <img
+                  alt="Plumbing service"
+                  className="block w-full h-auto brightness-110"
+                  src={imgHero}
+                  loading="eager"
+              />
+            </div>
+
           </div>
         </div>
       </div>
@@ -322,6 +422,81 @@ export default function InteractiveHomeMobile() {
                           )}
                         </AnimatePresence>
                       </Fragment>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Specialty Services */}
+              <div className="content-stretch flex flex-col gap-[20px] items-start w-full mt-[32px]">
+                <div className="flex flex-col gap-[6px] items-start w-full">
+                  <p className="font-['Rubik:Medium',sans-serif] font-medium text-[11px] tracking-[0.08em] uppercase text-[#0b8483]">Also available</p>
+                  <p className="font-['Rubik:Medium',sans-serif] font-medium text-[24px] text-white tracking-[-0.24px] leading-[1.2]">Specialty services</p>
+                </div>
+                <div className="flex flex-col gap-[10px] w-full">
+                  {specialtyServices.map((svc) => {
+                    const isOpen = openSpecialty === svc.key;
+                    return (
+                        <button
+                            key={svc.key}
+                            onClick={() => setOpenSpecialty(isOpen ? null : svc.key)}
+                            className={`text-left rounded-[12px] border transition-all duration-300 overflow-hidden w-full ${
+                                isOpen
+                                    ? 'bg-[rgba(11,132,131,0.12)] border-[rgba(11,132,131,0.5)]'
+                                    : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.08)]'
+                            }`}
+                        >
+                          <div className="flex gap-[12px] items-center p-[14px]">
+                            <div className={`shrink-0 size-[36px] rounded-[8px] flex items-center justify-center transition-colors duration-300 ${
+                                isOpen ? 'bg-[#0b8483] text-white' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
+                            }`}>
+                              <svg className="size-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d={svc.icon} />
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-['Rubik:Medium',sans-serif] font-medium text-[15px] text-white leading-[1.3]">{svc.name}</p>
+                              <p className="font-['Inter:Regular',sans-serif] font-normal text-[12px] text-[rgba(255,255,255,0.55)] leading-[1.4] mt-[2px]">{svc.meta}</p>
+                            </div>
+                            <svg className={`shrink-0 size-[18px] text-[rgba(255,255,255,0.4)] transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#5dcaa5]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                          <AnimatePresence initial={false}>
+                            {isOpen && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                    style={{ overflow: 'hidden' }}
+                                >
+                                  <div className="px-[14px] pb-[16px]">
+                                    <div className="pt-[14px] border-t border-[rgba(255,255,255,0.1)]">
+                                      {svc.badge && (
+                                          <span className="inline-block font-['Rubik:Medium',sans-serif] font-medium text-[10px] tracking-[0.06em] uppercase text-[#5dcaa5] bg-[rgba(11,132,131,0.15)] px-[8px] py-[4px] rounded-[6px] mb-[10px]">
+                                      {svc.badge}
+                                    </span>
+                                      )}
+                                      <p className="font-['Inter:Regular',sans-serif] font-normal text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.6]">
+                                        {svc.description}
+                                      </p>
+                                      <ul className="mt-[12px] space-y-[8px]">
+                                        {svc.bullets.map((b) => (
+                                            <li key={b} className="flex gap-[10px] items-start">
+                                              <svg className="shrink-0 mt-[3px] size-[14px] text-[#5dcaa5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                              </svg>
+                                              <p className="font-['Inter:Regular',sans-serif] font-normal text-[13px] text-[rgba(255,255,255,0.75)] leading-[1.5]">{b}</p>
+                                            </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </button>
                     );
                   })}
                 </div>
