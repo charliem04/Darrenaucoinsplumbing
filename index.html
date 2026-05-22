@@ -39,25 +39,43 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Local business schema -->
+    <!-- ============================================ -->
+    <!-- 1. LOCALBUSINESS SCHEMA (JSON-LD) -->
+    <!-- Place inside <head>. Edit fields marked TODO. -->
+    <!-- ============================================ -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Plumber",
+        "@id": "https://darrenaucoinplumbing.com/#business",
         "name": "Darren Aucoin's Plumbing",
         "image": "https://darrenaucoinplumbing.com/og-image.jpg",
+        "logo": "https://darrenaucoinplumbing.com/logo.png",
+        "url": "https://darrenaucoinplumbing.com/",
         "telephone": "+1-337-224-4852",
         "email": "contact@darrenaucoinplumbing.com",
-        "url": "https://darrenaucoinplumbing.com/",
+        "priceRange": "$$",
+        "description": "Trusted plumbing services in Lafayette, Louisiana. Emergency repairs, sewer work, hydro-jetting, excavation, water heater installation, gas lines, and backflow testing.",
         "address": {
           "@type": "PostalAddress",
+          "streetAddress": "TODO: street address",
           "addressLocality": "Lafayette",
           "addressRegion": "LA",
-          "postalCode": "70501",
+          "postalCode": "TODO: zip",
           "addressCountry": "US"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 30.2241,
+          "longitude": -92.0198
         },
         "areaServed": [
           { "@type": "City", "name": "Lafayette" },
+          { "@type": "City", "name": "Broussard" },
+          { "@type": "City", "name": "Youngsville" },
+          { "@type": "City", "name": "Scott" },
+          { "@type": "City", "name": "Carencro" },
+          { "@type": "City", "name": "Duson" },
           { "@type": "AdministrativeArea", "name": "Acadiana" }
         ],
         "openingHoursSpecification": [
@@ -66,11 +84,94 @@
             "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
             "opens": "07:00",
             "closes": "18:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Saturday","Sunday"],
+            "opens": "00:00",
+            "closes": "23:59",
+            "description": "24/7 emergency service"
           }
         ],
-        "priceRange": "$$"
+        "sameAs": [
+          "TODO: https://www.facebook.com/...",
+          "TODO: https://www.google.com/maps/place/..."
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Plumbing Services",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Emergency Plumbing Repair" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Sewer Line Repair" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Hydro-Jetting" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Excavation" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Water Meter Installation" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Water Heater Installation and Repair" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Gas Line Installation and Repair" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Backflow Prevention Testing" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Septic Tank Pump-Outs" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Camera Sewer Inspection" } }
+          ]
+        }
       }
     </script>
+
+    <!-- ============================================ -->
+    <!-- 2. FAQPAGE SCHEMA -->
+    <!-- Lets your FAQ questions appear directly in Google results. -->
+    <!-- Copy your real FAQ Q&A text from the site below. -->
+    <!-- ============================================ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How fast can you respond?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We aim for thirty minutes or less on emergency calls. During business hours, we typically schedule same-day or next-day service. If it's a true emergency at three in the morning, we answer the phone."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you charge for estimates?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. We come out, assess the problem, explain what needs to be done, and give you a fair price before we start any work. No hidden fees, no surprises."
+            }
+          }
+          // TODO: paste your other FAQ items here in the same format
+        ]
+      }
+    </script>
+
+    <!-- ============================================ -->
+    <!-- 3. IMPROVED META TAGS -->
+    <!-- Replace your current title and description. -->
+    <!-- ============================================ -->
+
+    <!-- Title: leads with primary keyword + location + phone trigger -->
+    <title>Plumber in Lafayette, LA | 24/7 Emergency | Darren Aucoin's Plumbing</title>
+
+    <!-- Description: under 160 chars, includes service keywords + location + CTA -->
+    <meta name="description" content="Licensed Lafayette, LA plumber. 24/7 emergency service, sewer repair, hydro-jetting, water heaters, gas lines. Serving Acadiana for 15+ years. Call (337) 224-4852." />
+
+    <!-- Expanded keywords (Google ignores these but Bing/others use them) -->
+    <meta name="keywords" content="plumber Lafayette LA, emergency plumber Lafayette, sewer repair Lafayette LA, hydro jetting Lafayette, water heater installation Lafayette, gas line plumber Lafayette, backflow testing Lafayette, plumber Broussard, plumber Youngsville, plumber Scott LA, plumber Carencro, Acadiana plumber, 24 hour plumber Lafayette" />
+
+    <!-- Geo tags -->
+    <meta name="geo.region" content="US-LA" />
+    <meta name="geo.placename" content="Lafayette" />
+    <meta name="geo.position" content="30.2241;-92.0198" />
+    <meta name="ICBM" content="30.2241, -92.0198" />
+
+    <!-- Robots: explicit allow + good preview -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+    <!-- Author / publisher -->
+    <meta name="author" content="Darren Aucoin's Plumbing" />
 
     <style>
       html, body { height: 100%; margin: 0; }

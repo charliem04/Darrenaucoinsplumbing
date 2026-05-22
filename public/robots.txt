@@ -1,0 +1,13 @@
+# robots.txt for Darren Aucoin's Plumbing
+# Allow all search engines to crawl the entire site
+
+User-agent: *
+Allow: /
+
+# Block crawling of any future admin or build artifacts (defensive)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+
+# Point crawlers to the sitemap
+Sitemap: https://darrenaucoinplumbing.com/sitemap.xml
