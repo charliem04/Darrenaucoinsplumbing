@@ -304,14 +304,15 @@ export default function InteractiveHomeDesktop() {
           </div>
         </div>
 
-        {/* Header */}
-        <div className="bg-[#0b8483] relative shrink-0 w-full">
-          <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
+          {/* Inner wrapper — overflow-clip removed so the image shadow isn't clipped */}
+          <div className="flex flex-col items-center rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col gap-[80px] items-center px-[64px] py-[112px] relative size-full">
               <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
                 <div className="content-stretch flex flex-col gap-[32px] items-center max-w-[768px] relative shrink-0 w-full">
                   <div className="content-stretch flex flex-col gap-[24px] items-center relative shrink-0 text-center text-white w-full">
-                    <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[72px] tracking-[-0.72px] w-full">Fast, honest plumbing when you need it most</p>
+                    <h1 className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[72px] tracking-[-0.72px] w-full">Fast, honest plumbing when you need it most</h1>
                     <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.</p>
                   </div>
                   <div className="content-stretch flex gap-[16px] items-start relative shrink-0">
@@ -323,21 +324,44 @@ export default function InteractiveHomeDesktop() {
                     </button>
                   </div>
                 </div>
-                <div className="relative rounded-[32px] shrink-0 w-full max-w-[1266px] overflow-hidden border-8 border-[#002f48]">
-                  <img alt="Darren Aucoin's Plumbing service truck" className="block w-full h-auto" src={imgHero} loading="eager" />
+
+                {/* Hero image — sits fully inside the hero, no overlap.
+            OUTER casts the shadow; INNER clips the image corners. */}
+                <div className="relative w-full max-w-[1266px] rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
+                  <div className="rounded-[32px] overflow-hidden border-8 border-[#002f48]">
+                    <img
+                        alt="Darren Aucoin's Plumbing service truck"
+                        className="block w-full h-auto"
+                        src={imgHero}
+                        loading="eager"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Wave divider into Services — fill must equal the Services top color */}
+          <div className="relative w-full leading-[0] -mb-px" aria-hidden="true">
+            <svg className="block w-full h-[60px]" viewBox="0 0 1440 60"
+                 preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,24 L1440,60 L0,60 Z"
+                    fill="#002f48" />
+            </svg>
+          </div>
         </div>
 
         {/* Services Section */}
-        <div ref={servicesRef} className="bg-[#002336] relative shrink-0 w-full">
-          <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
+        <div ref={servicesRef} className="bg-gradient-to-b from-[#002f48] to-[#001a2b] relative shrink-0 w-full">
+
+          {/* Ambient glow — first child of the relative section root */}
+          <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] blur-[120px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.22),transparent_70%)]" />
+
+          <div className="flex flex-col items-center justify-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
               <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
                 <div className="content-stretch flex flex-col gap-[16px] items-center max-w-[768px] relative shrink-0 w-full">
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[16px] text-center text-white">Services</p>
+                  <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-[#5dcaa5]">Services</p>
                   <div className="content-stretch flex flex-col gap-[24px] items-center relative shrink-0 text-center text-white w-full">
                     <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[52px] tracking-[-0.52px] w-full">What we handle</p>
                     <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">From burst pipes at midnight to sewer lines that need serious work, we've got the tools and know-how to get it done. Every job gets our full attention.</p>
@@ -418,8 +442,8 @@ export default function InteractiveHomeDesktop() {
                               }`}
                           >
                             <div className="flex gap-[12px] items-center p-[16px]">
-                              <div className={`shrink-0 size-[40px] rounded-[8px] flex items-center justify-center transition-colors duration-300 ${
-                                  isOpen ? 'bg-[#0b8483] text-white' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
+                              <div className={`shrink-0 size-[40px] rounded-[8px] flex items-center justify-center transition-all duration-300 ${
+                                  isOpen ? 'bg-[#0b8483] text-white shadow-[0_4px_12px_rgba(11,132,131,0.5)] ring-1 ring-[rgba(255,255,255,0.15)]' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
                               }`}>
                                 <svg className="size-[20px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                   <path strokeLinecap="round" strokeLinejoin="round" d={svc.icon} />
@@ -509,7 +533,11 @@ export default function InteractiveHomeDesktop() {
         </div>
 
         {/* Testimonials */}
-        <div className="bg-[#002f48] relative shrink-0 w-full">
+        <div className="bg-gradient-to-b from-[#001a2b] to-[#002336] relative shrink-0 w-full">
+
+          {/* Ambient glow — first child of the relative section root */}
+          <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] blur-[120px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.22),transparent_70%)]" />
+
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
               <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
@@ -523,7 +551,7 @@ export default function InteractiveHomeDesktop() {
                     { name: 'Robert Guidry', role: 'Homeowner, Lafayette', text: 'They treated our old Creole cottage like it mattered, because to them it did.' },
                     { name: 'Jennifer Thibodeaux', role: 'Property manager, Acadiana', text: 'No surprises, no upselling, just honest work and a fair bill—that\'s rare in this business.' }
                   ].map((testimonial, idx) => (
-                      <div key={idx} className="bg-[#002f48] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.2)]">
+                      <div key={idx} className="bg-[#002f48] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.12)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.40)] hover:-translate-y-1 transition-all duration-300">
                         <div className="overflow-clip rounded-[inherit] size-full">
                           <div className="content-stretch flex flex-col gap-[24px] items-start p-[32px] relative size-full justify-between">
                             <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0">
@@ -544,7 +572,7 @@ export default function InteractiveHomeDesktop() {
                               <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[18px] text-white">{testimonial.text}</p>
                             </div>
                             <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full">
-                              <div className="relative shrink-0 size-[48px] bg-[rgba(255,255,255,0.2)] rounded-full flex items-center justify-center">
+                              <div className="relative shrink-0 size-[48px] bg-[rgba(255,255,255,0.12)] rounded-full flex items-center justify-center ring-1 ring-[rgba(255,255,255,0.18)] shadow-[inset_0_1px_2px_rgba(255,255,255,0.15)]">
                                 <svg className="w-[60%] h-[60%]" viewBox="0 0 24 24" fill="none">
                                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="white"/>
                                 </svg>
@@ -565,14 +593,14 @@ export default function InteractiveHomeDesktop() {
         </div>
 
         {/* Stats */}
-        <div className="bg-[#0b8483] relative shrink-0 w-full">
+        <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
               <div className="content-stretch flex flex-col items-start max-w-[1280px] relative shrink-0 w-full">
                 <div className="content-stretch flex gap-[80px] items-center relative shrink-0 w-full">
                   <div className="content-stretch flex flex-[1_0_0] flex-col gap-[32px] items-start max-w-[400px] min-w-px relative">
                     <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                      <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[16px] text-white">Track record</p>
+                      <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-white">Track record</p>
                       <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 text-white w-full">
                         <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[52px] tracking-[-0.52px] w-full">Numbers that speak for themselves</p>
                         <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">We've built our reputation on showing up fast, doing the work right, and keeping customers satisfied. These numbers reflect what we've earned through years of honest service.</p>
@@ -592,7 +620,7 @@ export default function InteractiveHomeDesktop() {
                             <div className="content-stretch flex flex-col gap-[48px] items-start p-[32px] relative size-full">
                               <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[22px] text-white tracking-[-0.22px] w-full">{stat.label}</p>
                               <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                                <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right text-white w-full" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
+                                <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right w-full bg-gradient-to-b from-white to-[rgba(255,255,255,0.65)] bg-clip-text text-transparent" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
                                 <div className="flex items-center justify-center relative shrink-0 w-full">
                                   <div className="flex-none rotate-180 w-full">
                                     <div className="h-0 relative w-full">
@@ -619,7 +647,7 @@ export default function InteractiveHomeDesktop() {
                             <div className="content-stretch flex flex-col gap-[48px] items-start p-[32px] relative size-full">
                               <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[22px] text-white tracking-[-0.22px] w-full">{stat.label}</p>
                               <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                                <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right text-white w-full" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
+                                <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right w-full bg-gradient-to-b from-white to-[rgba(255,255,255,0.65)] bg-clip-text text-transparent" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
                                 <div className="flex items-center justify-center relative shrink-0 w-full">
                                   <div className="flex-none rotate-180 w-full">
                                     <div className="h-0 relative w-full">

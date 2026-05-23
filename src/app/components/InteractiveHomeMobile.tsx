@@ -308,7 +308,7 @@ export default function InteractiveHomeMobile() {
       </div>
 
       {/* Hero Section */}
-      <div className="bg-[#0b8483] relative shrink-0 w-full">
+      <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
         <div className="flex flex-col items-center w-full px-[20px] py-[48px]">
           <div className="flex flex-col items-center gap-[32px] w-full max-w-[560px]">
 
@@ -339,26 +339,39 @@ export default function InteractiveHomeMobile() {
             </div>
 
             {/* Hero photo */}
-            <div className="w-full rounded-[16px] overflow-hidden">
-              <img
-                  alt="Plumbing service"
-                  className="block w-full h-auto brightness-110"
-                  src={imgHero}
-                  loading="eager"
-              />
+            <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
+              <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48]">
+                <img
+                    alt="Darren Aucoin's Plumbing service truck"
+                    className="block w-full h-auto"
+                    src={imgHero}
+                    loading="eager"
+                />
+              </div>
             </div>
 
           </div>
         </div>
+        {/* Wave divider into Services */}
+        <div className="relative w-full leading-[0] -mb-px" aria-hidden="true">
+          <svg className="block w-full h-[60px]" viewBox="0 0 1440 60"
+               preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,24 L1440,60 L0,60 Z"
+                  fill="#002f48" />
+          </svg>
+        </div>
       </div>
 
       {/* Services Section */}
-      <div ref={servicesRef} className="bg-[#002336] relative shrink-0 w-full">
+      <div ref={servicesRef} className="bg-gradient-to-b from-[#002f48] to-[#001a2b] relative shrink-0 w-full">
+        {/* Ambient glow — first child of the relative section root */}
+        <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)]" />
+
         <div className="flex flex-col items-center justify-center overflow-clip rounded-[inherit] size-full">
           <div className="content-stretch flex flex-col items-center justify-center px-[20px] py-[64px] relative size-full">
             <div className="content-stretch flex flex-col gap-[48px] items-start max-w-[1280px] relative shrink-0 w-full">
               <div className="content-stretch flex flex-col gap-[12px] items-center max-w-[768px] relative shrink-0 w-full">
-                <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[16px] text-center text-white">Services</p>
+                <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-[#5dcaa5]">Services</p>
                 <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-center text-white w-full">
                   <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">What we handle</p>
                   <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">From burst pipes at midnight to sewer lines that need serious work, we've got the tools and know-how to get it done. Every job gets our full attention.</p>
@@ -447,8 +460,8 @@ export default function InteractiveHomeMobile() {
                             }`}
                         >
                           <div className="flex gap-[12px] items-center p-[14px]">
-                            <div className={`shrink-0 size-[36px] rounded-[8px] flex items-center justify-center transition-colors duration-300 ${
-                                isOpen ? 'bg-[#0b8483] text-white' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
+                            <div className={`shrink-0 size-[36px] rounded-[8px] flex items-center justify-center transition-all duration-300 ${
+                                isOpen ? 'bg-[#0b8483] text-white shadow-[0_4px_12px_rgba(11,132,131,0.5)] ring-1 ring-[rgba(255,255,255,0.15)]' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
                             }`}>
                               <svg className="size-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d={svc.icon} />
@@ -536,7 +549,10 @@ export default function InteractiveHomeMobile() {
       </div>
 
       {/* Testimonials */}
-      <div className="bg-[#002f48] relative shrink-0 w-full">
+      <div className="bg-gradient-to-b from-[#003a59] to-[#002336] relative shrink-0 w-full">
+        {/* Ambient glow — first child of the relative section root */}
+        <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)]" />
+
         <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
           <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
             <div className="content-stretch flex flex-col gap-[48px] items-start max-w-[1280px] relative shrink-0 w-full">
@@ -550,39 +566,39 @@ export default function InteractiveHomeMobile() {
                   { name: 'Robert Guidry', role: 'Homeowner, Lafayette', text: 'They treated our old Creole cottage like it mattered, because to them it did.' },
                   { name: 'Jennifer Thibodeaux', role: 'Property manager, Acadiana', text: 'No surprises, no upselling, just honest work and a fair bill—that\'s rare in this business.' }
                 ].map((testimonial, idx) => (
-                  <div key={idx} className="bg-[#002f48] relative rounded-[16px] shrink-0 w-full border border-[rgba(255,255,255,0.2)]">
-                    <div className="overflow-clip rounded-[inherit] size-full">
-                      <div className="content-stretch flex flex-col gap-[20px] items-start p-[24px] relative size-full">
-                        <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0">
-                          <div className="h-[18.889px] relative shrink-0 w-[116px]">
-                            <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 116 18.8889">
-                              <g clipPath="url(#clip0_3_1640)">
-                                {[0, 1, 2, 3, 4].map(i => (
-                                  <path key={i} d={[svgPaths.p23629f00, svgPaths.p84d7480, svgPaths.p24418170, svgPaths.p28ff5800, svgPaths.p32177b30][i]} fill="white" />
-                                ))}
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_3_1640">
-                                  <rect fill="white" height="18.8889" width="116" />
-                                </clipPath>
-                              </defs>
-                            </svg>
+                    <div key={idx} className="bg-[#002f48] relative rounded-[16px] shrink-0 w-full border border-[rgba(255,255,255,0.12)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.40)] hover:-translate-y-1 transition-all duration-300">
+                      <div className="overflow-clip rounded-[inherit] size-full">
+                        <div className="content-stretch flex flex-col gap-[20px] items-start p-[24px] relative size-full">
+                          <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0">
+                            <div className="h-[18.889px] relative shrink-0 w-[116px]">
+                              <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 116 18.8889">
+                                <g clipPath="url(#clip0_3_1640)">
+                                  {[0, 1, 2, 3, 4].map(i => (
+                                    <path key={i} d={[svgPaths.p23629f00, svgPaths.p84d7480, svgPaths.p24418170, svgPaths.p28ff5800, svgPaths.p32177b30][i]} fill="white" />
+                                  ))}
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_3_1640">
+                                    <rect fill="white" height="18.8889" width="116" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </div>
+                            <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-white">{testimonial.text}</p>
                           </div>
-                          <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-white">{testimonial.text}</p>
-                        </div>
-                        <div className="content-stretch flex flex-col gap-[16px] items-start justify-center relative shrink-0 w-full">
-                          <div className="relative shrink-0 size-[48px] bg-[rgba(255,255,255,0.2)] rounded-full flex items-center justify-center">
-                            <svg className="w-[60%] h-[60%]" viewBox="0 0 24 24" fill="none">
-                              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="white"/>
-                            </svg>
-                          </div>
-                          <div className="content-stretch flex flex-col items-start leading-[1.5] not-italic relative shrink-0 text-[16px] text-white w-full">
-                            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold relative shrink-0 w-full">{testimonial.name}</p>
-                            <p className="font-['Inter:Regular',sans-serif] font-normal relative shrink-0 w-full">{testimonial.role}</p>
+                          <div className="content-stretch flex flex-col gap-[16px] items-start justify-center relative shrink-0 w-full">
+                            <div className="relative shrink-0 size-[48px] bg-[rgba(255,255,255,0.12)] rounded-full flex items-center justify-center ring-1 ring-[rgba(255,255,255,0.18)] shadow-[inset_0_1px_2px_rgba(255,255,255,0.15)]">
+                              <svg className="w-[60%] h-[60%]" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="white"/>
+                              </svg>
+                            </div>
+                            <div className="content-stretch flex flex-col items-start leading-[1.5] not-italic relative shrink-0 text-[16px] text-white w-full">
+                              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold relative shrink-0 w-full">{testimonial.name}</p>
+                              <p className="font-['Inter:Regular',sans-serif] font-normal relative shrink-0 w-full">{testimonial.role}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
                   </div>
                 ))}
               </div>
@@ -592,14 +608,14 @@ export default function InteractiveHomeMobile() {
       </div>
 
       {/* Stats */}
-      <div className="bg-[#0b8483] relative shrink-0 w-full">
+      <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
         <div className="overflow-clip rounded-[inherit] size-full">
           <div className="content-stretch flex flex-col items-start px-[20px] py-[64px] relative size-full">
             <div className="content-stretch flex flex-col items-start max-w-[1280px] relative shrink-0 w-full">
               <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
                 <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
                   <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                    <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[16px] text-white">Track record</p>
+                    <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-white">Track record</p>
                     <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
                       <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Numbers that speak for themselves</p>
                       <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">We've built our reputation on showing up fast, doing the work right, and keeping customers satisfied. These numbers reflect what we've earned through years of honest service.</p>
@@ -620,7 +636,7 @@ export default function InteractiveHomeMobile() {
                       <div className="content-stretch flex flex-col gap-[32px] items-start p-[32px] relative size-full">
                         <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[18px] text-white tracking-[-0.18px] w-full">{stat.label}</p>
                         <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                          <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[56px] text-right text-white w-full" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
+                          <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[56px] text-right w-full bg-gradient-to-b from-white to-[rgba(255,255,255,0.65)] bg-clip-text text-transparent" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
                           <div className="flex items-center justify-center relative shrink-0 w-full">
                             <div className="flex-none rotate-180 w-full">
                               <div className="h-0 relative w-full">
