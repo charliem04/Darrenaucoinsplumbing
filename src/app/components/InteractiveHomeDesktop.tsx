@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import svgPaths from "../../imports/HomeDesktop/svg-chujyqmum8";
 import imgCompanyLogo from "../../imports/HomeDesktop/6621e00db1f5dcbbe1342f61071d5f712fa2dd7a.png";
 import imgScreenshot20240605215222Gmail1 from "../../imports/HomeDesktop/caef332c103340cf1afa0979e064e9a554d1c65c.jpg";
@@ -312,10 +313,10 @@ export default function InteractiveHomeDesktop() {
               <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
                 <div className="content-stretch flex flex-col gap-[32px] items-center max-w-[768px] relative shrink-0 w-full">
                   <div className="content-stretch flex flex-col gap-[24px] items-center relative shrink-0 text-center text-white w-full">
-                    <h1 className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[72px] tracking-[-0.72px] w-full">Fast, honest plumbing when you need it most</h1>
-                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.</p>
+                    <h1 className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[72px] tracking-[-0.72px] w-full hero-rise hero-delay-1">Fast, honest plumbing when you need it most</h1>
+                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full hero-rise hero-delay-2">Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.</p>
                   </div>
-                  <div className="content-stretch flex gap-[16px] items-start relative shrink-0">
+                  <div className="content-stretch flex gap-[16px] items-start relative shrink-0 hero-rise hero-delay-3">
                     <button onClick={handleCall} className="bg-white content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[#0077b6] hover:bg-gray-100 transition-colors cursor-pointer">
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
                     </button>
@@ -327,7 +328,7 @@ export default function InteractiveHomeDesktop() {
 
                 {/* Hero image — sits fully inside the hero, no overlap.
             OUTER casts the shadow; INNER clips the image corners. */}
-                <div className="relative w-full max-w-[1266px] rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
+                <div className="relative w-full max-w-[1266px] rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] hero-fade hero-delay-4">
                   <div className="rounded-[32px] overflow-hidden border-8 border-[#002f48]">
                     <img
                         alt="Darren Aucoin's Plumbing service truck"

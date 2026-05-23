@@ -1,5 +1,6 @@
 import { useState, useRef, Fragment, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import svgPaths from "../../imports/HomeMobile/svg-9mn4mhofq0";
 import imgCompanyLogo from "../../imports/HomeMobile/6621e00db1f5dcbbe1342f61071d5f712fa2dd7a.png";
 import imgScreenshot20240605215222Gmail1 from "../../imports/HomeMobile/caef332c103340cf1afa0979e064e9a554d1c65c.jpg";
@@ -314,16 +315,16 @@ export default function InteractiveHomeMobile() {
 
             {/* Text */}
             <div className="flex flex-col gap-[20px] items-center text-center text-white w-full">
-              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px]">
+              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px] hero-fade hero-delay-1">
                 Fast, honest plumbing when you need it most
               </p>
-              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px]">
+              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px] hero-fade hero-delay-2">
                 Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.
               </p>
             </div>
 
             {/* Buttons — centered */}
-            <div className="flex flex-wrap gap-[12px] items-center justify-center w-full">
+            <div className="flex flex-wrap gap-[12px] items-center justify-center w-full hero-fade hero-delay-3">
               <button
                   onClick={handleCall}
                   className="bg-white border border-[#0077b6] rounded-[12px] px-[16px] py-[8px] hover:bg-gray-100 transition-colors cursor-pointer"
@@ -339,7 +340,7 @@ export default function InteractiveHomeMobile() {
             </div>
 
             {/* Hero photo */}
-            <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
+            <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)] hero-fade hero-delay-4">
               <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48]">
                 <img
                     alt="Darren Aucoin's Plumbing service truck"

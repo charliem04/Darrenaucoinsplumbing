@@ -1,0 +1,188 @@
+/* ============================================================
+   animations.css — Darren Aucoin's Plumbing
+   Motion layer. Import this AFTER the other style sheets.
+
+   In src/styles/index.css add:
+     @import './animations.css';
+
+   Three families of motion:
+     1. Scroll-reveal      — one-time, driven by useScrollReveal hook
+     2. Hero entrance      — one-time, plays once on page load
+     3. Constant motion    — looping, decorative accents
+
+   Everything is disabled under prefers-reduced-motion (bottom block).
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. SCROLL-REVEAL  (one-time)
+   The hook adds `reveal-visible` when the element enters view.
+   Base state = hidden + shifted; visible state = settled.
+   ------------------------------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Directional variants — same hook, different entry vector. */
+.reveal-left  { transform: translateX(-36px); }
+.reveal-right { transform: translateX(36px); }
+.reveal-left.reveal-visible,
+.reveal-right.reveal-visible {
+  transform: translateX(0);
+}
+
+/* Scale-in variant — good for cards / images. */
+.reveal-scale {
+  transform: scale(0.94);
+}
+.reveal-scale.reveal-visible {
+  transform: scale(1);
+}
+
+/* Stagger helpers — add alongside .reveal so children in a row
+   cascade instead of snapping in together. Delay is applied to
+   the transition, so it only affects the reveal, nothing else. */
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+.reveal-delay-5 { transition-delay: 0.40s; }
+
+/* ------------------------------------------------------------
+   2. HERO ENTRANCE  (one-time, on load)
+   Attach these classes directly — they auto-play once. Use the
+   delay classes to choreograph: heading, then text, then buttons,
+   then image.
+   ------------------------------------------------------------ */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.hero-rise {
+  opacity: 0;
+  animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-fade {
+  opacity: 0;
+  animation: hero-fade 1s ease forwards;
+}
+
+/* Hero choreography delays. */
+.hero-delay-1 { animation-delay: 0.15s; }
+.hero-delay-2 { animation-delay: 0.30s; }
+.hero-delay-3 { animation-delay: 0.45s; }
+.hero-delay-4 { animation-delay: 0.60s; }
+
+/* ------------------------------------------------------------
+   3. CONSTANT MOTION  (looping, decorative)
+   ------------------------------------------------------------ */
+
+/* Float — a slow vertical drift. Use on ambient glow blobs or
+   a decorative accent. Keep it on NON-essential elements only. */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+.anim-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+.anim-float-slower {
+  animation: float-slow 11s ease-in-out infinite;
+}
+
+/* Pulse-glow — gentle opacity + scale breathing. Designed for the
+   radial ambient glow divs already in the Services / Testimonials
+   sections. Purely decorative; element must be aria-hidden. */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 0.9;  transform: translateX(-50%) scale(1.08); }
+}
+.anim-pulse-glow {
+  animation: pulse-glow 9s ease-in-out infinite;
+}
+
+/* Soft pulse for a small CTA accent / "available now" dot. */
+@keyframes soft-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(0.82); }
+}
+.anim-soft-pulse {
+  animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+/* Shimmer — a slow sheen sweep, for the hero image border or a
+   featured card. Element needs position:relative + overflow:hidden;
+   put a child <span class="anim-shimmer"> as an overlay. */
+@keyframes shimmer-sweep {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+.anim-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  animation: shimmer-sweep 6s ease-in-out infinite;
+}
+
+/* Gentle hover-independent lift used for the scroll-cue chevron. */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(6px); }
+}
+.anim-bob {
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------
+   ACCESSIBILITY — disable all motion when the user asks for it.
+   Reveal elements are forced visible so nothing stays hidden.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .hero-rise,
+  .hero-fade {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  .anim-float,
+  .anim-float-slower,
+  .anim-pulse-glow,
+  .anim-soft-pulse,
+  .anim-shimmer,
+  .anim-bob {
+    animation: none !important;
+  }
+}
