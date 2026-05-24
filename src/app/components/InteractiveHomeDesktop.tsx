@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useCountUp } from '../hooks/useCountUp';
 import svgPaths from "../../imports/HomeDesktop/svg-chujyqmum8";
 import imgCompanyLogo from "../../imports/HomeDesktop/6621e00db1f5dcbbe1342f61071d5f712fa2dd7a.png";
 import imgScreenshot20240605215222Gmail1 from "../../imports/HomeDesktop/caef332c103340cf1afa0979e064e9a554d1c65c.jpg";
@@ -255,6 +256,74 @@ export default function InteractiveHomeDesktop() {
 
   const currentContent = tabContents[activeTab];
 
+  const servicesReveal = useScrollReveal();
+  const specialtyReveal = useScrollReveal();
+  const equipmentReveal = useScrollReveal();
+  const testimonialsReveal = useScrollReveal();
+  const statsReveal = useScrollReveal();
+  const CTAReveal = useScrollReveal();
+  const aboutReveal = useScrollReveal();
+  const contactReveal = useScrollReveal();
+
+  const testimonialCardsReveal = useScrollReveal();
+  const statCardsReveal = useScrollReveal();
+
+  const REVEAL_DELAYS = [
+    'reveal-delay-1',
+    'reveal-delay-2',
+    'reveal-delay-3',
+    'reveal-delay-4',
+    'reveal-delay-5',
+  ];
+
+  function AnimatedStat({
+                          stat,
+                          isVisible,
+                          index,
+                        }: {
+    stat: { label: string; value: string; desc: string };
+    isVisible: boolean;
+    index: number;
+  }) {
+    const count = useCountUp(stat.value); // CHANGE 1: the count-up hook
+
+    return (
+        <div
+            // CHANGE 2: reveal classes appended, delay driven by index
+            className={`bg-[#0b8483] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.2)] reveal reveal-scale ${REVEAL_DELAYS[index]} ${isVisible ? 'reveal-visible' : ''}`}
+        >
+          <div className="content-stretch flex flex-col gap-[48px] items-start p-[32px] relative size-full">
+            <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[22px] text-white tracking-[-0.22px] w-full">
+              {stat.label}
+            </p>
+            <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
+              <p
+                  ref={count.ref} // CHANGE 3: ref on the number, value swapped below
+                  className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right w-full bg-gradient-to-b from-white to-[rgba(255,255,255,0.65)] bg-clip-text text-transparent"
+                  style={{ fontVariationSettings: "'wdth' 100" }}
+              >
+                {count.value}
+              </p>
+              <div className="flex items-center justify-center relative shrink-0 w-full">
+                <div className="flex-none rotate-180 w-full">
+                  <div className="h-0 relative w-full">
+                    <div className="absolute inset-[-1px_0_0_0]">
+                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 320 1">
+                        <line stroke="white" strokeOpacity="0.2" x2="320" y1="0.5" y2="0.5" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-right text-white w-full">
+                {stat.desc}
+              </p>
+            </div>
+          </div>
+        </div>
+    );
+  }
+
   return (
       <div className="content-stretch flex flex-col items-start relative w-full overflow-x-hidden" data-name="Home • Desktop">
         {/* Navbar */}
@@ -360,7 +429,10 @@ export default function InteractiveHomeDesktop() {
 
           <div className="flex flex-col items-center justify-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={servicesReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${servicesReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 <div className="content-stretch flex flex-col gap-[16px] items-center max-w-[768px] relative shrink-0 w-full">
                   <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-[#5dcaa5]">Services</p>
                   <div className="content-stretch flex flex-col gap-[24px] items-center relative shrink-0 text-center text-white w-full">
@@ -424,7 +496,10 @@ export default function InteractiveHomeDesktop() {
                 </div>
 
                 {/* Specialty Services */}
-                <div className="content-stretch flex flex-col gap-[24px] items-center w-full mt-[24px]">
+                <div
+                    ref={specialtyReveal.ref}
+                    className={`content-stretch flex flex-col gap-[24px] items-center w-full mt-[24px] reveal ${specialtyReveal.isVisible ? 'reveal-visible' : ''}`}
+                >
                   <div className="flex flex-col gap-[6px] items-center">
                     <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.08em] uppercase text-[#0b8483]">Also available</p>
                     <p className="font-['Rubik:Medium',sans-serif] font-medium text-[28px] text-white tracking-[-0.28px] leading-[1.2]">Specialty services</p>
@@ -506,7 +581,10 @@ export default function InteractiveHomeDesktop() {
         <div ref={aboutRef} className="bg-white relative shrink-0 w-full">
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col items-start max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={equipmentReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${equipmentReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 <div className="content-stretch flex gap-[80px] items-center relative shrink-0 w-full">
                   <div className="content-stretch flex flex-[1_0_0] flex-col gap-[32px] items-start min-w-px relative">
                     <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
@@ -541,18 +619,24 @@ export default function InteractiveHomeDesktop() {
 
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={testimonialsReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${testimonialsReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 <div className="content-stretch flex flex-col gap-[24px] items-center max-w-[768px] relative shrink-0 text-center text-white w-full">
                   <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[52px] tracking-[-0.52px] w-full">What customers say</p>
                   <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">Trusted by Lafayette homeowners</p>
                 </div>
-                <div className="content-stretch flex gap-[32px] items-stretch relative shrink-0 w-full">
+                <div
+                    ref={testimonialCardsReveal.ref}
+                    className="content-stretch flex gap-[32px] items-stretch relative shrink-0 w-full"
+                >
                   {[
                     { name: 'Michael Broussard', role: 'Homeowner, Lafayette', text: 'Darren showed up at dawn on a Saturday when our water line burst, and he had it fixed before we finished coffee.' },
                     { name: 'Robert Guidry', role: 'Homeowner, Lafayette', text: 'They treated our old Creole cottage like it mattered, because to them it did.' },
                     { name: 'Jennifer Thibodeaux', role: 'Property manager, Acadiana', text: 'No surprises, no upselling, just honest work and a fair bill—that\'s rare in this business.' }
                   ].map((testimonial, idx) => (
-                      <div key={idx} className="bg-[#002f48] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.12)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.40)] hover:-translate-y-1 transition-all duration-300">
+                      <div key={idx} className={`bg-[#002f48] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.12)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.40)] hover:-translate-y-1 transition-all duration-300 reveal reveal-scale reveal-delay-${idx + 1} ${testimonialCardsReveal.isVisible ? 'reveal-visible' : ''}`}>
                         <div className="overflow-clip rounded-[inherit] size-full">
                           <div className="content-stretch flex flex-col gap-[24px] items-start p-[32px] relative size-full justify-between">
                             <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0">
@@ -597,7 +681,10 @@ export default function InteractiveHomeDesktop() {
         <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col items-start max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={statsReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${statsReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 <div className="content-stretch flex gap-[80px] items-center relative shrink-0 w-full">
                   <div className="content-stretch flex flex-[1_0_0] flex-col gap-[32px] items-start max-w-[400px] min-w-px relative">
                     <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
@@ -611,61 +698,23 @@ export default function InteractiveHomeDesktop() {
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic text-[16px] text-white">Learn more</p>
                     </button>
                   </div>
-                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[32px] items-start min-w-px relative">
-                    <div className="content-stretch flex gap-[32px] items-start relative shrink-0 w-full">
-                      {[
-                        { label: 'Years serving Acadiana', value: '15+', desc: 'Experience handling everything from simple repairs to complex work' },
-                        { label: 'Trucks ready to roll', value: '3', desc: 'Fully equipped for residential and commercial plumbing needs' }
-                      ].map((stat, idx) => (
-                          <div key={idx} className="bg-[#0b8483] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.2)]">
-                            <div className="content-stretch flex flex-col gap-[48px] items-start p-[32px] relative size-full">
-                              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[22px] text-white tracking-[-0.22px] w-full">{stat.label}</p>
-                              <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                                <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right w-full bg-gradient-to-b from-white to-[rgba(255,255,255,0.65)] bg-clip-text text-transparent" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
-                                <div className="flex items-center justify-center relative shrink-0 w-full">
-                                  <div className="flex-none rotate-180 w-full">
-                                    <div className="h-0 relative w-full">
-                                      <div className="absolute inset-[-1px_0_0_0]">
-                                        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 320 1">
-                                          <line stroke="white" strokeOpacity="0.2" x2="320" y1="0.5" y2="0.5" />
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-right text-white w-full">{stat.desc}</p>
-                              </div>
-                            </div>
-                          </div>
-                      ))}
-                    </div>
-                    <div className="content-stretch flex gap-[32px] items-start relative shrink-0 w-full">
-                      {[
-                        { label: 'Average response time', value: '30 min', desc: 'We prioritize emergencies and get there when it matters most' },
-                        { label: "Homes we've served", value: '2000+', desc: 'Families and businesses throughout Lafayette and surrounding areas' }
-                      ].map((stat, idx) => (
-                          <div key={idx} className="bg-[#0b8483] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.2)]">
-                            <div className="content-stretch flex flex-col gap-[48px] items-start p-[32px] relative size-full">
-                              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[22px] text-white tracking-[-0.22px] w-full">{stat.label}</p>
-                              <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                                <p className="font-['Roboto:Bold',sans-serif] font-bold leading-[1.2] text-[80px] text-right w-full bg-gradient-to-b from-white to-[rgba(255,255,255,0.65)] bg-clip-text text-transparent" style={{ fontVariationSettings: "'wdth' 100" }}>{stat.value}</p>
-                                <div className="flex items-center justify-center relative shrink-0 w-full">
-                                  <div className="flex-none rotate-180 w-full">
-                                    <div className="h-0 relative w-full">
-                                      <div className="absolute inset-[-1px_0_0_0]">
-                                        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 320 1">
-                                          <line stroke="white" strokeOpacity="0.2" x2="320" y1="0.5" y2="0.5" />
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-right text-white w-full">{stat.desc}</p>
-                              </div>
-                            </div>
-                          </div>
-                      ))}
-                    </div>
+                  <div
+                      ref={statCardsReveal.ref}
+                      className="grid grid-cols-2 gap-[32px] flex-[1_0_0] min-w-px relative"
+                  >
+                    {[
+                      { label: 'Years serving Acadiana', value: '15+', desc: 'Experience handling everything from simple repairs to complex work' },
+                      { label: 'Trucks ready to roll', value: '3', desc: 'Fully equipped for residential and commercial plumbing needs' },
+                      { label: 'Average response time', value: '30 min', desc: 'We prioritize emergencies and get there when it matters most' },
+                      { label: "Homes we've served", value: '2000+', desc: 'Families and businesses throughout Lafayette and surrounding areas' },
+                    ].map((stat, idx) => (
+                        <AnimatedStat
+                            key={idx}
+                            stat={stat}
+                            isVisible={statCardsReveal.isVisible}
+                            index={idx}
+                        />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -677,7 +726,10 @@ export default function InteractiveHomeDesktop() {
         <div className="bg-white relative shrink-0 w-full">
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col items-start max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={CTAReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${CTAReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 <div className="relative rounded-[16px] shrink-0 w-full">
                   <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[16px]">
                     <div className="absolute inset-0 overflow-hidden rounded-[16px]">
@@ -713,7 +765,10 @@ export default function InteractiveHomeDesktop() {
         <div ref={faqRef} className="bg-[#0b8483] relative shrink-0 w-full">
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={aboutReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${aboutReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 <div className="content-stretch flex flex-col gap-[24px] items-center max-w-[768px] relative shrink-0 text-center text-white w-full">
                   <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[52px] tracking-[-0.52px] w-full">FAQ</p>
                   <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">Common questions about our services, pricing, and how we work</p>
@@ -750,7 +805,10 @@ export default function InteractiveHomeDesktop() {
         <div ref={contactRef} className="bg-[#002f48] relative shrink-0 w-full">
           <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex flex-col items-center px-[64px] py-[112px] relative size-full">
-              <div className="content-stretch flex flex-col gap-[80px] items-start max-w-[1280px] relative shrink-0 w-full">
+              <div
+                  ref={contactReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${contactReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
                 {/* Contact Info */}
                 <div className="content-stretch flex gap-[48px] items-center relative shrink-0 w-full">
                   {[
