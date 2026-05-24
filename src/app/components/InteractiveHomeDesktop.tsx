@@ -1066,26 +1066,17 @@ export default function InteractiveHomeDesktop() {
                         We're available 24/7 for emergency plumbing services
                       </p>
                     </div>
-                    <a
-                        href="tel:337-224-4852"
-                        className="font-['Rubik:Medium',sans-serif] font-medium text-[40px] text-[#0077b6] leading-[1.2] tracking-[-0.4px] hover:text-[#005a8a] transition-colors"
-                    >
-                      337-224-4852
-                    </a>
-                    <div className="flex flex-col gap-[12px] w-full">
-                      <a
-                          href="tel:337-224-4852"
-                          className="bg-[#0077b6] text-white font-['Inter:Medium',sans-serif] font-medium text-[16px] px-[24px] py-[12px] rounded-[12px] hover:bg-[#005a8a] transition-colors"
-                      >
-                        Call Now
-                      </a>
-                      <button
-                          onClick={() => setShowCallPopup(false)}
-                          className="text-[#070301] font-['Inter:Medium',sans-serif] font-medium text-[16px] px-[24px] py-[12px] rounded-[12px] hover:bg-gray-100 transition-colors"
-                      >
-                        Close
-                      </button>
-                    </div>
+                      <p className="font-['Rubik:Medium',sans-serif] font-medium text-[40px] text-[#0077b6] leading-[1.2] tracking-[-0.4px]">
+                          337-224-4852
+                      </p>
+                      <div className="flex flex-col gap-[12px] w-full">
+                          <button
+                              onClick={() => setShowCallPopup(false)}
+                              className="text-[#070301] font-['Inter:Medium',sans-serif] font-medium text-[16px] px-[24px] py-[12px] rounded-[12px] hover:bg-gray-100 transition-colors"
+                          >
+                              Close
+                          </button>
+                      </div>
                   </div>
                 </motion.div>
               </>

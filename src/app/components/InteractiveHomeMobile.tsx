@@ -162,7 +162,6 @@ export default function InteractiveHomeMobile() {
   const [openSpecialty, setOpenSpecialty] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showCallPopup, setShowCallPopup] = useState(false);
 
   const [contactForm, setContactForm] = useState({
     name: '',
@@ -208,7 +207,7 @@ export default function InteractiveHomeMobile() {
   };
 
   const handleCall = () => {
-    setShowCallPopup(true);
+    window.location.href = 'tel:337-224-4852';
   };
 
   const handleEmail = () => {
@@ -1050,59 +1049,6 @@ export default function InteractiveHomeMobile() {
           </div>
         </div>
       </div>
-
-      {/* Call Popup */}
-      <AnimatePresence>
-        {showCallPopup && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 z-50"
-              onClick={() => setShowCallPopup(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-[24px] p-[32px] shadow-2xl z-50 max-w-[90%] w-full"
-            >
-              <div className="flex flex-col gap-[24px] items-center text-center">
-                <div className="flex flex-col gap-[12px]">
-                  <h3 className="font-['Rubik:Medium',sans-serif] font-medium text-[28px] text-[#070301] leading-[1.2] tracking-[-0.28px]">
-                    Call Us Now
-                  </h3>
-                  <p className="font-['Inter:Regular',sans-serif] font-normal text-[14px] text-[#070301] leading-[1.5]">
-                    We're available 24/7 for emergency plumbing services
-                  </p>
-                </div>
-                <a
-                  href="tel:337-224-4852"
-                  className="font-['Rubik:Medium',sans-serif] font-medium text-[32px] text-[#0077b6] leading-[1.2] tracking-[-0.32px] hover:text-[#005a8a] transition-colors"
-                >
-                  337-224-4852
-                </a>
-                <div className="flex flex-col gap-[12px] w-full">
-                  <a
-                    href="tel:337-224-4852"
-                    className="bg-[#0077b6] text-white font-['Inter:Medium',sans-serif] font-medium text-[16px] px-[24px] py-[12px] rounded-[12px] hover:bg-[#005a8a] transition-colors"
-                  >
-                    Call Now
-                  </a>
-                  <button
-                    onClick={() => setShowCallPopup(false)}
-                    className="text-[#070301] font-['Inter:Medium',sans-serif] font-medium text-[16px] px-[24px] py-[12px] rounded-[12px] hover:bg-gray-100 transition-colors"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
