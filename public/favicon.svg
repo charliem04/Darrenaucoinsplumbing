@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#002f48"/>
+      <stop offset="1" stop-color="#001a2b"/>
+    </linearGradient>
+    <linearGradient id="drop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d9694"/>
+      <stop offset="1" stop-color="#0a7170"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="64" height="64" rx="14" fill="url(#bg)"/>
+  <path d="M48.6 9.5 C52.2 13.8 54.3 17.2 54.3 20.3 a5.7 5.7 0 0 1-11.4 0 C42.9 17.2 45 13.8 48.6 9.5 Z" fill="url(#drop)"/>
+  <ellipse cx="46.5" cy="18.8" rx="1.5" ry="2.4" fill="#5dcaa5" opacity="0.7"/>
+  <text x="32" y="42.5" font-family="'Rubik','Trebuchet MS',Arial,sans-serif" font-size="29" font-weight="700" text-anchor="middle" fill="#ffffff" letter-spacing="-1">DA</text>
+</svg>

@@ -38,11 +38,11 @@ const tabContents: Record<ServiceTab, TabContent> = {
     image: imgSewerWork,
     tagline: "Sewer work"
   },
-  'Hydro-jetting': {
-    title: "High-pressure cleaning solutions",
+  'Septic Solutions': {
+    title: "Septic tank pump outs",
     description: "Routine septic tank pumping keeps your system running and prevents costly backups or drain field failure. Most tanks need service every 3–5 years; we'll inspect the tank while we're there and flag anything that needs attention.",
     image: imgHydrojet,
-    tagline: "Hydro-jetting"
+    tagline: "Septic Solutions"
   },
   'Excavation': {
     title: "Complete excavation capabilities",
@@ -105,18 +105,18 @@ const specialtyServices: SpecialtyService[] = [
       'Recorded footage available',
     ],
   },
-  {
-    key: 'septic',
-    icon: 'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z',
-    name: 'Septic tank pump-outs',
-    meta: 'Tank service & maintenance',
-    description: "Our hydro-jetting systems clear even the toughest clogs and buildup, restoring your pipes to like-new condition. We pump out septic tanks to prevent backups and failures, and we inspect the system to identify any issues before they become emergencies.",
-    bullets: [
-      'Full tank pump-outs',
-      'System inspection included',
-      'Service reminders available',
-    ],
-  },
+    {
+        key: 'hydrojetting',
+        icon: 'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z',
+        name: 'Hydro-jetting',
+        meta: 'Drain & pipe cleaning',
+        description: "Our hydro-jetting systems use precisely controlled high-pressure water to clear even the toughest clogs and buildup from your pipes. It removes years of accumulated grease, scale, and debris, restores full flow capacity, and gives your plumbing a true deep clean that lasts far longer than traditional drain cleaning.",
+        bullets: [
+            'High-pressure pipe cleaning',
+            'Removes grease, roots & scale',
+            'Camera inspection included',
+        ],
+    },
   {
     key: 'gas',
     icon: 'M12 2c1 3 3 5 3 8a3 3 0 11-6 0c0-1 .5-2 1-3-2 2-4 5-4 8a6 6 0 1012 0c0-5-4-9-6-13z',
@@ -447,7 +447,7 @@ export default function InteractiveHomeDesktop() {
                   <div className="content-stretch flex flex-col isolate items-center justify-center overflow-clip relative rounded-[inherit] size-full">
                     {/* Tabs Menu */}
                     <div className="flex h-[88px] isolate items-stretch relative shrink-0 w-full z-[2]">
-                      {(['Emergency', 'Sewer work', 'Water meter installation', 'Excavation', 'Residential', 'Repairs', 'Hydro-jetting'] as ServiceTab[]).map((tab, idx) => (
+                      {(['Emergency', 'Sewer work', 'Water meter installation', 'Excavation', 'Residential', 'Repairs', 'Septic Solutions'] as ServiceTab[]).map((tab, idx) => (
                           <button
                               key={tab}
                               onClick={() => handleTabChange(tab)}
@@ -489,7 +489,7 @@ export default function InteractiveHomeDesktop() {
                             </div>
                           </div>
                           <div className="aspect-[552/552] flex-[1_0_0] min-w-px relative rounded-[16px]">
-                            <img alt={currentContent.tagline} className={`absolute inset-0 max-w-none object-cover ${activeTab === 'Hydro-jetting' ? 'object-right' : 'object-center'} pointer-events-none rounded-[16px] size-full ${activeTab === 'Water meter installation' || activeTab === 'Hydro-jetting' || activeTab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={currentContent.image} loading="lazy" />
+                            <img alt={currentContent.tagline} className={`absolute inset-0 max-w-none object-cover ${activeTab === 'Septic Solutions' ? 'object-right' : 'object-center'} pointer-events-none rounded-[16px] size-full ${activeTab === 'Water meter installation' || activeTab === 'Septic Solutions' || activeTab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={currentContent.image} loading="lazy" />
                           </div>
                         </motion.div>
                       </AnimatePresence>
@@ -892,14 +892,19 @@ export default function InteractiveHomeDesktop() {
                             onChange={(e) => setContactForm({...contactForm, service: e.target.value})}
                             className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white outline-none focus:border-[#0b8483] transition-colors cursor-pointer"
                         >
-                          <option value="">Select a service...</option>
-                          <option value="Emergency">Emergency</option>
-                          <option value="Sewer work">Sewer work</option>
-                          <option value="Hydro-jetting">Hydro-jetting</option>
-                          <option value="Excavation">Excavation</option>
-                          <option value="Residential">Residential</option>
-                          <option value="Repairs">Repairs</option>
-                          <option value="Water meter installation">Water meter installation</option>
+                            <option value="">Select a service...</option>
+                            <option value="Backflow services">Backflow services</option>
+                            <option value="Camera sewer line inspection">Camera sewer line inspection</option>
+                            <option value="Emergency">Emergency</option>
+                            <option value="Excavation">Excavation</option>
+                            <option value="Gas lines">Gas lines</option>
+                            <option value="Hydro-jetting">Hydro-jetting</option>
+                            <option value="New construction">New construction</option>
+                            <option value="Repairs">Repairs</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Sewer work">Sewer work</option>
+                            <option value="Water heaters">Water heaters</option>
+                            <option value="Water meter installation">Water meter installation</option>
                         </select>
                       </div>
 
