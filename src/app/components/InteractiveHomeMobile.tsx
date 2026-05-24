@@ -14,6 +14,7 @@ import imgMeterInstallation from "../../imports/imagejpeg_0-4-1.jpg";
 import imgRepairs from "../../imports/imagejpeg_1-5-2.jpg";
 import imgResidential from "../../imports/imagejpeg_0-7-1.jpg";
 import imgEmergency from "../../imports/imagejpeg_0-6.jpg";
+import imgHydrojet from "../../imports/header.jpg";
 
 type ServiceTab = 'Emergency' | 'Sewer work' | 'Hydro-jetting' | 'Excavation' | 'Residential' | 'Repairs' | 'Water meter installation';
 
@@ -39,8 +40,8 @@ const tabContents: Record<ServiceTab, TabContent> = {
   },
   'Hydro-jetting': {
     title: "High-pressure cleaning solutions",
-    description: "Our hydro-jetting systems clear even the toughest clogs and buildup, restoring your pipes to like-new condition.",
-    image: imgSewerWork,
+    description: "Routine septic tank pumping keeps your system running and prevents costly backups or drain field failure. Most tanks need service every 3–5 years; we'll inspect the tank while we're there and flag anything that needs attention.",
+    image: imgHydrojet,
     tagline: "Hydro-jetting"
   },
   'Excavation': {
@@ -109,7 +110,7 @@ const specialtyServices: SpecialtyService[] = [
     icon: 'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z',
     name: 'Septic tank pump-outs',
     meta: 'Tank service & maintenance',
-    description: "Routine septic tank pumping keeps your system running and prevents costly backups or drain field failure. Most tanks need service every 3–5 years; we'll inspect the tank while we're there and flag anything that needs attention.",
+    description: "Our hydro-jetting systems clear even the toughest clogs and buildup, restoring your pipes to like-new condition. We pump out septic tanks to prevent backups and failures, and we inspect the system to identify any issues before they become emergencies.",
     bullets: [
       'Full tank pump-outs',
       'System inspection included',
@@ -410,13 +411,14 @@ export default function InteractiveHomeMobile() {
 
             {/* Hero photo */}
             <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)] hero-fade hero-delay-4">
-              <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48]">
+              <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48] relative">
                 <img
                     alt="Darren Aucoin's Plumbing service truck"
                     className="block w-full h-auto"
                     src={imgHero}
                     loading="eager"
                 />
+                <span className="anim-shimmer" aria-hidden="true" />
               </div>
             </div>
 
