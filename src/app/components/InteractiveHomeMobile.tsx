@@ -344,7 +344,7 @@ export default function InteractiveHomeMobile() {
                   <div aria-hidden="true" className="absolute border-4 border-[#0b8483] border-solid inset-[-4px] rounded-[12px]" />
                 </div>
               </div>
-              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative text-[14px] text-white tracking-[-0.14px] whitespace-nowrap flex-1 min-w-0 px-[8px] text-center truncate">Darren Aucoin's Plumbing</p>
+              <p className="font-['Fraunces',serif] font-medium leading-[1.2] relative text-[24px] text-white tracking-[-0.14px] whitespace-nowrap flex-1 min-w-0 px-[8px] text-center truncate">Darren Aucoin's Plumbing</p>
               <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} className="content-stretch flex items-center justify-center relative shrink-0 size-[48px] cursor-pointer">
                 {menuOpen ? (
                   // X (close) icon

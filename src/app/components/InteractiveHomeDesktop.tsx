@@ -339,7 +339,7 @@ export default function InteractiveHomeDesktop() {
                   </div>
                 </div>
 
-                <p className="font-['Fraunces',serif] font-medium leading-[1.2] relative text-[28px] xl:text-[32px] text-white tracking-[-0.32px] text-center whitespace-nowrap flex-1 min-w-0 px-[16px] truncate">Darren Aucoin's Plumbing</p>
+                <p className="font-['Fraunces',serif] font-medium leading-[1.2] relative text-[42px] xl:text-[48px] text-white tracking-[-0.32px] text-center whitespace-nowrap flex-1 min-w-0 px-[16px] truncate">Darren Aucoin's Plumbing</p>
 
                 <div className="content-stretch flex gap-[16px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[20px] items-center justify-end relative shrink-0">
