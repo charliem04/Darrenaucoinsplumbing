@@ -503,7 +503,7 @@ export default function InteractiveHomeMobile() {
                                   </button>
                                 </div>
                                 <div className="aspect-square relative rounded-[16px] shrink-0 w-full">
-                                  <img alt={content.tagline} className={`absolute inset-0 max-w-none object-cover pointer-events-none rounded-[16px] size-full ${tab === 'Water meter installation' || tab === 'Hydro-jetting' || tab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={content.image} loading="lazy" />
+                                  <img alt={content.tagline} className={`absolute inset-0 max-w-none object-cover ${tab === 'Hydro-jetting' ? 'object-right' : 'object-center'} pointer-events-none rounded-[16px] size-full ${tab === 'Water meter installation' || tab === 'Hydro-jetting' || tab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={content.image} loading="lazy" />
                                 </div>
                               </div>
                             </motion.div>

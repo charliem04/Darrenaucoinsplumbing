@@ -489,7 +489,7 @@ export default function InteractiveHomeDesktop() {
                             </div>
                           </div>
                           <div className="aspect-[552/552] flex-[1_0_0] min-w-px relative rounded-[16px]">
-                            <img alt={currentContent.tagline} className={`absolute inset-0 max-w-none object-cover pointer-events-none rounded-[16px] size-full ${activeTab === 'Water meter installation' || activeTab === 'Hydro-jetting' || activeTab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={currentContent.image} loading="lazy" />
+                            <img alt={currentContent.tagline} className={`absolute inset-0 max-w-none object-cover ${activeTab === 'Hydro-jetting' ? 'object-right' : 'object-center'} pointer-events-none rounded-[16px] size-full ${activeTab === 'Water meter installation' || activeTab === 'Hydro-jetting' || activeTab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={currentContent.image} loading="lazy" />
                           </div>
                         </motion.div>
                       </AnimatePresence>
