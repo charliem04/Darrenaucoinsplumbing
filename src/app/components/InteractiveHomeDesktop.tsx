@@ -328,7 +328,7 @@ export default function InteractiveHomeDesktop() {
   return (
       <div className="content-stretch flex flex-col items-start relative w-full overflow-x-hidden" data-name="Home • Desktop">
         {/* Navbar */}
-        <div className="bg-[#002336] h-[110px] sticky top-0 shrink-0 w-full z-50 shadow-lg overflow-hidden">
+        <div className="bg-[#002336] h-[110px] sticky top-0 shrink-0 w-full z-50 shadow-lg">
           <div className="flex flex-col items-center justify-center size-full">
             <div className="content-stretch flex flex-col items-center justify-center px-[64px] relative size-full">
               <div className="content-stretch flex h-[71px] items-center justify-between relative shrink-0 w-full gap-[16px]">

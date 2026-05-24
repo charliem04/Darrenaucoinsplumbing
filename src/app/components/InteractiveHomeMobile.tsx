@@ -331,724 +331,724 @@ export default function InteractiveHomeMobile() {
   }
 
   return (
-    <div className="content-stretch flex flex-col items-start relative w-full overflow-x-hidden">
-      {/* Navbar */}
-      <div className="bg-[#002336] content-stretch flex flex-col items-start sticky top-0 shrink-0 w-full z-50 shadow-lg overflow-hidden">
-        <div className="h-[64px] relative shrink-0 w-full">
-          <div className="flex flex-row items-center size-full">
-            <div className="content-stretch flex items-center justify-between pl-[20px] pr-[12px] relative size-full">
-              <div className="h-[46px] relative shrink-0 w-[76px] cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <div className="absolute inset-0 pointer-events-none rounded-[8px]">
-                  <img alt="Company Logo" className="absolute inset-0 max-w-none object-cover rounded-[8px] size-full" src={imgCompanyLogo} />
-                  <div aria-hidden="true" className="absolute border-4 border-[#0b8483] border-solid inset-[-4px] rounded-[12px]" />
+      <div className="content-stretch flex flex-col items-start relative w-full overflow-x-hidden">
+        {/* Navbar */}
+        <div className="bg-[#002336] content-stretch flex flex-col items-start sticky top-0 shrink-0 w-full z-50 shadow-lg overflow-hidden">
+          <div className="h-[64px] relative shrink-0 w-full">
+            <div className="flex flex-row items-center size-full">
+              <div className="content-stretch flex items-center justify-between pl-[20px] pr-[12px] relative size-full">
+                <div className="h-[46px] relative shrink-0 w-[76px] cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                  <div className="absolute inset-0 pointer-events-none rounded-[8px]">
+                    <img alt="Company Logo" className="absolute inset-0 max-w-none object-cover rounded-[8px] size-full" src={imgCompanyLogo} />
+                    <div aria-hidden="true" className="absolute border-4 border-[#0b8483] border-solid inset-[-4px] rounded-[12px]" />
+                  </div>
+                </div>
+                <p className="font-['Fraunces',serif] font-medium leading-[1.2] relative text-[20px] text-white tracking-[-0.14px] whitespace-nowrap flex-1 min-w-0 px-[8px] text-center truncate">Darren Aucoin's Plumbing</p>
+                <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} className="content-stretch flex items-center justify-center relative shrink-0 size-[48px] cursor-pointer">
+                  {menuOpen ? (
+                      // X (close) icon
+                      <svg className="size-[24px]" fill="none" viewBox="0 0 24 24">
+                        <path d="M6 6L18 18M6 18L18 6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                  ) : (
+                      // Hamburger icon
+                      <svg className="size-[24px]" fill="none" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+          {menuOpen && (
+              <div className="bg-[#002336] w-full border-t border-[rgba(255,255,255,0.2)] py-[16px] px-[20px]">
+                <div className="flex flex-col gap-[16px]">
+                  <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false); }} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">Home</button>
+                  <button onClick={() => scrollToSection(aboutRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">About us</button>
+                  <button onClick={() => scrollToSection(servicesRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">Services</button>
+                  <button onClick={() => scrollToSection(faqRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">FAQ</button>
+                  <button onClick={() => scrollToSection(contactRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">Contact</button>
+                  <div className="flex gap-[8px] pt-[8px]">
+                    <button onClick={handleCall} className="flex-1 bg-white text-[#070301] px-[12px] py-[6px] rounded-[12px] font-['Inter:Medium',sans-serif] hover:bg-gray-100 transition-colors">Call</button>
+                    <button onClick={() => { scrollToSection(contactRef); setMenuOpen(false); }} className="flex-1 bg-[#0077b6] text-white px-[12px] py-[6px] rounded-[12px] font-['Inter:Medium',sans-serif] hover:bg-[#005a8a] transition-colors">Book</button>
+                  </div>
                 </div>
               </div>
-              <p className="font-['Fraunces',serif] font-medium leading-[1.2] relative text-[24px] text-white tracking-[-0.14px] whitespace-nowrap flex-1 min-w-0 px-[8px] text-center truncate">Darren Aucoin's Plumbing</p>
-              <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} className="content-stretch flex items-center justify-center relative shrink-0 size-[48px] cursor-pointer">
-                {menuOpen ? (
-                  // X (close) icon
-                  <svg className="size-[24px]" fill="none" viewBox="0 0 24 24">
-                    <path d="M6 6L18 18M6 18L18 6" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                ) : (
-                  // Hamburger icon
-                  <svg className="size-[24px]" fill="none" viewBox="0 0 24 24">
-                    <path d="M4 6h16M4 12h16M4 18h16" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
+          )}
         </div>
-        {menuOpen && (
-          <div className="bg-[#002336] w-full border-t border-[rgba(255,255,255,0.2)] py-[16px] px-[20px]">
-            <div className="flex flex-col gap-[16px]">
-              <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false); }} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">Home</button>
-              <button onClick={() => scrollToSection(aboutRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">About us</button>
-              <button onClick={() => scrollToSection(servicesRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">Services</button>
-              <button onClick={() => scrollToSection(faqRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">FAQ</button>
-              <button onClick={() => scrollToSection(contactRef)} className="text-left font-['Inter:Regular',sans-serif] text-white py-[8px] hover:text-[#0b8483] transition-colors">Contact</button>
-              <div className="flex gap-[8px] pt-[8px]">
-                <button onClick={handleCall} className="flex-1 bg-white text-[#070301] px-[12px] py-[6px] rounded-[12px] font-['Inter:Medium',sans-serif] hover:bg-gray-100 transition-colors">Call</button>
-                <button onClick={() => { scrollToSection(contactRef); setMenuOpen(false); }} className="flex-1 bg-[#0077b6] text-white px-[12px] py-[6px] rounded-[12px] font-['Inter:Medium',sans-serif] hover:bg-[#005a8a] transition-colors">Book</button>
+
+        {/* Hero Section */}
+        <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
+          <div className="flex flex-col items-center w-full px-[20px] py-[48px]">
+            <div className="flex flex-col items-center gap-[32px] w-full max-w-[560px]">
+
+              {/* Text */}
+              <div className="flex flex-col gap-[20px] items-center text-center text-white w-full">
+                <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px] hero-fade hero-delay-1">
+                  Fast, Honest Plumbing When You Need it Most
+                </p>
+                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px] hero-fade hero-delay-2">
+                  Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.
+                </p>
               </div>
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* Hero Section */}
-      <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
-        <div className="flex flex-col items-center w-full px-[20px] py-[48px]">
-          <div className="flex flex-col items-center gap-[32px] w-full max-w-[560px]">
-
-            {/* Text */}
-            <div className="flex flex-col gap-[20px] items-center text-center text-white w-full">
-              <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px] hero-fade hero-delay-1">
-                Fast, honest plumbing when you need it most
-              </p>
-              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px] hero-fade hero-delay-2">
-                Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.
-              </p>
-            </div>
-
-            {/* Buttons — centered */}
-            <div className="flex flex-wrap gap-[12px] items-center justify-center w-full hero-fade hero-delay-3">
-              <button
-                  onClick={handleCall}
-                  className="bg-white border border-[#0077b6] rounded-[12px] px-[16px] py-[8px] hover:bg-gray-100 transition-colors cursor-pointer"
-              >
-                <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
-              </button>
-              <button
-                  onClick={() => scrollToSection(servicesRef)}
-                  className="border border-[rgba(255,255,255,0.2)] rounded-[12px] px-[16px] py-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer"
-              >
-                <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[16px] text-white whitespace-nowrap">Learn more</p>
-              </button>
-            </div>
-
-            {/* Hero photo */}
-            <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)] hero-fade hero-delay-4">
-              <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48] relative">
-                <img
-                    alt="Darren Aucoin's Plumbing service truck"
-                    className="block w-full h-auto"
-                    src={imgHero}
-                    loading="eager"
-                />
-                <span className="anim-shimmer" aria-hidden="true" />
+              {/* Buttons — centered */}
+              <div className="flex flex-wrap gap-[12px] items-center justify-center w-full hero-fade hero-delay-3">
+                <button
+                    onClick={handleCall}
+                    className="bg-white border border-[#0077b6] rounded-[12px] px-[16px] py-[8px] hover:bg-gray-100 transition-colors cursor-pointer"
+                >
+                  <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
+                </button>
+                <button
+                    onClick={() => scrollToSection(servicesRef)}
+                    className="border border-[rgba(255,255,255,0.2)] rounded-[12px] px-[16px] py-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer"
+                >
+                  <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[16px] text-white whitespace-nowrap">Learn more</p>
+                </button>
               </div>
-            </div>
 
-          </div>
-        </div>
-        {/* Wave divider into Services */}
-        <div className="relative w-full leading-[0] -mb-px" aria-hidden="true">
-          <svg className="block w-full h-[60px]" viewBox="0 0 1440 60"
-               preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,24 L1440,60 L0,60 Z"
-                  fill="#002f48" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Services Section */}
-      <div ref={servicesRef} className="bg-gradient-to-b from-[#002f48] to-[#001a2b] relative shrink-0 w-full">
-        {/* Ambient glow — first child of the relative section root */}
-        <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)]" />
-
-        <div className="flex flex-col items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-center justify-center px-[20px] py-[64px] relative size-full">
-            <div
-                ref={servicesReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${servicesReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              <div className="content-stretch flex flex-col gap-[12px] items-center max-w-[768px] relative shrink-0 w-full">
-                <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-[#5dcaa5]">Services</p>
-                <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-center text-white w-full">
-                  <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">What we handle</p>
-                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">From burst pipes at midnight to sewer lines that need serious work, we've got the tools and know-how to get it done. Every job gets our full attention.</p>
+              {/* Hero photo */}
+              <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)] hero-fade hero-delay-4">
+                <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48] relative">
+                  <img
+                      alt="Darren Aucoin's Plumbing service truck"
+                      className="block w-full h-auto"
+                      src={imgHero}
+                      loading="eager"
+                  />
+                  <span className="anim-shimmer" aria-hidden="true" />
                 </div>
               </div>
 
-              <div className="bg-[#002336] relative rounded-[16px] shrink-0 w-full border border-[rgba(255,255,255,0.2)]">
-                <div className="content-stretch flex flex-col isolate items-center justify-center overflow-clip relative rounded-[inherit] size-full">
-                  {(['Emergency', 'Sewer work', 'Water meter installation', 'Excavation', 'Residential', 'Repairs', 'Septic Solutions'] as ServiceTab[]).map((tab) => {
-                    const isOpen = activeTab === tab;
-                    const content = tabContents[tab];
-                    return (
-                      <Fragment key={tab}>
-                        <button
-                          onClick={() => handleTabChange(tab)}
-                          className={`relative shrink-0 w-full border-b border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors duration-200 ${isOpen ? 'bg-[rgba(11,132,131,0.2)]' : 'hover:bg-[rgba(255,255,255,0.05)]'}`}
-                        >
-                          <div className="flex flex-col justify-center size-full">
-                            <div className="content-stretch flex items-center justify-between px-[32px] py-[24px] relative size-full">
-                              <p className={`font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[18px] tracking-[-0.18px] transition-colors duration-200 ${isOpen ? 'text-[#0b8483]' : 'text-white'}`}>
-                                {tab === 'Water meter installation' ? 'Meter installation' : tab}
-                              </p>
-                              <motion.svg
-                                animate={{ rotate: isOpen ? 180 : 0 }}
-                                transition={{ duration: 0.3 }}
-                                className={`size-[20px] ${isOpen ? 'text-[#0b8483]' : 'text-white'}`}
-                                fill="none" viewBox="0 0 24 24"
-                              >
-                                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                              </motion.svg>
-                            </div>
-                          </div>
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {isOpen && (
-                            <motion.div
-                              key="content"
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ height: { type: 'spring', stiffness: 260, damping: 32 }, opacity: { duration: 0.2 } }}
-                              className="relative shrink-0 w-full border-b border-[rgba(255,255,255,0.2)] overflow-hidden"
+            </div>
+          </div>
+          {/* Wave divider into Services */}
+          <div className="relative w-full leading-[0] -mb-px" aria-hidden="true">
+            <svg className="block w-full h-[60px]" viewBox="0 0 1440 60"
+                 preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,24 L1440,60 L0,60 Z"
+                    fill="#002f48" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Services Section */}
+        <div ref={servicesRef} className="bg-gradient-to-b from-[#002f48] to-[#001a2b] relative shrink-0 w-full">
+          {/* Ambient glow — first child of the relative section root */}
+          <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)]" />
+
+          <div className="flex flex-col items-center justify-center overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-center justify-center px-[20px] py-[64px] relative size-full">
+              <div
+                  ref={servicesReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${servicesReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                <div className="content-stretch flex flex-col gap-[12px] items-center max-w-[768px] relative shrink-0 w-full">
+                  <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-[#5dcaa5]">Services</p>
+                  <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-center text-white w-full">
+                    <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">What we handle</p>
+                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">From burst pipes at midnight to sewer lines that need serious work, we've got the tools and know-how to get it done. Every job gets our full attention.</p>
+                  </div>
+                </div>
+
+                <div className="bg-[#002336] relative rounded-[16px] shrink-0 w-full border border-[rgba(255,255,255,0.2)]">
+                  <div className="content-stretch flex flex-col isolate items-center justify-center overflow-clip relative rounded-[inherit] size-full">
+                    {(['Emergency', 'Sewer work', 'Water meter installation', 'Excavation', 'Residential', 'Repairs', 'Septic Solutions'] as ServiceTab[]).map((tab) => {
+                      const isOpen = activeTab === tab;
+                      const content = tabContents[tab];
+                      return (
+                          <Fragment key={tab}>
+                            <button
+                                onClick={() => handleTabChange(tab)}
+                                className={`relative shrink-0 w-full border-b border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors duration-200 ${isOpen ? 'bg-[rgba(11,132,131,0.2)]' : 'hover:bg-[rgba(255,255,255,0.05)]'}`}
                             >
-                              <div className="content-stretch flex flex-col gap-[48px] items-start p-[24px] relative w-full">
-                                <div className="content-stretch flex flex-col gap-[24px] items-start justify-center relative shrink-0 w-full">
-                                  <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
-                                    <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[32px] tracking-[-0.32px] w-full">{content.title}</p>
-                                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">{content.description}</p>
-                                  </div>
-                                  <button onClick={() => scrollToSection(contactRef)} className="relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
-                                    <div className="content-stretch flex items-center justify-center overflow-clip px-[12px] py-[6px] relative rounded-[inherit] size-full">
-                                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">Learn more</p>
-                                    </div>
-                                  </button>
-                                </div>
-                                <div className="aspect-square relative rounded-[16px] shrink-0 w-full">
-                                  <img alt={content.tagline} className={`absolute inset-0 max-w-none object-cover ${tab === 'Septic Solutions' ? 'object-right' : 'object-center'} pointer-events-none rounded-[16px] size-full ${tab === 'Water meter installation' || tab === 'Septic Solutions' || tab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={content.image} loading="lazy" />
+                              <div className="flex flex-col justify-center size-full">
+                                <div className="content-stretch flex items-center justify-between px-[32px] py-[24px] relative size-full">
+                                  <p className={`font-['Rubik:Medium',sans-serif] font-medium leading-[1.4] text-[18px] tracking-[-0.18px] transition-colors duration-200 ${isOpen ? 'text-[#0b8483]' : 'text-white'}`}>
+                                    {tab === 'Water meter installation' ? 'Meter installation' : tab}
+                                  </p>
+                                  <motion.svg
+                                      animate={{ rotate: isOpen ? 180 : 0 }}
+                                      transition={{ duration: 0.3 }}
+                                      className={`size-[20px] ${isOpen ? 'text-[#0b8483]' : 'text-white'}`}
+                                      fill="none" viewBox="0 0 24 24"
+                                  >
+                                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                  </motion.svg>
                                 </div>
                               </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </Fragment>
-                    );
-                  })}
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {isOpen && (
+                                  <motion.div
+                                      key="content"
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: 'auto', opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ height: { type: 'spring', stiffness: 260, damping: 32 }, opacity: { duration: 0.2 } }}
+                                      className="relative shrink-0 w-full border-b border-[rgba(255,255,255,0.2)] overflow-hidden"
+                                  >
+                                    <div className="content-stretch flex flex-col gap-[48px] items-start p-[24px] relative w-full">
+                                      <div className="content-stretch flex flex-col gap-[24px] items-start justify-center relative shrink-0 w-full">
+                                        <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
+                                          <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[32px] tracking-[-0.32px] w-full">{content.title}</p>
+                                          <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">{content.description}</p>
+                                        </div>
+                                        <button onClick={() => scrollToSection(contactRef)} className="relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
+                                          <div className="content-stretch flex items-center justify-center overflow-clip px-[12px] py-[6px] relative rounded-[inherit] size-full">
+                                            <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">Learn more</p>
+                                          </div>
+                                        </button>
+                                      </div>
+                                      <div className="aspect-square relative rounded-[16px] shrink-0 w-full">
+                                        <img alt={content.tagline} className={`absolute inset-0 max-w-none object-cover ${tab === 'Septic Solutions' ? 'object-right' : 'object-center'} pointer-events-none rounded-[16px] size-full ${tab === 'Water meter installation' || tab === 'Septic Solutions' || tab === 'Sewer work' ? 'object-[center_60%]' : 'object-[center_15%]'}`} src={content.image} loading="lazy" />
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </Fragment>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
 
-              {/* Specialty Services */}
-              <div
-                  ref={specialtyReveal.ref}
-                  className={`content-stretch flex flex-col gap-[24px] items-center w-full mt-[24px] reveal ${specialtyReveal.isVisible ? 'reveal-visible' : ''}`}
-              >
-                <div className="flex flex-col gap-[6px] items-start w-full">
-                  <p className="font-['Rubik:Medium',sans-serif] font-medium text-[11px] tracking-[0.08em] uppercase text-[#0b8483]">Also available</p>
-                  <p className="font-['Rubik:Medium',sans-serif] font-medium text-[24px] text-white tracking-[-0.24px] leading-[1.2]">Specialty services</p>
-                </div>
-                <div className="flex flex-col gap-[10px] w-full">
-                  {specialtyServices.map((svc) => {
-                    const isOpen = openSpecialty === svc.key;
-                    return (
-                        <button
-                            key={svc.key}
-                            onClick={() => setOpenSpecialty(isOpen ? null : svc.key)}
-                            className={`text-left rounded-[12px] border transition-all duration-300 overflow-hidden w-full ${
-                                isOpen
-                                    ? 'bg-[rgba(11,132,131,0.12)] border-[rgba(11,132,131,0.5)]'
-                                    : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.08)]'
-                            }`}
-                        >
-                          <div className="flex gap-[12px] items-center p-[14px]">
-                            <div className={`shrink-0 size-[36px] rounded-[8px] flex items-center justify-center transition-all duration-300 ${
-                                isOpen ? 'bg-[#0b8483] text-white shadow-[0_4px_12px_rgba(11,132,131,0.5)] ring-1 ring-[rgba(255,255,255,0.15)]' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
-                            }`}>
-                              <svg className="size-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d={svc.icon} />
+                {/* Specialty Services */}
+                <div
+                    ref={specialtyReveal.ref}
+                    className={`content-stretch flex flex-col gap-[24px] items-center w-full mt-[24px] reveal ${specialtyReveal.isVisible ? 'reveal-visible' : ''}`}
+                >
+                  <div className="flex flex-col gap-[6px] items-start w-full">
+                    <p className="font-['Rubik:Medium',sans-serif] font-medium text-[11px] tracking-[0.08em] uppercase text-[#0b8483]">Also available</p>
+                    <p className="font-['Rubik:Medium',sans-serif] font-medium text-[24px] text-white tracking-[-0.24px] leading-[1.2]">Specialty services</p>
+                  </div>
+                  <div className="flex flex-col gap-[10px] w-full">
+                    {specialtyServices.map((svc) => {
+                      const isOpen = openSpecialty === svc.key;
+                      return (
+                          <button
+                              key={svc.key}
+                              onClick={() => setOpenSpecialty(isOpen ? null : svc.key)}
+                              className={`text-left rounded-[12px] border transition-all duration-300 overflow-hidden w-full ${
+                                  isOpen
+                                      ? 'bg-[rgba(11,132,131,0.12)] border-[rgba(11,132,131,0.5)]'
+                                      : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.08)]'
+                              }`}
+                          >
+                            <div className="flex gap-[12px] items-center p-[14px]">
+                              <div className={`shrink-0 size-[36px] rounded-[8px] flex items-center justify-center transition-all duration-300 ${
+                                  isOpen ? 'bg-[#0b8483] text-white shadow-[0_4px_12px_rgba(11,132,131,0.5)] ring-1 ring-[rgba(255,255,255,0.15)]' : 'bg-[rgba(11,132,131,0.18)] text-[#5dcaa5]'
+                              }`}>
+                                <svg className="size-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d={svc.icon} />
+                                </svg>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-['Rubik:Medium',sans-serif] font-medium text-[15px] text-white leading-[1.3]">{svc.name}</p>
+                                <p className="font-['Inter:Regular',sans-serif] font-normal text-[12px] text-[rgba(255,255,255,0.55)] leading-[1.4] mt-[2px]">{svc.meta}</p>
+                              </div>
+                              <svg className={`shrink-0 size-[18px] text-[rgba(255,255,255,0.4)] transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#5dcaa5]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                               </svg>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-['Rubik:Medium',sans-serif] font-medium text-[15px] text-white leading-[1.3]">{svc.name}</p>
-                              <p className="font-['Inter:Regular',sans-serif] font-normal text-[12px] text-[rgba(255,255,255,0.55)] leading-[1.4] mt-[2px]">{svc.meta}</p>
-                            </div>
-                            <svg className={`shrink-0 size-[18px] text-[rgba(255,255,255,0.4)] transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#5dcaa5]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </div>
-                          <AnimatePresence initial={false}>
-                            {isOpen && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                    style={{ overflow: 'hidden' }}
-                                >
-                                  <div className="px-[14px] pb-[16px]">
-                                    <div className="pt-[14px] border-t border-[rgba(255,255,255,0.1)]">
-                                      {svc.badge && (
-                                          <span className="inline-block font-['Rubik:Medium',sans-serif] font-medium text-[10px] tracking-[0.06em] uppercase text-[#5dcaa5] bg-[rgba(11,132,131,0.15)] px-[8px] py-[4px] rounded-[6px] mb-[10px]">
+                            <AnimatePresence initial={false}>
+                              {isOpen && (
+                                  <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: 'auto', opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                      style={{ overflow: 'hidden' }}
+                                  >
+                                    <div className="px-[14px] pb-[16px]">
+                                      <div className="pt-[14px] border-t border-[rgba(255,255,255,0.1)]">
+                                        {svc.badge && (
+                                            <span className="inline-block font-['Rubik:Medium',sans-serif] font-medium text-[10px] tracking-[0.06em] uppercase text-[#5dcaa5] bg-[rgba(11,132,131,0.15)] px-[8px] py-[4px] rounded-[6px] mb-[10px]">
                                       {svc.badge}
                                     </span>
-                                      )}
-                                      <p className="font-['Inter:Regular',sans-serif] font-normal text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.6]">
-                                        {svc.description}
-                                      </p>
-                                      <ul className="mt-[12px] space-y-[8px]">
-                                        {svc.bullets.map((b) => (
-                                            <li key={b} className="flex gap-[10px] items-start">
-                                              <svg className="shrink-0 mt-[3px] size-[14px] text-[#5dcaa5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                              </svg>
-                                              <p className="font-['Inter:Regular',sans-serif] font-normal text-[13px] text-[rgba(255,255,255,0.75)] leading-[1.5]">{b}</p>
-                                            </li>
-                                        ))}
-                                      </ul>
+                                        )}
+                                        <p className="font-['Inter:Regular',sans-serif] font-normal text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.6]">
+                                          {svc.description}
+                                        </p>
+                                        <ul className="mt-[12px] space-y-[8px]">
+                                          {svc.bullets.map((b) => (
+                                              <li key={b} className="flex gap-[10px] items-start">
+                                                <svg className="shrink-0 mt-[3px] size-[14px] text-[#5dcaa5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                <p className="font-['Inter:Regular',sans-serif] font-normal text-[13px] text-[rgba(255,255,255,0.75)] leading-[1.5]">{b}</p>
+                                              </li>
+                                          ))}
+                                        </ul>
+                                      </div>
                                     </div>
-                                  </div>
-                                </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Equipment Section */}
-      <div ref={aboutRef} className="bg-white relative shrink-0 w-full">
-        <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
-            <div
-                ref={equipmentReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${equipmentReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
-                  <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                    <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[#070301] text-[16px]">Equipment</p>
-                    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-[#070301] w-full">
-                      <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Professional tools that make the difference</p>
-                      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">We don't cut corners on equipment. Hydro-jetting systems, excavation capabilities, and diagnostic tools mean we solve problems instead of just patching them.</p>
-                    </div>
+                                  </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </button>
+                      );
+                    })}
                   </div>
-                  <button onClick={() => scrollToSection(servicesRef)} className="relative rounded-[12px] shrink-0 border border-[rgba(7,3,1,0.15)] hover:bg-gray-50 transition-colors cursor-pointer">
-                    <div className="content-stretch flex items-center justify-center overflow-clip px-[12px] py-[6px] relative rounded-[inherit] size-full">
-                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">See services</p>
-                    </div>
-                  </button>
-                </div>
-                <div className="aspect-[335/348] relative rounded-[16px] shrink-0 w-full">
-                  <img alt="Equipment" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[16px] size-full" src={imgPlaceholderImage2} />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Testimonials */}
-      <div className="bg-gradient-to-b from-[#003a59] to-[#002336] relative shrink-0 w-full">
-        {/* Ambient glow — first child of the relative section root */}
-        <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)]" />
-
-        <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
-            <div
-                ref={testimonialsReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${testimonialsReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              <div className="content-stretch flex flex-col gap-[20px] items-center max-w-[768px] relative shrink-0 text-center text-white w-full">
-                <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">What customers say</p>
-                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Trusted by Lafayette homeowners</p>
-              </div>
+        {/* Equipment Section */}
+        <div ref={aboutRef} className="bg-white relative shrink-0 w-full">
+          <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
               <div
-                  ref={testimonialCardsReveal.ref}
-                  className="content-stretch flex flex-col gap-[32px] items-start relative shrink-0 w-full"
+                  ref={equipmentReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${equipmentReveal.isVisible ? 'reveal-visible' : ''}`}
               >
-                {[
-                  { name: 'Michael Broussard', role: 'Homeowner, Lafayette', text: 'Darren showed up at dawn on a Saturday when our water line burst, and he had it fixed before we finished coffee.' },
-                  { name: 'Robert Guidry', role: 'Homeowner, Lafayette', text: 'They treated our old Creole cottage like it mattered, because to them it did.' },
-                  { name: 'Jennifer Thibodeaux', role: 'Property manager, Acadiana', text: 'No surprises, no upselling, just honest work and a fair bill—that\'s rare in this business.' }
-                ].map((testimonial, idx) => (
-                    <div key={idx} className={`bg-[#002f48] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.12)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.40)] hover:-translate-y-1 transition-all duration-300 reveal reveal-scale reveal-delay-${idx + 1} ${testimonialCardsReveal.isVisible ? 'reveal-visible' : ''}`}>
-                      <div className="overflow-clip rounded-[inherit] size-full">
-                        <div className="content-stretch flex flex-col gap-[20px] items-start p-[24px] relative size-full">
-                          <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0">
-                            <div className="h-[18.889px] relative shrink-0 w-[116px]">
-                              <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 116 18.8889">
-                                <g clipPath="url(#clip0_3_1640)">
-                                  {[0, 1, 2, 3, 4].map(i => (
-                                    <path key={i} d={[svgPaths.p23629f00, svgPaths.p84d7480, svgPaths.p24418170, svgPaths.p28ff5800, svgPaths.p32177b30][i]} fill="white" />
-                                  ))}
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_3_1640">
-                                    <rect fill="white" height="18.8889" width="116" />
-                                  </clipPath>
-                                </defs>
-                              </svg>
+                <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
+                  <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
+                    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+                      <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[#070301] text-[16px]">Equipment</p>
+                      <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-[#070301] w-full">
+                        <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Professional tools that make the difference</p>
+                        <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">We don't cut corners on equipment. Hydro-jetting systems, excavation capabilities, and diagnostic tools mean we solve problems instead of just patching them.</p>
+                      </div>
+                    </div>
+                    <button onClick={() => scrollToSection(servicesRef)} className="relative rounded-[12px] shrink-0 border border-[rgba(7,3,1,0.15)] hover:bg-gray-50 transition-colors cursor-pointer">
+                      <div className="content-stretch flex items-center justify-center overflow-clip px-[12px] py-[6px] relative rounded-[inherit] size-full">
+                        <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">See services</p>
+                      </div>
+                    </button>
+                  </div>
+                  <div className="aspect-[335/348] relative rounded-[16px] shrink-0 w-full">
+                    <img alt="Equipment" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[16px] size-full" src={imgPlaceholderImage2} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials */}
+        <div className="bg-gradient-to-b from-[#003a59] to-[#002336] relative shrink-0 w-full">
+          {/* Ambient glow — first child of the relative section root */}
+          <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)]" />
+
+          <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
+              <div
+                  ref={testimonialsReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${testimonialsReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                <div className="content-stretch flex flex-col gap-[20px] items-center max-w-[768px] relative shrink-0 text-center text-white w-full">
+                  <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">What customers say</p>
+                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Trusted by Lafayette homeowners</p>
+                </div>
+                <div
+                    ref={testimonialCardsReveal.ref}
+                    className="content-stretch flex flex-col gap-[32px] items-start relative shrink-0 w-full"
+                >
+                  {[
+                    { name: 'Michael Broussard', role: 'Homeowner, Lafayette', text: 'Darren showed up at dawn on a Saturday when our water line burst, and he had it fixed before we finished coffee.' },
+                    { name: 'Robert Guidry', role: 'Homeowner, Lafayette', text: 'They treated our old Creole cottage like it mattered, because to them it did.' },
+                    { name: 'Jennifer Thibodeaux', role: 'Property manager, Acadiana', text: 'No surprises, no upselling, just honest work and a fair bill—that\'s rare in this business.' }
+                  ].map((testimonial, idx) => (
+                      <div key={idx} className={`bg-[#002f48] flex-[1_0_0] min-w-px relative rounded-[16px] border border-[rgba(255,255,255,0.12)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.40)] hover:-translate-y-1 transition-all duration-300 reveal reveal-scale reveal-delay-${idx + 1} ${testimonialCardsReveal.isVisible ? 'reveal-visible' : ''}`}>
+                        <div className="overflow-clip rounded-[inherit] size-full">
+                          <div className="content-stretch flex flex-col gap-[20px] items-start p-[24px] relative size-full">
+                            <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0">
+                              <div className="h-[18.889px] relative shrink-0 w-[116px]">
+                                <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 116 18.8889">
+                                  <g clipPath="url(#clip0_3_1640)">
+                                    {[0, 1, 2, 3, 4].map(i => (
+                                        <path key={i} d={[svgPaths.p23629f00, svgPaths.p84d7480, svgPaths.p24418170, svgPaths.p28ff5800, svgPaths.p32177b30][i]} fill="white" />
+                                    ))}
+                                  </g>
+                                  <defs>
+                                    <clipPath id="clip0_3_1640">
+                                      <rect fill="white" height="18.8889" width="116" />
+                                    </clipPath>
+                                  </defs>
+                                </svg>
+                              </div>
+                              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-white">{testimonial.text}</p>
                             </div>
-                            <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-white">{testimonial.text}</p>
-                          </div>
-                          <div className="content-stretch flex flex-col gap-[16px] items-start justify-center relative shrink-0 w-full">
-                            <div className="relative shrink-0 size-[48px] bg-[rgba(255,255,255,0.12)] rounded-full flex items-center justify-center ring-1 ring-[rgba(255,255,255,0.18)] shadow-[inset_0_1px_2px_rgba(255,255,255,0.15)]">
-                              <svg className="w-[60%] h-[60%]" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="white"/>
-                              </svg>
-                            </div>
-                            <div className="content-stretch flex flex-col items-start leading-[1.5] not-italic relative shrink-0 text-[16px] text-white w-full">
-                              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold relative shrink-0 w-full">{testimonial.name}</p>
-                              <p className="font-['Inter:Regular',sans-serif] font-normal relative shrink-0 w-full">{testimonial.role}</p>
+                            <div className="content-stretch flex flex-col gap-[16px] items-start justify-center relative shrink-0 w-full">
+                              <div className="relative shrink-0 size-[48px] bg-[rgba(255,255,255,0.12)] rounded-full flex items-center justify-center ring-1 ring-[rgba(255,255,255,0.18)] shadow-[inset_0_1px_2px_rgba(255,255,255,0.15)]">
+                                <svg className="w-[60%] h-[60%]" viewBox="0 0 24 24" fill="none">
+                                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="white"/>
+                                </svg>
+                              </div>
+                              <div className="content-stretch flex flex-col items-start leading-[1.5] not-italic relative shrink-0 text-[16px] text-white w-full">
+                                <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold relative shrink-0 w-full">{testimonial.name}</p>
+                                <p className="font-['Inter:Regular',sans-serif] font-normal relative shrink-0 w-full">{testimonial.role}</p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
-        <div className="overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-start px-[20px] py-[64px] relative size-full">
-            <div
-                ref={statsReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${statsReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
-                  <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                    <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-white">Track record</p>
-                    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
-                      <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Numbers that speak for themselves</p>
-                      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">We've built our reputation on showing up fast, doing the work right, and keeping customers satisfied. These numbers reflect what we've earned through years of honest service.</p>
-                    </div>
-                  </div>
-                  <button onClick={() => scrollToSection(contactRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
-                    <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic text-[16px] text-white">Learn more</p>
-                  </button>
-                </div>
-                <div
-                    ref={statCardsReveal.ref}
-                    className="content-stretch flex flex-col gap-[32px] items-start relative shrink-0 w-full"
-                >
-                  {[
-                    { label: 'Years serving Acadiana', value: '15+', desc: 'Experience handling everything from simple repairs to complex work' },
-                    { label: 'Trucks ready to roll', value: '3', desc: 'Fully equipped for residential and commercial plumbing needs' },
-                    { label: 'Average response time', value: '30 min', desc: 'We prioritize emergencies and get there when it matters most' },
-                    { label: "Homes we've served", value: '2000+', desc: 'Families and businesses throughout Lafayette and surrounding areas' }
-                  ].map((stat, idx) => (
-                      <AnimatedStat
-                          key={idx}
-                          stat={stat}
-                          index={idx}
-                          isVisible={statCardsReveal.isVisible}
-                      />
                   ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* CTA */}
-      <div className="bg-white relative shrink-0 w-full">
-        <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
-            <div
-                ref={CTAReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${CTAReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              <div className="relative rounded-[16px] shrink-0 w-full">
-                <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[16px]">
-                  <img alt="CTA Background" className="absolute max-w-none object-cover rounded-[16px] size-full" src={imgCard} />
-                  <div className="absolute bg-[rgba(0,0,0,0.4)] inset-0 rounded-[16px]" />
-                </div>
-                <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-                  <div className="content-stretch flex items-center justify-center p-[32px] relative size-full">
-                    <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-center max-w-[768px] min-w-px relative">
-                      <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-center text-white w-full">
-                        <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Ready for reliable plumbing</p>
-                        <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Call us now or schedule a time that works for you. We're here when you need us.</p>
-                      </div>
-                      <div className="content-stretch flex gap-[16px] items-start relative shrink-0">
-                        <button onClick={handleCall} className="bg-white content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[#0077b6] hover:bg-gray-100 transition-colors cursor-pointer">
-                          <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
-                        </button>
-                        <button onClick={() => scrollToSection(contactRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-solid border-white hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
-                          <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">Schedule service</p>
-                        </button>
+        {/* Stats */}
+        <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
+          <div className="overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-start px-[20px] py-[64px] relative size-full">
+              <div
+                  ref={statsReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${statsReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
+                  <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
+                    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+                      <p className="font-['Rubik:Medium',sans-serif] font-medium text-[12px] tracking-[0.12em] uppercase text-white">Track record</p>
+                      <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
+                        <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Numbers that speak for themselves</p>
+                        <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">We've built our reputation on showing up fast, doing the work right, and keeping customers satisfied. These numbers reflect what we've earned through years of honest service.</p>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ */}
-      <div ref={faqRef} className="bg-[#0b8483] relative shrink-0 w-full">
-        <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
-            <div
-                ref={aboutReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${aboutReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              <div className="content-stretch flex flex-col gap-[20px] items-center max-w-[768px] relative shrink-0 text-center text-white w-full">
-                <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">FAQ</p>
-                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Common questions about our services, pricing, and how we work</p>
-              </div>
-              <div className="content-stretch flex flex-col gap-[40px] items-start leading-[1.5] max-w-[768px] not-italic overflow-clip relative shrink-0 text-[16px] text-white w-full">
-                {[
-                  { q: 'How fast can you respond?', a: "We aim for thirty minutes or less on emergency calls. During business hours, we typically schedule same-day or next-day service. If it's a true emergency at three in the morning, we answer the phone." },
-                  { q: 'Do you charge for estimates?', a: 'No. We come out, assess the problem, explain what needs to be done, and give you a fair price before we start any work. No hidden fees, no surprises.' },
-                  { q: 'Can you handle sewer work?', a: "Yes. We have the equipment and expertise for everything from simple cleanouts to complete line replacement. Sewer problems demand precision, and that's what we deliver." },
-                  { q: 'What areas do you serve?', a: "We serve Lafayette and the surrounding Acadiana area. If you're not sure whether we reach your location, call us and we'll let you know straight." },
-                  { q: 'Do you work on weekends?', a: 'We handle emergency calls seven days a week. For routine service, we work Monday through Friday, but we can often fit in weekend appointments if needed.' }
-                ].map((faq, idx) => (
-                  <div key={idx} className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                    <p className="font-['Inter:Bold',sans-serif] font-bold relative shrink-0 w-full">{faq.q}</p>
-                    <p className="font-['Inter:Regular',sans-serif] font-normal relative shrink-0 w-full">{faq.a}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="content-stretch flex flex-col gap-[24px] items-center max-w-[560px] relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[12px] items-center relative shrink-0 text-center text-white w-full">
-                  <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.3] relative shrink-0 text-[24px] tracking-[-0.24px] w-full">Still have questions?</p>
-                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Reach out and we'll answer what you need to know.</p>
-                </div>
-                <button onClick={() => scrollToSection(contactRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
-                  <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic text-[16px] text-white">Contact us</p>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Contact */}
-      <div ref={contactRef} className="bg-[#002f48] relative shrink-0 w-full">
-        <div className="overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex flex-col items-start px-[20px] py-[64px] relative size-full">
-            <div
-                ref={contactReveal.ref}
-                className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${contactReveal.isVisible ? 'reveal-visible' : ''}`}
-            >
-              {/* Contact Info */}
-              <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
-                {[
-                  { icon: 'mail', title: 'Email', desc: "Send us a message and we'll get back to you within one business day.", contact: 'contact@darrenaucoinplumbing.com', action: handleEmail },
-                  { icon: 'call', title: 'Phone', desc: 'Call us for emergencies, estimates, or to schedule your service appointment.', contact: '(337) 224-4852', action: handleCall },
-                  { icon: 'location', title: 'Office', desc: 'Visit us in Lafayette during business hours or call ahead to schedule a time.', contact: 'Lafayette, Louisiana 70501', action: () => {} }
-                ].map((item, idx) => (
-                  <div key={idx} className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
-                    <div className="relative shrink-0 size-[48px] flex items-center justify-center">
-                      <svg className="block w-[75%] h-[75%]" fill="none" viewBox="0 0 40.61 32.61">
-                        <path d={item.icon === 'mail' ? svgPaths.pbb43500 : item.icon === 'call' ? svgPaths.p232e5400 : svgPaths.p1f676880} fill="white" stroke="white" />
-                      </svg>
-                    </div>
-                    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
-                      <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                        <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.3] relative shrink-0 text-[24px] tracking-[-0.24px] w-full">{item.title}</p>
-                        <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">{item.desc}</p>
-                      </div>
-                      <button onClick={item.action} className="[text-decoration-skip-ink:none] decoration-solid font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] underline w-full text-left hover:text-[#0b8483] transition-colors cursor-pointer">{item.contact}</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Contact Form */}
-              <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                  <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[32px] text-white tracking-[-0.32px]">Request a Service</p>
-                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-white">Fill out the form below and we'll get back to you as soon as possible.</p>
-                </div>
-
-                <form onSubmit={handleContactSubmit} className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[16px] p-[24px] w-full">
-                  <div className="flex flex-col gap-[24px]">
-                    {/* Name */}
-                    <div className="flex flex-col gap-[8px]">
-                      <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Name *</label>
-                      <input
-                        type="text"
-                        required
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                        className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
-                        placeholder="Your full name"
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="flex flex-col gap-[8px]">
-                      <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Email *</label>
-                      <input
-                        type="email"
-                        required
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                        className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
-                        placeholder="your@email.com"
-                      />
-                    </div>
-
-                    {/* Phone */}
-                    <div className="flex flex-col gap-[8px]">
-                      <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Phone *</label>
-                      <input
-                        type="tel"
-                        required
-                        value={contactForm.phone}
-                        onChange={(e) => setContactForm({...contactForm, phone: e.target.value})}
-                        className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
-                        placeholder="(337) 224-4852"
-                      />
-                    </div>
-
-                    {/* Service Type */}
-                    <div className="flex flex-col gap-[8px]">
-                      <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Service Needed *</label>
-                      <select
-                        required
-                        value={contactForm.service}
-                        onChange={(e) => setContactForm({...contactForm, service: e.target.value})}
-                        className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white outline-none focus:border-[#0b8483] transition-colors cursor-pointer"
-                      >
-                        <option value="">Select a service...</option>
-                        <option value="Backflow services">Backflow services</option>
-                        <option value="Camera sewer line inspection">Camera sewer line inspection</option>
-                        <option value="Emergency">Emergency</option>
-                        <option value="Excavation">Excavation</option>
-                        <option value="Gas lines">Gas lines</option>
-                        <option value="Hydro-jetting">Hydro-jetting</option>
-                        <option value="New construction">New construction</option>
-                        <option value="Repairs">Repairs</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Sewer work">Sewer work</option>
-                        <option value="Water heaters">Water heaters</option>
-                        <option value="Water meter installation">Water meter installation</option>
-                      </select>
-                    </div>
-
-                    {/* Urgency */}
-                    <div className="flex flex-col gap-[8px]">
-                      <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">When do you need service? *</label>
-                      <select
-                        required
-                        value={contactForm.urgency}
-                        onChange={(e) => setContactForm({...contactForm, urgency: e.target.value})}
-                        className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white outline-none focus:border-[#0b8483] transition-colors cursor-pointer"
-                      >
-                        <option value="">Select urgency...</option>
-                        <option value="Emergency - ASAP">Emergency - ASAP</option>
-                        <option value="Within 24 hours">Within 24 hours</option>
-                        <option value="Within this week">Within this week</option>
-                        <option value="Within this month">Within this month</option>
-                        <option value="Just planning ahead">Just planning ahead</option>
-                      </select>
-                    </div>
-
-                    {/* Message */}
-                    <div className="flex flex-col gap-[8px]">
-                      <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Additional Details (Optional)</label>
-                      <textarea
-                        value={contactForm.message}
-                        onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                        rows={4}
-                        className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors resize-none"
-                        placeholder="Tell us more about your plumbing issue..."
-                      />
-                    </div>
-
-                    {/* Honeypot field — hidden from humans, catches bots */}
-                    <input
-                      type="checkbox"
-                      name="botcheck"
-                      style={{ display: 'none' }}
-                      tabIndex={-1}
-                      autoComplete="off"
-                    />
-
-                    {/* Submit status messages */}
-                    {submitState === 'success' && (
-                      <div className="bg-[#0b8483]/20 border border-[#0b8483] rounded-[8px] px-[16px] py-[12px] text-white text-[16px]">
-                        ✓ Thanks — we got your request and will be in touch soon. For emergencies, call (337) 224-4852.
-                      </div>
-                    )}
-                    {submitState === 'error' && (
-                      <div className="bg-red-900/40 border border-red-500 rounded-[8px] px-[16px] py-[12px] text-white text-[16px]">
-                        {submitError}
-                      </div>
-                    )}
-
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      disabled={submitState === 'sending'}
-                      className="bg-[#0077b6] w-full px-[24px] py-[12px] rounded-[12px] font-['Inter:Medium',sans-serif] font-medium text-[18px] text-white hover:bg-[#005a8a] disabled:opacity-60 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                    >
-                      {submitState === 'sending' ? 'Sending…' : 'Submit Request'}
+                    <button onClick={() => scrollToSection(contactRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
+                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic text-[16px] text-white">Learn more</p>
                     </button>
                   </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="bg-[#002336] relative shrink-0 w-full">
-        <div className="flex flex-col items-center size-full">
-          <div className="content-stretch flex flex-col items-center px-[20px] py-[48px] relative size-full">
-            <div className="content-stretch flex flex-col gap-[48px] items-start max-w-[1280px] relative shrink-0 w-full">
-              <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[32px] items-start relative shrink-0 w-full">
-                  <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0">
-                    <div className="h-[150px] relative rounded-[51px] shrink-0 w-[332px]">
-                      <img alt="Logo" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[51px] size-full border-4 border-[#0b8483]" src={imgScreenshot20240605215222Gmail1} />
-                    </div>
-                  </div>
-                  <div className="content-stretch flex flex-col font-['Inter:Semi_Bold',sans-serif] font-semibold gap-[16px] items-start leading-[1.5] max-w-[480px] not-italic text-[14px] text-white w-full">
-                    {['About us', 'Services', 'Contact', 'FAQ', 'Testimonials'].map((link, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => {
-                          if (link === 'Services') scrollToSection(servicesRef);
-                          else if (link === 'Contact') scrollToSection(contactRef);
-                          else if (link === 'FAQ') scrollToSection(faqRef);
-                          else if (link === 'About us') scrollToSection(aboutRef);
-                        }}
-                        className="relative shrink-0 w-full text-left hover:text-[#0b8483] transition-colors cursor-pointer"
-                      >
-                        {link}
-                      </button>
+                  <div
+                      ref={statCardsReveal.ref}
+                      className="content-stretch flex flex-col gap-[32px] items-start relative shrink-0 w-full"
+                  >
+                    {[
+                      { label: 'Years serving Acadiana', value: '15+', desc: 'Experience handling everything from simple repairs to complex work' },
+                      { label: 'Trucks ready to roll', value: '3', desc: 'Fully equipped for residential and commercial plumbing needs' },
+                      { label: 'Average response time', value: '30 min', desc: 'We prioritize emergencies and get there when it matters most' },
+                      { label: "Homes we've served", value: '2000+', desc: 'Families and businesses throughout Lafayette and surrounding areas' }
+                    ].map((stat, idx) => (
+                        <AnimatedStat
+                            key={idx}
+                            stat={stat}
+                            index={idx}
+                            isVisible={statCardsReveal.isVisible}
+                        />
                     ))}
                   </div>
                 </div>
-                {/* Get a free estimate CTA (replaces Subscribe form) */}
-                <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[16px] text-white w-full">Need a plumber?</p>
-                  <p className="font-['Inter:Regular',sans-serif] leading-[1.5] not-italic text-[14px] text-[rgba(255,255,255,0.7)] w-full">Get a free estimate — no obligation.</p>
-                  <button
-                    onClick={() => scrollToSection(contactRef)}
-                    className="bg-[#0b8483] hover:bg-[#0a7372] transition-colors rounded-[12px] px-[16px] py-[10px] w-full font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white cursor-pointer"
-                  >
-                    Get a free estimate
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="bg-white relative shrink-0 w-full">
+          <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
+              <div
+                  ref={CTAReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${CTAReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                <div className="relative rounded-[16px] shrink-0 w-full">
+                  <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[16px]">
+                    <img alt="CTA Background" className="absolute max-w-none object-cover rounded-[16px] size-full" src={imgCard} />
+                    <div className="absolute bg-[rgba(0,0,0,0.4)] inset-0 rounded-[16px]" />
+                  </div>
+                  <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
+                    <div className="content-stretch flex items-center justify-center p-[32px] relative size-full">
+                      <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-center max-w-[768px] min-w-px relative">
+                        <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-center text-white w-full">
+                          <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">Ready for reliable plumbing</p>
+                          <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Call us now or schedule a time that works for you. We're here when you need us.</p>
+                        </div>
+                        <div className="content-stretch flex gap-[16px] items-start relative shrink-0">
+                          <button onClick={handleCall} className="bg-white content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[#0077b6] hover:bg-gray-100 transition-colors cursor-pointer">
+                            <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
+                          </button>
+                          <button onClick={() => scrollToSection(contactRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-solid border-white hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
+                            <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">Schedule service</p>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div ref={faqRef} className="bg-[#0b8483] relative shrink-0 w-full">
+          <div className="flex flex-col items-center overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-center px-[20px] py-[64px] relative size-full">
+              <div
+                  ref={aboutReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${aboutReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                <div className="content-stretch flex flex-col gap-[20px] items-center max-w-[768px] relative shrink-0 text-center text-white w-full">
+                  <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[36px] tracking-[-0.36px] w-full">FAQ</p>
+                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Common questions about our services, pricing, and how we work</p>
+                </div>
+                <div className="content-stretch flex flex-col gap-[40px] items-start leading-[1.5] max-w-[768px] not-italic overflow-clip relative shrink-0 text-[16px] text-white w-full">
+                  {[
+                    { q: 'How fast can you respond?', a: "We aim for thirty minutes or less on emergency calls. During business hours, we typically schedule same-day or next-day service. If it's a true emergency at three in the morning, we answer the phone." },
+                    { q: 'Do you charge for estimates?', a: 'No. We come out, assess the problem, explain what needs to be done, and give you a fair price before we start any work. No hidden fees, no surprises.' },
+                    { q: 'Can you handle sewer work?', a: "Yes. We have the equipment and expertise for everything from simple cleanouts to complete line replacement. Sewer problems demand precision, and that's what we deliver." },
+                    { q: 'What areas do you serve?', a: "We serve Lafayette and the surrounding Acadiana area. If you're not sure whether we reach your location, call us and we'll let you know straight." },
+                    { q: 'Do you work on weekends?', a: 'We handle emergency calls seven days a week. For routine service, we work Monday through Friday, but we can often fit in weekend appointments if needed.' }
+                  ].map((faq, idx) => (
+                      <div key={idx} className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+                        <p className="font-['Inter:Bold',sans-serif] font-bold relative shrink-0 w-full">{faq.q}</p>
+                        <p className="font-['Inter:Regular',sans-serif] font-normal relative shrink-0 w-full">{faq.a}</p>
+                      </div>
+                  ))}
+                </div>
+                <div className="content-stretch flex flex-col gap-[24px] items-center max-w-[560px] relative shrink-0 w-full">
+                  <div className="content-stretch flex flex-col gap-[12px] items-center relative shrink-0 text-center text-white w-full">
+                    <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.3] relative shrink-0 text-[24px] tracking-[-0.24px] w-full">Still have questions?</p>
+                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">Reach out and we'll answer what you need to know.</p>
+                  </div>
+                  <button onClick={() => scrollToSection(contactRef)} className="content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
+                    <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic text-[16px] text-white">Contact us</p>
                   </button>
                 </div>
               </div>
-              <div className="content-stretch flex flex-col gap-[24px] items-start pb-[16px] relative shrink-0 w-full">
-                <div className="h-0 relative shrink-0 w-full">
-                  <div className="absolute inset-[-1px_0_0_0]">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 335 1">
-                      <line stroke="white" strokeOpacity="0.2" x2="335" y1="0.5" y2="0.5" />
-                    </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact */}
+        <div ref={contactRef} className="bg-[#002f48] relative shrink-0 w-full">
+          <div className="overflow-clip rounded-[inherit] size-full">
+            <div className="content-stretch flex flex-col items-start px-[20px] py-[64px] relative size-full">
+              <div
+                  ref={contactReveal.ref}
+                  className={`content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full reveal ${contactReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                {/* Contact Info */}
+                <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
+                  {[
+                    { icon: 'mail', title: 'Email', desc: "Send us a message and we'll get back to you within one business day.", contact: 'contact@darrenaucoinplumbing.com', action: handleEmail },
+                    { icon: 'call', title: 'Phone', desc: 'Call us for emergencies, estimates, or to schedule your service appointment.', contact: '(337) 224-4852', action: handleCall },
+                    { icon: 'location', title: 'Office', desc: 'Visit us in Lafayette during business hours or call ahead to schedule a time.', contact: 'Lafayette, Louisiana 70501', action: () => {} }
+                  ].map((item, idx) => (
+                      <div key={idx} className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
+                        <div className="relative shrink-0 size-[48px] flex items-center justify-center">
+                          <svg className="block w-[75%] h-[75%]" fill="none" viewBox="0 0 40.61 32.61">
+                            <path d={item.icon === 'mail' ? svgPaths.pbb43500 : item.icon === 'call' ? svgPaths.p232e5400 : svgPaths.p1f676880} fill="white" stroke="white" />
+                          </svg>
+                        </div>
+                        <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
+                          <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+                            <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.3] relative shrink-0 text-[24px] tracking-[-0.24px] w-full">{item.title}</p>
+                            <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">{item.desc}</p>
+                          </div>
+                          <button onClick={item.action} className="[text-decoration-skip-ink:none] decoration-solid font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] underline w-full text-left hover:text-[#0b8483] transition-colors cursor-pointer">{item.contact}</button>
+                        </div>
+                      </div>
+                  ))}
+                </div>
+
+                {/* Contact Form */}
+                <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
+                  <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+                    <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[32px] text-white tracking-[-0.32px]">Request a Service</p>
+                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic text-[16px] text-white">Fill out the form below and we'll get back to you as soon as possible.</p>
+                  </div>
+
+                  <form onSubmit={handleContactSubmit} className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[16px] p-[24px] w-full">
+                    <div className="flex flex-col gap-[24px]">
+                      {/* Name */}
+                      <div className="flex flex-col gap-[8px]">
+                        <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Name *</label>
+                        <input
+                            type="text"
+                            required
+                            value={contactForm.name}
+                            onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                            className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
+                            placeholder="Your full name"
+                        />
+                      </div>
+
+                      {/* Email */}
+                      <div className="flex flex-col gap-[8px]">
+                        <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Email *</label>
+                        <input
+                            type="email"
+                            required
+                            value={contactForm.email}
+                            onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                            className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
+                            placeholder="your@email.com"
+                        />
+                      </div>
+
+                      {/* Phone */}
+                      <div className="flex flex-col gap-[8px]">
+                        <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Phone *</label>
+                        <input
+                            type="tel"
+                            required
+                            value={contactForm.phone}
+                            onChange={(e) => setContactForm({...contactForm, phone: e.target.value})}
+                            className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
+                            placeholder="(337) 224-4852"
+                        />
+                      </div>
+
+                      {/* Service Type */}
+                      <div className="flex flex-col gap-[8px]">
+                        <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Service Needed *</label>
+                        <select
+                            required
+                            value={contactForm.service}
+                            onChange={(e) => setContactForm({...contactForm, service: e.target.value})}
+                            className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white outline-none focus:border-[#0b8483] transition-colors cursor-pointer"
+                        >
+                          <option value="">Select a service...</option>
+                          <option value="Backflow services">Backflow services</option>
+                          <option value="Camera sewer line inspection">Camera sewer line inspection</option>
+                          <option value="Emergency">Emergency</option>
+                          <option value="Excavation">Excavation</option>
+                          <option value="Gas lines">Gas lines</option>
+                          <option value="Hydro-jetting">Hydro-jetting</option>
+                          <option value="New construction">New construction</option>
+                          <option value="Repairs">Repairs</option>
+                          <option value="Residential">Residential</option>
+                          <option value="Sewer work">Sewer work</option>
+                          <option value="Water heaters">Water heaters</option>
+                          <option value="Water meter installation">Water meter installation</option>
+                        </select>
+                      </div>
+
+                      {/* Urgency */}
+                      <div className="flex flex-col gap-[8px]">
+                        <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">When do you need service? *</label>
+                        <select
+                            required
+                            value={contactForm.urgency}
+                            onChange={(e) => setContactForm({...contactForm, urgency: e.target.value})}
+                            className="bg-[#002336] border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white outline-none focus:border-[#0b8483] transition-colors cursor-pointer"
+                        >
+                          <option value="">Select urgency...</option>
+                          <option value="Emergency - ASAP">Emergency - ASAP</option>
+                          <option value="Within 24 hours">Within 24 hours</option>
+                          <option value="Within this week">Within this week</option>
+                          <option value="Within this month">Within this month</option>
+                          <option value="Just planning ahead">Just planning ahead</option>
+                        </select>
+                      </div>
+
+                      {/* Message */}
+                      <div className="flex flex-col gap-[8px]">
+                        <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Additional Details (Optional)</label>
+                        <textarea
+                            value={contactForm.message}
+                            onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                            rows={4}
+                            className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors resize-none"
+                            placeholder="Tell us more about your plumbing issue..."
+                        />
+                      </div>
+
+                      {/* Honeypot field — hidden from humans, catches bots */}
+                      <input
+                          type="checkbox"
+                          name="botcheck"
+                          style={{ display: 'none' }}
+                          tabIndex={-1}
+                          autoComplete="off"
+                      />
+
+                      {/* Submit status messages */}
+                      {submitState === 'success' && (
+                          <div className="bg-[#0b8483]/20 border border-[#0b8483] rounded-[8px] px-[16px] py-[12px] text-white text-[16px]">
+                            ✓ Thanks — we got your request and will be in touch soon. For emergencies, call (337) 224-4852.
+                          </div>
+                      )}
+                      {submitState === 'error' && (
+                          <div className="bg-red-900/40 border border-red-500 rounded-[8px] px-[16px] py-[12px] text-white text-[16px]">
+                            {submitError}
+                          </div>
+                      )}
+
+                      {/* Submit Button */}
+                      <button
+                          type="submit"
+                          disabled={submitState === 'sending'}
+                          className="bg-[#0077b6] w-full px-[24px] py-[12px] rounded-[12px] font-['Inter:Medium',sans-serif] font-medium text-[18px] text-white hover:bg-[#005a8a] disabled:opacity-60 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      >
+                        {submitState === 'sending' ? 'Sending…' : 'Submit Request'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="bg-[#002336] relative shrink-0 w-full">
+          <div className="flex flex-col items-center size-full">
+            <div className="content-stretch flex flex-col items-center px-[20px] py-[48px] relative size-full">
+              <div className="content-stretch flex flex-col gap-[48px] items-start max-w-[1280px] relative shrink-0 w-full">
+                <div className="content-stretch flex flex-col gap-[48px] items-start relative shrink-0 w-full">
+                  <div className="content-stretch flex flex-col gap-[32px] items-start relative shrink-0 w-full">
+                    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0">
+                      <div className="h-[150px] relative rounded-[51px] shrink-0 w-[332px]">
+                        <img alt="Logo" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[51px] size-full border-4 border-[#0b8483]" src={imgScreenshot20240605215222Gmail1} />
+                      </div>
+                    </div>
+                    <div className="content-stretch flex flex-col font-['Inter:Semi_Bold',sans-serif] font-semibold gap-[16px] items-start leading-[1.5] max-w-[480px] not-italic text-[14px] text-white w-full">
+                      {['About us', 'Services', 'Contact', 'FAQ', 'Testimonials'].map((link, idx) => (
+                          <button
+                              key={idx}
+                              onClick={() => {
+                                if (link === 'Services') scrollToSection(servicesRef);
+                                else if (link === 'Contact') scrollToSection(contactRef);
+                                else if (link === 'FAQ') scrollToSection(faqRef);
+                                else if (link === 'About us') scrollToSection(aboutRef);
+                              }}
+                              className="relative shrink-0 w-full text-left hover:text-[#0b8483] transition-colors cursor-pointer"
+                          >
+                            {link}
+                          </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Get a free estimate CTA (replaces Subscribe form) */}
+                  <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+                    <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[1.5] not-italic text-[16px] text-white w-full">Need a plumber?</p>
+                    <p className="font-['Inter:Regular',sans-serif] leading-[1.5] not-italic text-[14px] text-[rgba(255,255,255,0.7)] w-full">Get a free estimate — no obligation.</p>
+                    <button
+                        onClick={() => scrollToSection(contactRef)}
+                        className="bg-[#0b8483] hover:bg-[#0a7372] transition-colors rounded-[12px] px-[16px] py-[10px] w-full font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white cursor-pointer"
+                    >
+                      Get a free estimate
+                    </button>
                   </div>
                 </div>
-                <div className="content-stretch flex flex-col font-['Inter:Regular',sans-serif] font-normal gap-[32px] items-start leading-[1.5] not-italic relative shrink-0 text-[14px] text-white w-full">
-                  <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 whitespace-nowrap">
-                    {['Privacy Policy', 'Terms of Service', 'Cookies Settings'].map((link, idx) => (
-                      <p key={idx} className="[text-decoration-skip-ink:none] decoration-solid relative shrink-0 underline hover:text-[#0b8483] transition-colors cursor-pointer">{link}</p>
-                    ))}
+                <div className="content-stretch flex flex-col gap-[24px] items-start pb-[16px] relative shrink-0 w-full">
+                  <div className="h-0 relative shrink-0 w-full">
+                    <div className="absolute inset-[-1px_0_0_0]">
+                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 335 1">
+                        <line stroke="white" strokeOpacity="0.2" x2="335" y1="0.5" y2="0.5" />
+                      </svg>
+                    </div>
                   </div>
-                  <p className="relative shrink-0 w-full">© 2025 Darren Aucoin's Plumbing LLC. All rights reserved.</p>
+                  <div className="content-stretch flex flex-col font-['Inter:Regular',sans-serif] font-normal gap-[32px] items-start leading-[1.5] not-italic relative shrink-0 text-[14px] text-white w-full">
+                    <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 whitespace-nowrap">
+                      {['Privacy Policy', 'Terms of Service', 'Cookies Settings'].map((link, idx) => (
+                          <p key={idx} className="[text-decoration-skip-ink:none] decoration-solid relative shrink-0 underline hover:text-[#0b8483] transition-colors cursor-pointer">{link}</p>
+                      ))}
+                    </div>
+                    <p className="relative shrink-0 w-full">© 2025 Darren Aucoin's Plumbing LLC. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
