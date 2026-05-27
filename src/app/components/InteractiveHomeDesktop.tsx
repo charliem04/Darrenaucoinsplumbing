@@ -814,7 +814,7 @@ export default function InteractiveHomeDesktop() {
                 {/* Contact Info */}
                 <div className="content-stretch flex gap-[48px] items-center relative shrink-0 w-full">
                   {[
-                    { icon: 'mail', title: 'Email', desc: "Send us a message and we'll get back to you within one business day.", contact: 'contact@darrenaucoinplumbing.com', action: handleEmail },
+                    { icon: 'mail', title: 'Email', desc: "Send us a message and we'll get back to you within one business day.", contact: 'darrenaucoinsplumbing@gmail.com', action: handleEmail },
                     { icon: 'call', title: 'Phone', desc: 'Call us for emergencies, estimates, or to schedule your service appointment.', contact: '(337) 224-4852', action: handleCall },
                     { icon: 'location', title: 'Office', desc: 'Visit us in Lafayette during business hours or call ahead to schedule a time.', contact: 'Lafayette, Louisiana 70501', action: () => {} }
                   ].map((item, idx) => (
