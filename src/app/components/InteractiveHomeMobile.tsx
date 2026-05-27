@@ -331,7 +331,7 @@ export default function InteractiveHomeMobile() {
   }
 
   return (
-      <div className="content-stretch flex flex-col items-start relative w-full overflow-x-hidden">
+      <div className="content-stretch flex flex-col items-start relative w-full overflow-x-clip">
         {/* Navbar */}
         <div className="bg-[#002336] content-stretch flex flex-col items-start sticky top-0 shrink-0 w-full z-50 shadow-lg overflow-hidden">
           <div className="h-[64px] relative shrink-0 w-full">
