@@ -187,6 +187,8 @@ export default function InteractiveHomeMobile() {
 
   const preloadedImages = useRef<HTMLImageElement[]>([]);
 
+  const lastSubmitTime = useRef<number>(0);
+
   useEffect(() => {
     const images = Object.values(tabContents).map(content => content.image);
     preloadedImages.current = images.map(src => {
@@ -214,51 +216,121 @@ export default function InteractiveHomeMobile() {
     window.location.href = 'mailto:contact@darrenaucoinplumbing.com';
   };
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!(contactForm.name && contactForm.email && contactForm.phone && contactForm.service && contactForm.urgency)) {
-      return;
-    }
+    const handleContactSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-    setSubmitState('sending');
-    setSubmitError('');
+        // --- Rate limit: one submission per 10 seconds ---
+        const now = Date.now();
+        if (now - lastSubmitTime.current < 10000) {
+            setSubmitState('error');
+            setSubmitError('Please wait a few seconds before submitting again.');
+            return;
+        }
 
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: import.meta.env.VITE_WEB3FORMS_KEY,
-          subject: `New service request from ${contactForm.name} (${contactForm.urgency})`,
-          from_name: "Darren Aucoin's Plumbing Website",
-          name: contactForm.name,
-          email: contactForm.email,
-          phone: contactForm.phone,
-          service: contactForm.service,
-          urgency: contactForm.urgency,
-          message: contactForm.message || 'No additional details provided.',
-          botcheck: '',
-        }),
-      });
+        // --- Required fields ---
+        if (!(contactForm.name && contactForm.email && contactForm.phone && contactForm.service && contactForm.urgency)) {
+            return;
+        }
 
-      const data = await res.json();
+        // --- Length caps (defense against oversized payloads / spam novels) ---
+        const LIMITS = { name: 100, email: 254, phone: 30, message: 2000 };
+        if (
+            contactForm.name.length    > LIMITS.name  ||
+            contactForm.email.length   > LIMITS.email ||
+            contactForm.phone.length   > LIMITS.phone ||
+            contactForm.message.length > LIMITS.message
+        ) {
+            setSubmitState('error');
+            setSubmitError('One of the fields is too long. Please shorten it and try again.');
+            return;
+        }
 
-      if (data.success) {
-        setSubmitState('success');
-        setContactForm({ name: '', email: '', phone: '', service: '', urgency: '', message: '' });
-        setTimeout(() => setSubmitState('idle'), 6000);
-      } else {
-        setSubmitState('error');
-        setSubmitError(data.message || 'Something went wrong. Please call us at (337) 224-4852.');
-      }
-    } catch (err) {
-      setSubmitState('error');
-      setSubmitError('Network error. Please call us at (337) 224-4852.');
-    }
-  };
+        // --- Email format check ---
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(contactForm.email)) {
+            setSubmitState('error');
+            setSubmitError('Please enter a valid email address.');
+            return;
+        }
+
+        // --- Header-injection guard: block newlines/tabs/nulls in single-line fields ---
+        const hasControlChars = (s: string) => /[\r\n\t\0]/.test(s);
+        if (
+            hasControlChars(contactForm.name)  ||
+            hasControlChars(contactForm.email) ||
+            hasControlChars(contactForm.phone)
+        ) {
+            setSubmitState('error');
+            setSubmitError('Invalid characters detected. Please remove line breaks from name, email, or phone.');
+            return;
+        }
+
+        // --- Whitelist dropdown values (in case someone bypasses the UI) ---
+        const ALLOWED_SERVICES = [
+            'Emergency', 'Sewer work', 'Hydro-jetting', 'Excavation',
+            'Residential', 'Repairs', 'Water meter installation',
+        ];
+        const ALLOWED_URGENCIES = [
+            'Emergency - ASAP', 'Within 24 hours', 'Within this week',
+            'Within this month', 'Just planning ahead',
+        ];
+        if (
+            !ALLOWED_SERVICES.includes(contactForm.service) ||
+            !ALLOWED_URGENCIES.includes(contactForm.urgency)
+        ) {
+            setSubmitState('error');
+            setSubmitError('Invalid selection. Please refresh the page and try again.');
+            return;
+        }
+
+        // --- Normalize whitespace ---
+        const clean = {
+            name:    contactForm.name.trim().replace(/\s+/g, ' '),
+            email:   contactForm.email.trim().toLowerCase(),
+            phone:   contactForm.phone.trim(),
+            message: contactForm.message.trim(),
+        };
+
+        lastSubmitTime.current = now;
+        setSubmitState('sending');
+        setSubmitError('');
+
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    access_key: import.meta.env.VITE_WEB3FORMS_KEY,
+                    subject: `New service request from ${clean.name} (${contactForm.urgency})`,
+                    from_name: "Darren Aucoin's Plumbing Website",
+                    name:    clean.name,
+                    email:   clean.email,
+                    phone:   clean.phone,
+                    service: contactForm.service,
+                    urgency: contactForm.urgency,
+                    message: clean.message || 'No additional details provided.',
+                    botcheck: '',
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                setSubmitState('success');
+                setContactForm({ name: '', email: '', phone: '', service: '', urgency: '', message: '' });
+                setTimeout(() => setSubmitState('idle'), 6000);
+            } else {
+                setSubmitState('error');
+                setSubmitError(data.message || 'Something went wrong. Please call us at (337) 224-4852.');
+            }
+        } catch (err) {
+            setSubmitState('error');
+            setSubmitError('Network error. Please call us at (337) 224-4852.');
+        }
+    };
 
   const currentContent = tabContents[activeTab];
 
@@ -862,6 +934,7 @@ export default function InteractiveHomeMobile() {
                         <input
                             type="text"
                             required
+                            maxLength={100}
                             value={contactForm.name}
                             onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
                             className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
@@ -875,6 +948,7 @@ export default function InteractiveHomeMobile() {
                         <input
                             type="email"
                             required
+                            maxLength={254}
                             value={contactForm.email}
                             onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
                             className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
@@ -888,6 +962,7 @@ export default function InteractiveHomeMobile() {
                         <input
                             type="tel"
                             required
+                            maxLength={30}
                             value={contactForm.phone}
                             onChange={(e) => setContactForm({...contactForm, phone: e.target.value})}
                             className="bg-transparent border border-[rgba(255,255,255,0.2)] rounded-[8px] px-[16px] py-[12px] text-white placeholder-[rgba(255,255,255,0.5)] outline-none focus:border-[#0b8483] transition-colors"
@@ -942,6 +1017,7 @@ export default function InteractiveHomeMobile() {
                       <div className="flex flex-col gap-[8px]">
                         <label className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[16px] text-white">Additional Details (Optional)</label>
                         <textarea
+                            maxLength={2000}
                             value={contactForm.message}
                             onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
                             rows={4}
