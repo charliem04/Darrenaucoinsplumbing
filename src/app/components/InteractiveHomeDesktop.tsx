@@ -329,6 +329,7 @@ export default function InteractiveHomeDesktop() {
 
   const currentContent = tabContents[activeTab];
 
+  const heroTextReveal = useScrollReveal();
   const servicesReveal = useScrollReveal();
   const specialtyReveal = useScrollReveal();
   const equipmentReveal = useScrollReveal();
@@ -449,16 +450,32 @@ export default function InteractiveHomeDesktop() {
 
         {/* Hero Section */}
         <div className="bg-gradient-to-b from-[#0d9694] to-[#0a7170] relative shrink-0 w-full">
-          {/* Inner wrapper — overflow-clip removed so the image shadow isn't clipped */}
           <div className="flex flex-col items-center rounded-[inherit] size-full">
-            <div className="content-stretch flex flex-col gap-[80px] items-center px-[64px] py-[112px] relative size-full">
+            <div className="content-stretch flex flex-col gap-[80px] items-center px-[64px] pt-[40px] pb-[112px] relative size-full">
               <div className="content-stretch flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
-                <div className="content-stretch flex flex-col gap-[32px] items-center max-w-[768px] relative shrink-0 w-full">
-                  <div className="content-stretch flex flex-col gap-[24px] items-center relative shrink-0 text-center text-white w-full">
-                    <h1 className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[72px] tracking-[-0.72px] w-full hero-rise hero-delay-1">Fast, Honest Plumbing When You Need it Most</h1>
-                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full hero-rise hero-delay-2">Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.</p>
+
+                {/* Hero image — now first */}
+                <div className="relative w-full max-w-[1266px] rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] hero-fade hero-delay-1">
+                  <div className="rounded-[32px] overflow-hidden border-8 border-[#002f48] relative">
+                    <img
+                        alt="Darren Aucoin's Plumbing service truck"
+                        className="block w-full h-auto"
+                        src={imgHero}
+                        loading="eager"
+                    />
                   </div>
-                  <div className="content-stretch flex gap-[16px] items-start relative shrink-0 hero-rise hero-delay-3">
+                </div>
+
+                {/* Text + buttons */}
+                <div
+                    ref={heroTextReveal.ref}
+                    className={`content-stretch flex flex-col gap-[32px] items-center max-w-[768px] relative shrink-0 w-full reveal ${heroTextReveal.isVisible ? 'reveal-visible' : ''}`}
+                >
+                  <div className="content-stretch flex flex-col gap-[24px] items-center relative shrink-0 text-center text-white w-full">
+                    <h1 className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[72px] tracking-[-0.72px] w-full">Fast, Honest Plumbing When You Need it Most</h1>
+                    <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] not-italic relative shrink-0 text-[18px] w-full">Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.</p>
+                  </div>
+                  <div className="content-stretch flex gap-[16px] items-start relative shrink-0">
                     <button onClick={handleCall} className="bg-white content-stretch flex items-center justify-center px-[12px] py-[6px] relative rounded-[12px] shrink-0 border border-[#0077b6] hover:bg-gray-100 transition-colors cursor-pointer">
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] not-italic relative shrink-0 text-[#070301] text-[16px] whitespace-nowrap">Call now</p>
                     </button>
@@ -468,24 +485,11 @@ export default function InteractiveHomeDesktop() {
                   </div>
                 </div>
 
-                {/* Hero image — sits fully inside the hero, no overlap.
-            OUTER casts the shadow; INNER clips the image corners. */}
-                <div className="relative w-full max-w-[1266px] rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] hero-fade hero-delay-4">
-                  <div className="rounded-[32px] overflow-hidden border-8 border-[#002f48] relative">
-                    <img
-                        alt="Darren Aucoin's Plumbing service truck"
-                        className="block w-full h-auto"
-                        src={imgHero}
-                        loading="eager"
-                    />
-                    <span className="anim-shimmer" aria-hidden="true" />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
 
-          {/* Wave divider into Services — fill must equal the Services top color */}
+          {/* Wave divider into Services */}
           <div className="relative w-full leading-[0] -mb-px" aria-hidden="true">
             <svg className="block w-full h-[60px]" viewBox="0 0 1440 60"
                  preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">

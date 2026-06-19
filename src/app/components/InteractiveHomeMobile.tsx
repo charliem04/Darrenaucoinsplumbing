@@ -334,6 +334,7 @@ export default function InteractiveHomeMobile() {
 
   const currentContent = tabContents[activeTab];
 
+  const heroTextReveal = useScrollReveal();
   const servicesReveal = useScrollReveal();
   const specialtyReveal = useScrollReveal();
   const equipmentReveal = useScrollReveal();
@@ -454,18 +455,33 @@ export default function InteractiveHomeMobile() {
           <div className="flex flex-col items-center w-full px-[20px] py-[48px]">
             <div className="flex flex-col items-center gap-[32px] w-full max-w-[560px]">
 
+                {/* Hero photo */}
+                <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)] hero-fade hero-delay-1">
+                    <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48] relative">
+                        <img
+                            alt="Darren Aucoin's Plumbing service truck"
+                            className="block w-full h-auto"
+                            src={imgHero}
+                            loading="eager"
+                        />
+                    </div>
+                </div>
+
               {/* Text */}
-              <div className="flex flex-col gap-[20px] items-center text-center text-white w-full">
-                <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px] hero-fade hero-delay-1">
+              <div
+                  ref={heroTextReveal.ref}
+                  className={`flex flex-col gap-[20px] items-center text-center text-white w-full reveal ${heroTextReveal.isVisible ? 'reveal-visible' : ''}`}
+              >
+                <p className="font-['Rubik:Medium',sans-serif] font-medium leading-[1.2] text-[36px] tracking-[-0.4px] w-full">
                   Fast, Honest Plumbing When You Need it Most
                 </p>
-                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px] hero-fade hero-delay-2">
+                <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.5] text-[16px] w-full">
                   Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.
                 </p>
               </div>
 
               {/* Buttons — centered */}
-              <div className="flex flex-wrap gap-[12px] items-center justify-center w-full hero-fade hero-delay-3">
+              <div className="flex flex-wrap gap-[12px] items-center justify-center w-full">
                 <button
                     onClick={handleCall}
                     className="bg-white border border-[#0077b6] rounded-[12px] px-[16px] py-[8px] hover:bg-gray-100 transition-colors cursor-pointer"
@@ -478,19 +494,6 @@ export default function InteractiveHomeMobile() {
                 >
                   <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.5] text-[16px] text-white whitespace-nowrap">Learn more</p>
                 </button>
-              </div>
-
-              {/* Hero photo */}
-              <div className="w-full rounded-[16px] overflow-hidden shadow-[0_16px_32px_rgba(0,0,0,0.4)] hero-fade hero-delay-4">
-                <div className="rounded-[16px] overflow-hidden border-8 border-[#002f48] relative">
-                  <img
-                      alt="Darren Aucoin's Plumbing service truck"
-                      className="block w-full h-auto"
-                      src={imgHero}
-                      loading="eager"
-                  />
-                  <span className="anim-shimmer" aria-hidden="true" />
-                </div>
               </div>
 
             </div>
