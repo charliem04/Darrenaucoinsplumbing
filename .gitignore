@@ -1,0 +1,20 @@
+# Dependencies — installed from package-lock.json, never committed
+node_modules/
+
+# Build output
+.next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Local environment — .env.example documents what goes here
+.env*.local
+
+# Editor / OS
+.idea/
+.DS_Store
+Thumbs.db
+
+# Cloudflare local state
+.wrangler/
