@@ -137,26 +137,42 @@ function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void
         role="dialog"
         aria-modal="true"
         aria-labelledby={`specialty-title-${svc.key}`}
-        className="relative grid w-full max-w-4xl max-h-[calc(100vh-2rem)] overflow-hidden rounded bg-white md:grid-cols-[17rem_1fr] lg:grid-cols-[19rem_1fr]"
+        // Sized to the VISIBLE screen: 100dvh excludes the mobile browser
+        // bars (100vh does not, which pushed the buttons off the bottom).
+        // Phones: a column — header, scrolling details, pinned actions.
+        // md+: the two-column card, details scrolling within their column.
+        className="relative flex w-full max-w-4xl max-h-[calc(100vh-2rem)] supports-[height:100dvh]:max-h-[calc(100dvh-2rem)] flex-col overflow-hidden rounded bg-white md:grid md:grid-cols-[17rem_1fr] md:grid-rows-[minmax(0,1fr)] lg:grid-cols-[19rem_1fr]"
         style={{ borderRadius: 8 }}
       >
-        {/* The visual: the service's mark, large, on teal. */}
-        <div className="relative isolate flex flex-col gap-5 overflow-hidden bg-teal p-6 text-white md:gap-6 md:p-8">
+        {/* Always-visible close, whatever scrolls. */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={`${s.specialtyClose} ${svc.name}`}
+          className="press absolute right-3 top-3 z-10 flex size-10 items-center justify-center rounded-full border border-rule bg-white text-ink hover:bg-ground active:bg-rule/50"
+        >
+          <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+
+        {/* The visual: the service's mark on teal. A compact row on phones. */}
+        <div className="relative isolate flex shrink-0 items-center gap-4 overflow-hidden bg-teal py-5 pl-5 pr-16 text-white md:flex-col md:items-start md:gap-6 md:py-8 md:pl-8 md:pr-8">
           <FlowLines />
           <motion.span
             layoutId={`mark-${svc.key}`}
             transition={morph}
-            className="relative flex size-20 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/30 md:size-28"
+            className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/30 md:size-28"
           >
             <span aria-hidden="true" className="ping-soft absolute inset-0 rounded-full border-2 border-white/40" />
-            <PathIcon d={svc.icon} className="relative size-10 md:size-14" />
+            <PathIcon d={svc.icon} className="relative size-7 md:size-14" />
           </motion.span>
-          <div className="relative flex flex-col gap-2">
+          <div className="relative flex min-w-0 flex-col gap-1.5 md:gap-2">
             <motion.h4
               layoutId={`name-${svc.key}`}
               transition={morph}
               id={`specialty-title-${svc.key}`}
-              className="font-display font-semibold text-[1.75rem] leading-tight"
+              className="font-display font-semibold text-[1.375rem] leading-tight md:text-[1.75rem]"
             >
               {svc.name}
             </motion.h4>
@@ -171,15 +187,20 @@ function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void
           </div>
         </div>
 
-        {/* The details: fade in once the card has arrived. */}
+        {/*
+          The details: fade in once the card has arrived. The text scrolls
+          (min-h-0 lets it shrink inside the capped card); the actions are
+          a pinned footer outside the scroll, so they are always on screen.
+        */}
         <motion.div
-          className="flex flex-col gap-6 overflow-y-auto p-6 md:p-8 lg:p-9"
+          className="flex min-h-0 flex-1 flex-col"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.35, ease: ease.out, delay: 0.32 } }}
           exit={{ opacity: 0, transition: { duration: 0.12 } }}
         >
+          <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain px-6 py-6 md:py-8 md:pl-8 md:pr-16 lg:py-9 lg:pl-9">
           <p className="text-[1.0625rem] leading-relaxed text-ink-2">{svc.description}</p>
-          <ul className="grid gap-3 border-y border-rule py-5 sm:grid-cols-2">
+          <ul className="grid gap-3 border-t border-rule pt-5 sm:grid-cols-2">
             {svc.bullets.map((b) => (
               <li key={b} className="flex items-start gap-3 text-ink">
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-teal text-white">
@@ -189,8 +210,9 @@ function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void
               </li>
             ))}
           </ul>
-          <div className="mt-auto flex flex-wrap items-center gap-3">
-            <RequestButton service={svc.name} />
+          </div>
+          <div className="flex shrink-0 items-center gap-3 border-t border-rule bg-white px-6 py-4 md:px-8 lg:px-9">
+            <RequestButton service={svc.name} className="flex-1 justify-center sm:flex-none" />
             <button
               ref={closeRef}
               type="button"

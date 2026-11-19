@@ -8,7 +8,7 @@
  *
  * ── HOW THE LOOP WORKS ──────────────────────────────────────────────
  * The scroller's items are rendered twice; the second set is a visual
- * copy (<DriftCopy>: inert, aria-hidden). When the glide has travelled
+ * copy (copyProps: aria-hidden; taps forwarded to the real item). When the glide has travelled
  * exactly one set's width it jumps back by that width — the copy is
  * pixel-identical, so the jump can't be seen. Components that must not
  * exist twice for real (a Framer layoutId) read useDriftCopy() and
@@ -41,10 +41,14 @@ export function DriftCopyProvider({ children }: { children: ReactNode }) {
   return <CopyContext.Provider value={true}>{children}</CopyContext.Provider>;
 }
 
-/** Ref callback for a copy item: unreachable by keyboard and assistive tech. */
-export const inertRef = (el: HTMLElement | null) => {
-  if (el) el.inert = true;
-};
+/**
+ * Props for each item of the loop's copy set. Hidden from assistive tech
+ * (one set is announced, not two) but NOT inert: after a full lap the
+ * copy is what is on screen, so it has to take taps. A tap on a copy is
+ * forwarded to its real counterpart (see useDrift). Copies must contain
+ * nothing focusable — render a plain look-alike there (useDriftCopy).
+ */
+export const copyProps = { "aria-hidden": true, "data-drift-copy": "" } as const;
 
 export function useDrift({
   scroller,
@@ -100,10 +104,12 @@ export function useDrift({
   useEffect(() => {
     const node = area.current;
     if (!node) return;
+    // No scroll jump here. Jumping on pointer-down moved the real item
+    // under the finger after the browser had already picked the tap's
+    // target, so taps after a full lap landed on nothing. Taps on the
+    // copy are forwarded instead (below), and the glide re-wraps on its
+    // own when it resumes.
     const hold = () => {
-      const el = scroller.current;
-      const w = setWidth();
-      if (el && w && el.scrollLeft >= w) el.scrollLeft -= w; // back onto the real items, unseen
       setHolding(true);
       window.clearTimeout(resumeTimer.current);
       resumeTimer.current = window.setTimeout(() => setHolding(false), RESUME_MS);
@@ -116,7 +122,34 @@ export function useDrift({
     };
   }, [area, scroller, setWidth]);
 
-  // The glide: frame by frame, looping by one set.
+  // A tap on a copy: shift the view back one set (pixel-identical, so
+  // nothing moves on screen) and click the real item now under the
+  // finger. Works for any depth of nesting — the real counterpart is
+  // found by position, and its first button / link / tab is clicked.
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const onClick = (e: MouseEvent) => {
+      const copy = (e.target as Element | null)?.closest?.("[data-drift-copy]");
+      if (!copy || copy.parentElement !== el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const idx = Array.prototype.indexOf.call(el.children, copy) - count;
+      const real = el.children[idx] as HTMLElement | undefined;
+      if (!real) return;
+      const w = setWidth();
+      if (w) el.scrollLeft -= w;
+      const trigger = real.matches("button, a, [role=tab]")
+        ? real
+        : real.querySelector<HTMLElement>("button, a, [role=tab]");
+      trigger?.click();
+    };
+    el.addEventListener("click", onClick);
+    return () => el.removeEventListener("click", onClick);
+  }, [scroller, count, setWidth]);
+
+  // The glide: frame by frame, looping by one set. If a hand left the
+  // view anywhere past one set, the first step folds it back (x -= w).
   useEffect(() => {
     const el = scroller.current;
     if (!drifting || !el) return;
@@ -127,7 +160,7 @@ export function useDrift({
       if (last && !document.hidden && !document.querySelector('[role="dialog"]')) {
         x += speed * (Math.min(t - last, 64) / 1000); // clamp after a stall
         const w = setWidth();
-        if (w && x >= w) x -= w;
+        while (w && x >= w) x -= w;
         el.scrollLeft = x;
       } else {
         x = el.scrollLeft; // re-sync after a pause

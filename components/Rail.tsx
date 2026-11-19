@@ -14,7 +14,7 @@
  * At md+ the same children render in `gridClassName`, unchanged.
  */
 import { Children, useEffect, useRef, useState, type ReactNode } from "react";
-import { DriftCopyProvider, DriftEdges, inertRef, useDrift } from "./drift";
+import { copyProps, DriftCopyProvider, DriftEdges, useDrift } from "./drift";
 
 /** Re-exported for components that render differently inside the loop copy. */
 export { useDriftCopy as useRailClone } from "./drift";
@@ -151,14 +151,13 @@ function RailItem({
 }: {
   as: "li" | "div";
   className: string;
-  /** The visual copy for the loop: unseen by screen readers, unreachable by keyboard. */
+  /** The visual copy for the loop: hidden from screen readers; taps are forwarded to the real item. */
   copy?: boolean;
   children: ReactNode;
 }) {
   return (
     <Tag
-      aria-hidden={copy || undefined}
-      ref={copy ? inertRef : undefined}
+      {...(copy ? copyProps : {})}
       className={`shrink-0 snap-start md:shrink md:basis-auto ${copy ? "md:hidden" : ""} ${className}`}
     >
       {children}

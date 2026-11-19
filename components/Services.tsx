@@ -20,7 +20,7 @@ import { client } from "@/client.config";
 import { serviceTabs } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
 import { dur, ease } from "@/lib/motion";
-import { DriftEdges, inertRef, useDrift } from "./drift";
+import { copyProps, DriftEdges, useDrift } from "./drift";
 import { FlowLines } from "./FlowLines";
 import { ArrowRight, DropIcon } from "./Icons";
 import { RequestButton } from "./RequestButton";
@@ -105,10 +105,10 @@ function ServicesPhone({
               </button>
             );
           })}
-          {/* The loop's visual copy: inert, hidden from assistive tech. */}
+          {/* The loop's visual copy: hidden from assistive tech; a tap selects the real chip. */}
           {canDrift &&
             serviceTabs.map((tab) => (
-              <span key={`copy-${tab.key}`} ref={inertRef} aria-hidden="true" className={`${chipCls(tab.key === activeKey)} inline-flex items-center`}>
+              <span key={`copy-${tab.key}`} {...copyProps} className={`${chipCls(tab.key === activeKey)} inline-flex items-center`}>
                 {tab.label}
               </span>
             ))}
