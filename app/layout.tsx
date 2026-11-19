@@ -11,6 +11,7 @@ import "@fontsource/barlow-semi-condensed/700.css";
 import "./globals.css";
 import { client } from "@/client.config";
 import { withPhone } from "@/lib/phone";
+import { PhotoTunerMount } from "@/components/PhotoTunerMount";
 
 export const metadata: Metadata = {
   metadataBase: new URL(client.siteUrl),
@@ -74,7 +75,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           />
         </noscript>
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Local photo tuner — `npm run tune` only; absent from production builds. */}
+        <PhotoTunerMount />
+      </body>
     </html>
   );
 }

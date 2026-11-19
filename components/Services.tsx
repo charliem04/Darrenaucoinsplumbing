@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { client } from "@/client.config";
 import { serviceTabs } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
+import { framing } from "@/lib/framing";
 import { dur, ease } from "@/lib/motion";
 import { copyProps, DriftEdges, useDrift } from "./drift";
 import { FlowLines } from "./FlowLines";
@@ -38,7 +39,7 @@ function Photo({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
       fill
       sizes={sizes}
       className="object-cover"
-      style={{ objectPosition: tab.objectPosition }}
+      {...framing(`service:${tab.key}`)}
     />
   );
 }

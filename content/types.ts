@@ -20,14 +20,8 @@ export type Photo = {
 /**
  * One tab of the "What we handle" panel.
  *
- * `objectPosition` is a CSS object-position value that travels with
- * the photo rather than living in a component conditional.
- *
- * The old markup *tried* to crop most photos at "center 15%" and a few
- * at "center 60%", but those classes lost to object-center later in
- * the stylesheet, so the live site renders them all centred (and the
- * septic photo right-aligned). The values here are what is actually on
- * screen today. Tuning them is a design-pass decision, not a port.
+ * The photo's crop lives in content/photoFraming.json under
+ * "service:<key>" (see lib/framing), where the photo tuner can edit it.
  */
 export type ServiceTab = {
   /** Stable id; also the value the contact form records */
@@ -39,7 +33,6 @@ export type ServiceTab = {
   title: string;
   description: string;
   photo: Photo;
-  objectPosition: string;
 };
 
 /** One row of the "Specialty services" accordion. */

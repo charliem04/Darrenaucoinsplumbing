@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { client } from "@/client.config";
+import { framing } from "@/lib/framing";
 import { Button } from "./Button";
 import { Reveal } from "./Reveal";
 import { Section } from "./Section";
@@ -31,6 +32,7 @@ export function About() {
             fill
             sizes="(min-width: 1024px) 40vw, 100vw"
             className="object-cover"
+            {...framing("about")}
           />
         </Reveal>
       </div>

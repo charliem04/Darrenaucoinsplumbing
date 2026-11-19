@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "tune": "node scripts/tune.mjs",
     "build": "next build && node scripts/csp.mjs && node scripts/seo.mjs",
     "preview:deploy": "npm run build && npx wrangler versions upload",
     "deploy": "npm run build && npx wrangler deploy"

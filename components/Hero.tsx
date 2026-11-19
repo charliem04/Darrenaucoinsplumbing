@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { client } from "@/client.config";
+import { framing } from "@/lib/framing";
 import { phoneDisplay } from "@/lib/phone";
 import { Button } from "./Button";
 import { FlowLines } from "./FlowLines";
@@ -19,6 +20,7 @@ function HeroPhoto({ className = "" }: { className?: string }) {
           priority
           sizes="(min-width: 1024px) 45vw, 100vw"
           className="block w-full h-auto"
+          {...framing("hero")}
         />
       </div>
     </div>

@@ -27,7 +27,6 @@ export const serviceTabs: ServiceTab[] = [
       width: 473,
       height: 1024,
     },
-    objectPosition: "center",
   },
   {
     key: "Sewer work",
@@ -42,7 +41,6 @@ export const serviceTabs: ServiceTab[] = [
       width: 768,
       height: 1024,
     },
-    objectPosition: "center",
   },
   {
     key: "Water meter installation",
@@ -57,7 +55,6 @@ export const serviceTabs: ServiceTab[] = [
       width: 473,
       height: 1024,
     },
-    objectPosition: "center",
   },
   {
     key: "Excavation",
@@ -72,7 +69,6 @@ export const serviceTabs: ServiceTab[] = [
       width: 768,
       height: 1024,
     },
-    objectPosition: "center",
   },
   {
     key: "Residential",
@@ -87,7 +83,6 @@ export const serviceTabs: ServiceTab[] = [
       width: 473,
       height: 1024,
     },
-    objectPosition: "center",
   },
   {
     key: "Repairs",
@@ -102,7 +97,6 @@ export const serviceTabs: ServiceTab[] = [
       width: 473,
       height: 1024,
     },
-    objectPosition: "center",
   },
   {
     key: "Septic Solutions",
@@ -119,7 +113,6 @@ export const serviceTabs: ServiceTab[] = [
     },
     // The old markup applied object-right AND object-[center_60%] here;
     // object-right comes later in the live stylesheet, so it wins.
-    objectPosition: "right",
   },
 ];
 
