@@ -1,11 +1,38 @@
 {
-  "hero": { "x": 50, "y": 50, "zoom": 1.12 },
-  "about": { "x": 50, "y": 50, "zoom": 1 },
-  "service:Emergency": { "x": 50, "y": 0, "zoom": 1 },
-  "service:Sewer work": { "x": 0, "y": 100, "zoom": 1.14 },
-  "service:Water meter installation": { "x": 50, "y": 77.4, "zoom": 1 },
-  "service:Excavation": { "x": 50, "y": 50, "zoom": 1 },
-  "service:Residential": { "x": 50, "y": 0, "zoom": 1 },
-  "service:Repairs": { "x": 0, "y": 0, "zoom": 1.06 },
-  "service:Septic Solutions": { "x": 64.4, "y": 49.2, "zoom": 1 }
+  "hero": {
+    "mobile": { "x": 50, "y": 50, "zoom": 1.12 },
+    "desktop": { "x": 50, "y": 50, "zoom": 1.12 }
+  },
+  "about": {
+    "mobile": { "x": 50, "y": 50, "zoom": 1 },
+    "desktop": { "x": 50, "y": 50, "zoom": 1 }
+  },
+  "service:Emergency": {
+    "mobile": { "x": 50, "y": 0, "zoom": 1 },
+    "desktop": { "x": 50, "y": 0, "zoom": 1 }
+  },
+  "service:Sewer work": {
+    "mobile": { "x": 0, "y": 100, "zoom": 1.14 },
+    "desktop": { "x": 0, "y": 100, "zoom": 1.14 }
+  },
+  "service:Water meter installation": {
+    "mobile": { "x": 50, "y": 77.4, "zoom": 1 },
+    "desktop": { "x": 50, "y": 77.4, "zoom": 1 }
+  },
+  "service:Excavation": {
+    "mobile": { "x": 50, "y": 50, "zoom": 1 },
+    "desktop": { "x": 50, "y": 50, "zoom": 1 }
+  },
+  "service:Residential": {
+    "mobile": { "x": 50, "y": 0, "zoom": 1 },
+    "desktop": { "x": 50, "y": 0, "zoom": 1 }
+  },
+  "service:Repairs": {
+    "mobile": { "x": 0, "y": 0, "zoom": 1.06 },
+    "desktop": { "x": 0, "y": 0, "zoom": 1.06 }
+  },
+  "service:Septic Solutions": {
+    "mobile": { "x": 64.4, "y": 49.2, "zoom": 1 },
+    "desktop": { "x": 64.4, "y": 49.2, "zoom": 1 }
+  }
 }

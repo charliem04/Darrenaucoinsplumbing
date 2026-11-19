@@ -7,21 +7,41 @@
  *
  *   - Every tunable photo (anything with data-photo, see lib/framing) is
  *     outlined. Drag one to slide the photo inside its frame.
+ *   - Each photo has a mobile and a desktop framing. The tuner edits the
+ *     one for the width the window is at now (below 1024px = mobile), and
+ *     the panel says which.
  *   - The panel's slider zooms in; arrow keys nudge (Shift = bigger steps).
  *   - Each change is saved to content/photoFraming.json by the little
  *     writer that `npm run tune` starts, and the dev server reloads it.
  *     If the writer isn't running, "Copy values" puts them on the clipboard.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { framings as fromFile, type Framing, type FramingMap } from "@/lib/framing";
+import {
+  CENTRE,
+  DESKTOP_QUERY,
+  framings as fromFile,
+  framingVars,
+  type FrameMode,
+  type Framing,
+  type FramingMap,
+  type PhotoFraming,
+} from "@/lib/framing";
 
 const WRITER = "http://127.0.0.1:4174/framing";
 const ZOOM_MAX = 2.5;
-const CENTRE: Framing = { x: 50, y: 50, zoom: 1 };
+const MODES: FrameMode[] = ["mobile", "desktop"];
+const MODE_LABEL: Record<FrameMode, string> = {
+  mobile: "Mobile (under 1024px wide)",
+  desktop: "Desktop (1024px and wider)",
+};
+const OTHER: Record<FrameMode, FrameMode> = { mobile: "desktop", desktop: "mobile" };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const r1 = (v: number) => Math.round(v * 10) / 10;
 const r2 = (v: number) => Math.round(v * 100) / 100;
+const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
+const BOTH_CENTRE: PhotoFraming = { mobile: CENTRE, desktop: CENTRE };
 
 /** Names shown in the panel. */
 function nameOf(key: string) {
@@ -31,13 +51,12 @@ function nameOf(key: string) {
   return key;
 }
 
-/** Paint a framing onto every element showing that photo. */
-function paint(key: string, f: Framing) {
-  const at = `${f.x}% ${f.y}%`;
+/** Paint both framings onto every element showing that photo (CSS picks one by width). */
+function paint(key: string, p: PhotoFraming) {
   document.querySelectorAll<HTMLElement>(`[data-photo="${CSS.escape(key)}"]`).forEach((el) => {
-    el.style.objectPosition = at;
-    el.style.transformOrigin = at;
-    el.style.transform = f.zoom === 1 ? "" : `scale(${f.zoom})`;
+    for (const m of MODES) {
+      for (const [prop, value] of Object.entries(framingVars(m, p[m]))) el.style.setProperty(prop, value);
+    }
   });
 }
 
@@ -61,18 +80,30 @@ function overflow(img: HTMLImageElement, zoom: number) {
 type Status = "idle" | "saving" | "saved" | "offline";
 
 export default function PhotoTuner() {
-  const [map, setMap] = useState<FramingMap>(() => JSON.parse(JSON.stringify(fromFile)));
+  const [map, setMap] = useState<FramingMap>(() => clone(fromFile));
   const mapRef = useRef(map);
   mapRef.current = map;
-  const start = useRef<FramingMap>(JSON.parse(JSON.stringify(fromFile)));
+  const start = useRef<FramingMap>(clone(fromFile));
   const [sel, setSel] = useState<string | null>(null);
   const selRef = useRef(sel);
   selRef.current = sel;
+  const [mode, setMode] = useState<FrameMode>("desktop");
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
   const [status, setStatus] = useState<Status>("idle");
   const [open, setOpen] = useState(true);
   const [copied, setCopied] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
   const saveTimer = useRef<number>();
+
+  // Which framing is being edited follows the window width.
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_QUERY);
+    const sync = () => setMode(mq.matches ? "desktop" : "mobile");
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const save = useCallback(async (m: FramingMap) => {
     setStatus("saving");
@@ -96,13 +127,16 @@ export default function PhotoTuner() {
     [save],
   );
 
-  /** Change one photo's framing: paint it now, save shortly. */
+  /** Change one photo's framing for the current mode: paint it now, save shortly. */
   const set = useCallback(
     (key: string, f: Framing, wait?: number) => {
-      const next = { ...mapRef.current, [key]: { x: r1(f.x), y: r1(f.y), zoom: r2(f.zoom) } };
+      const m = modeRef.current;
+      const prev = mapRef.current[key] ?? BOTH_CENTRE;
+      const photo: PhotoFraming = { ...prev, [m]: { x: r1(f.x), y: r1(f.y), zoom: r2(f.zoom) } };
+      const next = { ...mapRef.current, [key]: photo };
       mapRef.current = next;
       setMap(next);
-      paint(key, next[key]);
+      paint(key, photo);
       saveSoon(next, wait);
     },
     [saveSoon],
@@ -125,7 +159,7 @@ export default function PhotoTuner() {
 
   // Photos that mount later (switching a service tab) get the current values.
   useEffect(() => {
-    const repaint = () => Object.entries(mapRef.current).forEach(([k, f]) => paint(k, f));
+    const repaint = () => Object.entries(mapRef.current).forEach(([k, p]) => paint(k, p));
     repaint();
     const mo = new MutationObserver(repaint);
     mo.observe(document.body, { childList: true, subtree: true });
@@ -159,9 +193,8 @@ export default function PhotoTuner() {
       e.preventDefault();
       e.stopPropagation();
       const key = img.dataset.photo!;
-      const f0 = mapRef.current[key] ?? CENTRE;
+      const f0 = (mapRef.current[key] ?? BOTH_CENTRE)[modeRef.current];
       setSel(key);
-      setOpen(true);
       drag = { key, sx: e.clientX, sy: e.clientY, f0, ov: overflow(img, f0.zoom), moved: false };
       document.documentElement.classList.add("photo-tuner-dragging");
     };
@@ -220,7 +253,7 @@ export default function PhotoTuner() {
       const t = e.target as HTMLElement;
       if (t.matches("input:not([type=range]), textarea, select")) return;
       const step = e.shiftKey ? 5 : 1;
-      const f = mapRef.current[k] ?? CENTRE;
+      const f = (mapRef.current[k] ?? BOTH_CENTRE)[modeRef.current];
       const moves: Record<string, Partial<Framing>> = {
         ArrowLeft: { x: clamp(f.x - step, 0, 100) },
         ArrowRight: { x: clamp(f.x + step, 0, 100) },
@@ -235,10 +268,10 @@ export default function PhotoTuner() {
     return () => window.removeEventListener("keydown", key);
   }, [set]);
 
-  const f = sel ? (map[sel] ?? CENTRE) : null;
-  const changed = Object.keys(map).filter(
-    (k) => JSON.stringify(map[k]) !== JSON.stringify(start.current[k]),
-  ).length;
+  const photo = sel ? (map[sel] ?? BOTH_CENTRE) : null;
+  const f = photo ? photo[mode] : null;
+  const other = photo ? photo[OTHER[mode]] : null;
+  const changed = Object.keys(map).filter((k) => !same(map[k], start.current[k])).length;
 
   const copy = async () => {
     await navigator.clipboard.writeText(JSON.stringify(mapRef.current, null, 2));
@@ -254,7 +287,7 @@ export default function PhotoTuner() {
       ref={panel}
       role="region"
       aria-label="Photo tuner"
-      className="fixed bottom-4 right-4 z-[200] w-[19rem] rounded-lg bg-white text-[0.8125rem] text-ink shadow-2xl"
+      className="fixed bottom-4 right-4 z-[200] w-[19rem] max-w-[calc(100vw-2rem)] rounded-lg bg-white text-[0.8125rem] text-ink shadow-2xl"
     >
       <div className="flex items-center justify-between gap-2 border-b border-ink/10 px-3 py-2">
         <strong className="font-display text-[0.9375rem]">Photo tuner</strong>
@@ -265,7 +298,18 @@ export default function PhotoTuner() {
 
       {open && (
         <div className="flex flex-col gap-3 p-3">
-          {!sel || !f ? (
+          {/* Which framing a drag will change. */}
+          <div className="rounded bg-teal/10 px-2.5 py-1.5">
+            <span className="text-ink-2">Editing: </span>
+            <strong>{MODE_LABEL[mode]}</strong>
+            <span className="block text-ink-2">
+              {mode === "desktop"
+                ? "Make the window narrower than 1024px to edit the mobile framing."
+                : "Widen the window to 1024px or more to edit the desktop framing."}
+            </span>
+          </div>
+
+          {!sel || !f || !other ? (
             <p className="text-ink-2">
               Drag any photo with an orange outline to choose which part of it shows. Select one to zoom.
             </p>
@@ -296,18 +340,19 @@ export default function PhotoTuner() {
                 <button type="button" className={btn} onClick={() => set(sel, { ...f, zoom: 1 })} disabled={f.zoom === 1}>
                   No zoom
                 </button>
+                <button type="button" className={btn} onClick={() => set(sel, other)} disabled={same(f, other)}>
+                  Same as {OTHER[mode]}
+                </button>
                 <button
                   type="button"
                   className={btn}
-                  onClick={() => set(sel, start.current[sel] ?? CENTRE)}
-                  disabled={JSON.stringify(f) === JSON.stringify(start.current[sel])}
+                  onClick={() => set(sel, (start.current[sel] ?? BOTH_CENTRE)[mode])}
+                  disabled={same(f, (start.current[sel] ?? BOTH_CENTRE)[mode])}
                 >
                   Undo changes
                 </button>
               </div>
-              <p className="text-ink-2">
-                Arrow keys nudge (Shift for bigger steps). The same framing is used at every screen size.
-              </p>
+              <p className="text-ink-2">Arrow keys nudge (Shift for bigger steps).</p>
             </>
           )}
 

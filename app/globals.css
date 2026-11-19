@@ -199,3 +199,21 @@
     opacity: 0;
   }
 }
+
+/*
+ * Photo framing (lib/framing): each tunable photo carries its mobile and
+ * desktop crop as custom properties; the 1024px breakpoint picks one.
+ * 1024 is where every photo frame changes shape (the lg layouts).
+ */
+[data-photo] {
+  object-position: var(--photo-at-m, 50% 50%);
+  transform-origin: var(--photo-at-m, 50% 50%);
+  transform: scale(var(--photo-zoom-m, 1));
+}
+@media (min-width: 1024px) {
+  [data-photo] {
+    object-position: var(--photo-at-d, 50% 50%);
+    transform-origin: var(--photo-at-d, 50% 50%);
+    transform: scale(var(--photo-zoom-d, 1));
+  }
+}

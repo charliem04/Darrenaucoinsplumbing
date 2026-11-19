@@ -22,13 +22,20 @@ const num = (v, lo, hi, fallback) => {
   return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : fallback;
 };
 
-/** One photo per line, so a diff shows exactly which photo changed. */
+const line = (f) => `{ "x": ${f.x}, "y": ${f.y}, "zoom": ${f.zoom} }`;
+
+/** One setting per line, so a diff shows exactly which photo and size changed. */
 const format = (m) =>
   "{\n" +
   Object.entries(m)
-    .map(([k, f]) => `  ${JSON.stringify(k)}: { "x": ${f.x}, "y": ${f.y}, "zoom": ${f.zoom} }`)
+    .map(
+      ([k, p]) =>
+        `  ${JSON.stringify(k)}: {\n    "mobile": ${line(p.mobile)},\n    "desktop": ${line(p.desktop)}\n  }`,
+    )
     .join(",\n") +
   "\n}\n";
+
+const MODES = ["mobile", "desktop"];
 
 const server = createServer((req, res) => {
   const origin = req.headers.origin ?? "";
@@ -51,19 +58,22 @@ const server = createServer((req, res) => {
       const current = JSON.parse(readFileSync(FILE, "utf8"));
       let changed = 0;
       for (const key of Object.keys(current)) {
-        const f = incoming[key];
-        if (!f) continue;
-        const next = {
-          x: num(f.x, 0, 100, current[key].x),
-          y: num(f.y, 0, 100, current[key].y),
-          zoom: num(f.zoom, 1, 3, current[key].zoom),
-        };
-        if (JSON.stringify(next) !== JSON.stringify(current[key])) changed++;
-        current[key] = next;
+        for (const mode of MODES) {
+          const f = incoming[key]?.[mode];
+          const was = current[key][mode];
+          if (!f || !was) continue;
+          const next = {
+            x: num(f.x, 0, 100, was.x),
+            y: num(f.y, 0, 100, was.y),
+            zoom: num(f.zoom, 1, 3, was.zoom),
+          };
+          if (JSON.stringify(next) !== JSON.stringify(was)) changed++;
+          current[key][mode] = next;
+        }
       }
       if (changed) {
         writeFileSync(FILE, format(current));
-        console.log(`[tune] saved ${changed} photo${changed === 1 ? "" : "s"} to content/photoFraming.json`);
+        console.log(`[tune] saved ${changed} change${changed === 1 ? "" : "s"} to content/photoFraming.json`);
       }
       res.writeHead(204).end();
     } catch (err) {
