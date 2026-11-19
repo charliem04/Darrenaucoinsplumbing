@@ -1,160 +1,177 @@
 "use client";
 
 /**
- * The sticky nav. One component for every width: phones get the logo,
- * wordmark and a menu button (64px tall); md and up get the full link
- * row with the "More" dropdown, Call and Book (110px tall).
+ * The sticky nav.
+ *
+ *   phones   logo + name, a call button, a menu button (60px)
+ *   md+      logo + name, section links, the phone number, Request
+ *            service (72px)
+ *
+ * The phone number is printed, not hidden behind a "Call" label: for a
+ * plumber it is the most useful thing in the bar. The current section
+ * is marked with a short teal bar that slides between links as you
+ * scroll — the nav's one moving part.
+ *
+ * `base` is "" on the home page and "/" elsewhere so links still work
+ * from /privacy/ and the 404.
  */
 import Image from "next/image";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { client } from "@/client.config";
+import { phoneDisplay } from "@/lib/phone";
+import { dur, ease } from "@/lib/motion";
 import { CallLink } from "./CallCard";
-import { ChevronDown } from "./Icons";
+import { MenuIcon, PhoneIcon } from "./Icons";
 
-const linkCls =
-  "font-body font-normal leading-[1.5] not-italic text-[16px] text-white hover:text-teal transition-colors cursor-pointer whitespace-nowrap";
-// These were <button>s with no weight class on the live site, so they
-// took the base button style's 500 weight; the dropdown items had no
-// font class either, so they render in the body's system stack.
-const dropdownCls =
-  "block w-full text-left text-white hover:text-teal py-[8px] text-[16px] font-medium leading-[1.5]";
-const menuCls =
-  "text-left font-body font-medium text-[16px] leading-[1.5] text-white py-[8px] hover:text-teal transition-colors";
+const n = client.nav;
+const LINKS = [
+  { id: "services", label: n.services },
+  { id: "about", label: n.about },
+  { id: "testimonials", label: n.testimonials },
+  { id: "faq", label: n.faq },
+  { id: "contact", label: n.contact },
+];
+
+/** Which section is under the nav. Home page only. */
+function useActiveSection(enabled: boolean) {
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    if (!enabled) return;
+    const els = LINKS.map((l) => document.getElementById(l.id)).filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+      },
+      // A thin band just under the nav: whichever section crosses it is current.
+      { rootMargin: "-80px 0px -75% 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+    const onTop = () => window.scrollY < 200 && setActive(null);
+    window.addEventListener("scroll", onTop, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onTop);
+    };
+  }, [enabled]);
+  return active;
+}
 
 export function Nav({ base = "" }: { base?: string }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const closeMenu = () => setMenuOpen(false);
-  const closeMore = () => setMoreOpen(false);
-  const n = client.nav;
+  const [open, setOpen] = useState(false);
+  const active = useActiveSection(base === "");
+  const close = () => setOpen(false);
 
   return (
-    <header className="bg-navy-bar sticky top-0 shrink-0 w-full z-50 shadow-lg flex flex-col overflow-hidden md:overflow-visible md:h-[110px] md:justify-center">
-      <div className="h-[64px] md:h-auto relative shrink-0 w-full md:px-[64px]">
-        <div className="flex items-center justify-between pl-[20px] pr-[12px] md:px-0 relative size-full md:h-[71px] md:gap-[16px]">
-          {/* Logo — back to top */}
+    <header className="sticky top-0 z-50 w-full bg-navy-bar text-white border-b border-white/[0.08]">
+      <div className="px-5 md:px-10 lg:px-24">
+        <div className="mx-auto max-w-content flex items-center gap-3 md:gap-4 h-[60px] md:h-[72px]">
           <a
             href={`${base}#top`}
-            aria-label={`${client.businessName} — back to top`}
-            className="relative shrink-0 cursor-pointer h-[46px] w-[76px] md:h-[68px] md:w-[113px]"
+            className="press flex items-center gap-2.5 md:gap-3 min-w-0 rounded"
+            aria-label={`${client.businessName} — home`}
           >
-            <span className="absolute inset-0 pointer-events-none rounded-[8px]">
-              <Image
-                alt={n.logoAlt}
-                src="/images/logo-nav.webp"
-                fill
-                priority
-                sizes="113px"
-                className="object-cover rounded-[8px]"
-              />
-              <span
-                aria-hidden="true"
-                className="absolute border-4 border-teal border-solid inset-[-4px] rounded-[12px]"
-              />
+            <span className="relative shrink-0 h-8 w-[53px] md:h-11 md:w-[73px] overflow-hidden rounded-[4px] bg-white">
+              <Image src="/images/logo-nav.webp" alt="" fill priority sizes="73px" className="object-contain p-0.5" />
+            </span>
+            <span className="font-display font-semibold text-[1.0625rem] md:text-[1.375rem] leading-tight truncate">
+              {client.businessName}
             </span>
           </a>
 
-          <p className="font-wordmark font-medium leading-[1.2] relative text-white whitespace-nowrap flex-1 min-w-0 text-center truncate text-[20px] tracking-[-0.14px] px-[8px] md:text-[42px] xl:text-[48px] md:tracking-[-0.32px] md:px-[16px]">
-            {client.businessName}
-          </p>
-
-          {/* Phones: menu button */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-label={menuOpen ? n.closeMenu : n.openMenu}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            className="md:hidden flex items-center justify-center relative shrink-0 size-[48px] cursor-pointer"
-          >
-            <svg className="size-[24px]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d={menuOpen ? "M6 6L18 18M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"}
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-
-          {/* md+: link row */}
-          <nav aria-label="Main" className="hidden md:flex gap-[16px] items-center justify-end relative shrink-0">
-            <div className="flex gap-[20px] items-center justify-end relative shrink-0">
-              <a href={`${base}#top`} className={linkCls}>{n.home}</a>
-              <a href={`${base}#about`} className={linkCls}>{n.about}</a>
-              <a href={`${base}#services`} className={linkCls}>{n.services}</a>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setMoreOpen((o) => !o)}
-                  aria-expanded={moreOpen}
-                  aria-controls="nav-more"
-                  className={`flex gap-[4px] items-center ${linkCls}`}
-                >
-                  {n.more}
-                  <ChevronDown className="size-[24px]" />
-                </button>
-                {moreOpen && (
-                  <div
-                    id="nav-more"
-                    className="absolute top-full mt-2 bg-navy-bar border border-white/20 rounded-[8px] p-[16px] min-w-[150px] z-50"
-                  >
-                    <a href={`${base}#faq`} onClick={closeMore} className={dropdownCls}>{n.faq}</a>
-                    <a href={`${base}#contact`} onClick={closeMore} className={dropdownCls}>{n.contact}</a>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="flex gap-[12px] items-center justify-center relative shrink-0">
-              <CallLink className="flex items-center justify-center px-[10px] py-[4px] relative rounded-[12px] shrink-0 border border-white/20 hover:bg-white/10 transition-colors cursor-pointer">
-                <span className="font-body font-medium leading-[1.5] not-italic text-[16px] text-white whitespace-nowrap">
-                  {n.call}
-                </span>
-              </CallLink>
+          {/* md+: section links */}
+          <nav aria-label="Main" className="hidden lg:flex items-center gap-1 ml-auto">
+            {LINKS.map((l) => (
               <a
-                href={`${base}#contact`}
-                className="bg-blue flex items-center justify-center px-[10px] py-[4px] relative rounded-[12px] shrink-0 hover:bg-blue-press transition-colors cursor-pointer"
+                key={l.id}
+                href={`${base}#${l.id}`}
+                aria-current={active === l.id ? "location" : undefined}
+                className={`press relative px-3 py-2 rounded font-body font-medium text-[0.9375rem] transition-colors ${
+                  active === l.id ? "text-white" : "text-white/70 hover:text-white"
+                }`}
               >
-                <span className="font-body font-medium leading-[1.5] not-italic text-[16px] text-white whitespace-nowrap">
-                  {n.book}
-                </span>
+                {l.label}
+                {active === l.id && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className="absolute left-3 right-3 -bottom-[1px] h-[2px] rounded-full bg-teal-light"
+                    transition={{ type: "spring", stiffness: 500, damping: 45 }}
+                  />
+                )}
               </a>
-            </div>
+            ))}
           </nav>
+
+          <div className="hidden md:flex items-center gap-3 ml-auto lg:ml-4">
+            <CallLink className="press flex items-center gap-2 px-2 py-2 rounded whitespace-nowrap font-display font-semibold text-[1.125rem] tabular text-white hover:text-teal-light">
+              <PhoneIcon className="size-[18px] text-teal-light" />
+              {phoneDisplay}
+            </CallLink>
+            {/* lg+ only: at tablet width it lives in the menu instead. */}
+            <a
+              href={`${base}#contact`}
+              className="press hidden lg:inline-flex items-center h-10 px-4 rounded whitespace-nowrap bg-teal hover:bg-teal-dark active:bg-teal-dark font-body font-semibold text-[0.9375rem]"
+            >
+              {n.request}
+            </a>
+          </div>
+
+          {/* phones: call; below lg: the menu (section links only appear at lg) */}
+          <div className="lg:hidden flex items-center gap-1 ml-auto md:ml-0">
+            <CallLink className="md:hidden press flex items-center justify-center size-11 rounded bg-teal">
+              <PhoneIcon className="size-5" />
+              <span className="sr-only">{n.call} {phoneDisplay}</span>
+            </CallLink>
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? n.closeMenu : n.openMenu}
+              className="press flex items-center justify-center size-11 rounded hover:bg-white/[0.06] active:bg-white/[0.1]"
+            >
+              <MenuIcon open={open} className="size-6" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Phones: the open menu */}
-      {menuOpen && (
-        <nav
-          id="mobile-menu"
-          aria-label="Main"
-          className="md:hidden bg-navy-bar w-full border-t border-white/20 py-[16px] px-[20px]"
-        >
-          <div className="flex flex-col gap-[16px]">
-            <a href={`${base}#top`} onClick={closeMenu} className={menuCls}>{n.home}</a>
-            <a href={`${base}#about`} onClick={closeMenu} className={menuCls}>{n.about}</a>
-            <a href={`${base}#services`} onClick={closeMenu} className={menuCls}>{n.services}</a>
-            <a href={`${base}#faq`} onClick={closeMenu} className={menuCls}>{n.faq}</a>
-            <a href={`${base}#contact`} onClick={closeMenu} className={menuCls}>{n.contact}</a>
-            <div className="flex gap-[8px] pt-[8px]">
-              <CallLink
-                onNavigate={closeMenu}
-                className="flex-1 text-center bg-white text-ink px-[12px] py-[6px] rounded-[12px] font-body font-medium hover:bg-gray-100 transition-colors"
-              >
-                {n.call}
-              </CallLink>
-              <a
-                href={`${base}#contact`}
-                onClick={closeMenu}
-                className="flex-1 text-center bg-blue text-white px-[12px] py-[6px] rounded-[12px] font-body font-medium hover:bg-blue-press transition-colors"
-              >
-                {n.book}
-              </a>
-            </div>
-          </div>
-        </nav>
-      )}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.nav
+            id="mobile-menu"
+            aria-label="Main"
+            className="lg:hidden overflow-hidden border-t border-white/[0.08]"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: dur.panel, ease: ease.out }}
+          >
+            <ul className="px-5 py-3 flex flex-col">
+              {LINKS.map((l) => (
+                <li key={l.id}>
+                  <a
+                    href={`${base}#${l.id}`}
+                    onClick={close}
+                    className="flex items-center h-12 font-display font-semibold text-lg text-white/85 hover:text-white border-b border-white/[0.06]"
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+              <li className="pt-4 pb-2">
+                <a
+                  href={`${base}#contact`}
+                  onClick={close}
+                  className="press flex items-center justify-center h-12 rounded bg-teal font-body font-semibold"
+                >
+                  {n.request}
+                </a>
+              </li>
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

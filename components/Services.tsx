@@ -3,59 +3,60 @@
 /**
  * "What we handle" + "Specialty services".
  *
- * The service panel is one piece of state over one list
- * (content/services.ts), drawn two ways: a row of tabs with a sliding
- * panel at md and up, an accordion on phones. Same data, same active
- * tab — just the layout the live site used at each width.
+ * Core services: one piece of state over content/services.ts, drawn
+ * as a vertical list beside a detail panel at md+ (the old row of
+ * seven tabs crushed to 54px-wide labels at tablet width), and as an
+ * accordion on phones.
+ *
+ * Specialty services are laid out open, not behind accordions: they
+ * are the services people search for by name (gas, backflow, water
+ * heaters), so they should be readable at a glance. Credentials are
+ * marked in green — the page's one meaning for green: verified.
  */
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { client } from "@/client.config";
 import { serviceTabs, specialtyServices } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
-import { dur, spring } from "@/lib/motion";
-import { Check } from "./Icons";
-import { Reveal } from "./Reveal";
+import { dur, ease } from "@/lib/motion";
+import { ArrowRight, Check, ChevronDown, PathIcon } from "./Icons";
+import { RevealGroup, RevealItem } from "./Reveal";
+import { Section } from "./Section";
 import { SectionHead } from "./SectionHead";
 
 const s = client.services;
 
-function TabPhoto({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
+function Photo({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
   return (
     <Image
       alt={tab.photo.alt}
       src={tab.photo.src}
       fill
       sizes={sizes}
-      className="object-cover pointer-events-none rounded-[16px]"
+      className="object-cover"
       style={{ objectPosition: tab.objectPosition }}
     />
   );
 }
 
-function LearnMore() {
+function RequestLink() {
   return (
     <a
       href="#contact"
-      className="relative rounded-[12px] shrink-0 border border-white/20 hover:bg-white/10 transition-colors cursor-pointer"
+      className="press group inline-flex items-center gap-2 font-body font-semibold text-teal-dark hover:text-teal active:text-teal-dark rounded"
     >
-      <span className="flex items-center justify-center overflow-clip px-[12px] py-[6px] relative rounded-[inherit] size-full">
-        <span className="font-body font-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">
-          {s.tabCta}
-        </span>
-      </span>
+      {s.tabCta}
+      <ArrowRight className="size-[18px] transition-transform duration-150 ease-brand group-hover:translate-x-0.5" />
     </a>
   );
 }
 
 export function Services() {
   const [activeKey, setActiveKey] = useState(serviceTabs[0].key);
-  const [openSpecialty, setOpenSpecialty] = useState<string | null>(null);
   const active = serviceTabs.find((t) => t.key === activeKey) ?? serviceTabs[0];
 
-  // Warm the cache for every tab photo so switching never shows a gap
-  // (the old site did the same).
+  // Warm the cache for every service photo so switching never flashes.
   useEffect(() => {
     for (const t of serviceTabs) {
       const img = new window.Image();
@@ -64,261 +65,160 @@ export function Services() {
   }, []);
 
   return (
-    <section
-      id="services"
-      className="bg-gradient-to-b from-navy to-navy-deep relative shrink-0 w-full"
-    >
-      {/* Ambient glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[260px] blur-[80px] bg-[radial-gradient(ellipse,rgba(11,132,131,0.16),transparent_70%)] md:w-[600px] md:h-[400px] md:blur-[120px] md:bg-[radial-gradient(ellipse,rgba(11,132,131,0.22),transparent_70%)]"
-      />
+    <Section id="services" ground="ground" labelledBy="services-h">
+      <div className="flex flex-col gap-12 md:gap-14">
+        <SectionHead id="services-h" label={s.label} heading={s.heading} lede={s.lede} />
 
-      <div className="flex flex-col items-center justify-center overflow-clip size-full">
-        <div className="flex flex-col items-center justify-center px-[20px] py-[64px] md:px-[64px] md:py-[112px] relative size-full">
-          <Reveal className="flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
-            <SectionHead eyebrow={s.eyebrow} heading={s.heading} lede={s.lede} />
+        {/* ── md+: list + panel ─────────────────────────────── */}
+        <div className="hidden md:grid grid-cols-[13rem_1fr] lg:grid-cols-[16rem_1fr] gap-6 lg:gap-8 items-start">
+          <div role="tablist" aria-orientation="vertical" aria-label={s.heading} className="flex flex-col">
+            {serviceTabs.map((tab) => {
+              const on = tab.key === activeKey;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  role="tab"
+                  id={`tab-${tab.key}`}
+                  aria-selected={on}
+                  aria-controls="service-panel"
+                  onClick={() => setActiveKey(tab.key)}
+                  className={`press relative text-left h-12 pl-5 pr-3 rounded font-display font-semibold text-[1.0625rem] ${
+                    on ? "text-ink bg-white" : "text-ink-2 hover:text-ink hover:bg-white/60 active:bg-white"
+                  }`}
+                >
+                  {on && (
+                    <motion.span
+                      layoutId="service-indicator"
+                      aria-hidden="true"
+                      className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-teal"
+                      transition={{ type: "spring", stiffness: 500, damping: 42 }}
+                    />
+                  )}
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
 
-            <div className="bg-navy-bar relative rounded-[16px] shrink-0 w-full border border-white/20">
-              <div className="flex flex-col isolate items-center justify-center overflow-clip relative rounded-[inherit] size-full">
-                {/* ── md+: tabs ─────────────────────────────────── */}
-                <div role="tablist" className="hidden md:flex h-[88px] isolate items-stretch relative shrink-0 w-full z-[2]">
-                  {serviceTabs.map((tab, idx) => {
-                    const on = tab.key === activeKey;
-                    return (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        role="tab"
-                        aria-selected={on}
-                        aria-controls="service-panel"
-                        onClick={() => setActiveKey(tab.key)}
-                        className={`flex-1 min-w-0 relative cursor-pointer transition-all duration-300 flex items-center justify-center px-[12px] lg:px-[16px] ${
-                          on ? "bg-teal/20 -translate-y-1" : "hover:bg-white/5"
-                        }`}
-                      >
-                        <span
-                          aria-hidden="true"
-                          className={`absolute border-white/20 border-solid pointer-events-none ${on ? "border-r" : "border-r border-b"} ${
-                            idx === 0 && on ? "inset-[0_-1px_0_0]" : "inset-[0_-1px_-1px_0]"
-                          }`}
-                        />
-                        <span
-                          className={`font-display font-medium leading-[1.2] relative text-center text-[16px] tracking-[-0.16px] lg:text-[20px] lg:tracking-[-0.2px] ${
-                            on ? "text-teal" : "text-white"
-                          }`}
-                        >
-                          {tab.label}
-                        </span>
-                      </button>
-                    );
-                  })}
+          <div
+            id="service-panel"
+            role="tabpanel"
+            aria-labelledby={`tab-${active.key}`}
+            className="relative bg-white rounded border border-rule overflow-hidden min-h-[26rem]"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={active.key}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: dur.panel, ease: ease.out }}
+                className="grid lg:grid-cols-[1fr_minmax(0,22rem)] h-full"
+              >
+                <div className="flex flex-col gap-4 p-7 lg:p-10 justify-center">
+                  <p className="font-display font-semibold text-[0.9375rem] tracking-[0.04em] text-teal-dark">
+                    {active.tagline}
+                  </p>
+                  <h3 className="font-display font-semibold text-d-3 text-ink text-balance">{active.title}</h3>
+                  <p className="text-[1.0625rem] leading-relaxed text-ink-2 max-w-[52ch]">{active.description}</p>
+                  <div className="pt-2">
+                    <RequestLink />
+                  </div>
                 </div>
+                <div className="relative hidden lg:block min-h-[26rem] bg-ground">
+                  <Photo tab={active} sizes="22rem" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
 
-                <div id="service-panel" role="tabpanel" className="hidden md:block relative shrink-0 w-full z-[1] overflow-hidden">
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                      key={active.key}
-                      initial={{ y: 80, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -80, opacity: 0 }}
-                      transition={spring.tabs}
-                      className="flex gap-[80px] items-center p-[48px] relative w-full"
-                    >
-                      <div className="flex flex-[1_0_0] flex-col gap-[32px] items-start justify-center min-w-px relative">
-                        <div className="flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-                          <p className="font-body font-semibold leading-[1.5] not-italic text-[16px] text-white">
-                            {active.tagline}
-                          </p>
-                          <div className="flex flex-col gap-[24px] items-start relative shrink-0 text-white w-full">
-                            <h3 className="font-display font-medium leading-[1.2] relative shrink-0 text-[44px] tracking-[-0.44px] w-full">
-                              {active.title}
-                            </h3>
-                            <p className="font-body font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">
-                              {active.description}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-[24px] items-center relative shrink-0 w-full">
-                          <LearnMore />
-                        </div>
+        {/* ── phones: accordion ─────────────────────────────── */}
+        <div className="md:hidden flex flex-col rounded border border-rule bg-white divide-y divide-rule overflow-hidden">
+          {serviceTabs.map((tab) => {
+            const on = tab.key === activeKey;
+            return (
+              <div key={tab.key}>
+                <button
+                  type="button"
+                  aria-expanded={on}
+                  aria-controls={`svc-${tab.key}`}
+                  onClick={() => setActiveKey(tab.key)}
+                  className="press w-full flex items-center justify-between gap-4 min-h-14 px-5 text-left"
+                >
+                  <span className={`font-display font-semibold text-[1.125rem] ${on ? "text-teal-dark" : "text-ink"}`}>
+                    {tab.label}
+                  </span>
+                  <ChevronDown
+                    className={`size-5 shrink-0 transition-transform duration-200 ease-brand ${on ? "rotate-180 text-teal-dark" : "text-ink-2"}`}
+                  />
+                </button>
+                {/* Height via grid rows — never animate height directly. */}
+                <div
+                  id={`svc-${tab.key}`}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-brand ${on ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="flex flex-col gap-4 px-5 pb-6">
+                      <div className="relative aspect-[4/3] rounded overflow-hidden bg-ground">
+                        <Photo tab={tab} sizes="calc(100vw - 40px)" />
                       </div>
-                      <div className="aspect-square flex-[1_0_0] min-w-px relative rounded-[16px]">
-                        <TabPhoto tab={active} sizes="(min-width: 1408px) 552px, 40vw" />
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-
-                {/* ── phones: accordion ─────────────────────────── */}
-                <div className="md:hidden w-full">
-                  {serviceTabs.map((tab) => {
-                    const on = tab.key === activeKey;
-                    return (
-                      <Fragment key={tab.key}>
-                        <button
-                          type="button"
-                          aria-expanded={on}
-                          onClick={() => setActiveKey(tab.key)}
-                          className={`relative shrink-0 w-full border-b border-white/20 cursor-pointer transition-colors duration-200 ${
-                            on ? "bg-teal/20" : "hover:bg-white/5"
-                          }`}
-                        >
-                          <span className="flex items-center justify-between px-[32px] py-[24px] relative size-full">
-                            <span
-                              className={`font-display font-medium leading-[1.4] text-[18px] tracking-[-0.18px] transition-colors duration-200 ${
-                                on ? "text-teal" : "text-white"
-                              }`}
-                            >
-                              {tab.label}
-                            </span>
-                            <motion.svg
-                              animate={{ rotate: on ? 180 : 0 }}
-                              transition={{ duration: dur.accordion }}
-                              className={`size-[20px] ${on ? "text-teal" : "text-white"}`}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
-                            >
-                              <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </motion.svg>
-                          </span>
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {on && (
-                            <motion.div
-                              key="content"
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ height: spring.accordion, opacity: { duration: 0.2 } }}
-                              className="relative shrink-0 w-full border-b border-white/20 overflow-hidden"
-                            >
-                              <div className="flex flex-col gap-[48px] items-start p-[24px] relative w-full">
-                                <div className="flex flex-col gap-[24px] items-start justify-center relative shrink-0 w-full">
-                                  <div className="flex flex-col gap-[20px] items-start relative shrink-0 text-white w-full">
-                                    <h3 className="font-display font-medium leading-[1.2] relative shrink-0 text-[32px] tracking-[-0.32px] w-full">
-                                      {tab.title}
-                                    </h3>
-                                    <p className="font-body font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">
-                                      {tab.description}
-                                    </p>
-                                  </div>
-                                  <LearnMore />
-                                </div>
-                                <div className="aspect-square relative rounded-[16px] shrink-0 w-full">
-                                  <TabPhoto tab={tab} sizes="calc(100vw - 90px)" />
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </Fragment>
-                    );
-                  })}
+                      <h3 className="font-display font-semibold text-[1.375rem] leading-tight text-ink">{tab.title}</h3>
+                      <p className="leading-relaxed text-ink-2">{tab.description}</p>
+                      <RequestLink />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            );
+          })}
+        </div>
 
-            {/* ── Specialty services ───────────────────────────── */}
-            <Reveal className="flex flex-col gap-[24px] items-center w-full mt-[24px]">
-              <div className="flex flex-col gap-[6px] items-start w-full md:items-center md:w-auto">
-                <p className="font-display font-medium text-[11px] md:text-[12px] tracking-[0.08em] uppercase text-teal">
-                  {s.specialtyEyebrow}
-                </p>
-                <h3 className="font-display font-medium text-[24px] tracking-[-0.24px] md:text-[28px] md:tracking-[-0.28px] text-white leading-[1.2]">
-                  {s.specialtyHeading}
-                </h3>
-              </div>
-              <div className="flex flex-col gap-[10px] md:gap-[12px] w-full md:max-w-[780px] mx-auto">
-                {specialtyServices.map((svc) => {
-                  const isOpen = openSpecialty === svc.key;
-                  return (
-                    <button
-                      key={svc.key}
-                      type="button"
-                      aria-expanded={isOpen}
-                      onClick={() => setOpenSpecialty(isOpen ? null : svc.key)}
-                      className={`block text-left rounded-[12px] border transition-all duration-300 overflow-hidden w-full ${
-                        isOpen
-                          ? "bg-teal/[0.12] border-teal/50"
-                          : "bg-white/[0.02] border-white/[0.08] md:hover:bg-teal/[0.08] md:hover:border-teal/30"
-                      }`}
-                    >
-                      <span className="flex gap-[12px] items-center p-[14px] md:p-[16px]">
-                        <span
-                          className={`shrink-0 size-[36px] md:size-[40px] rounded-[8px] flex items-center justify-center transition-all duration-300 ${
-                            isOpen
-                              ? "bg-teal text-white shadow-[0_4px_12px_rgba(11,132,131,0.5)] ring-1 ring-white/[0.15]"
-                              : "bg-teal/[0.18] text-mint"
-                          }`}
-                        >
-                          <svg className="size-[18px] md:size-[20px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d={svc.icon} />
-                          </svg>
-                        </span>
-                        <span className="block flex-1 min-w-0">
-                          <span className="block font-display font-medium text-[15px] md:text-[16px] text-white leading-[1.3]">
-                            {svc.name}
-                          </span>
-                          <span className="block font-body font-normal text-[12px] md:text-[13px] text-white/[0.55] leading-[1.4] mt-[2px]">
-                            {svc.meta}
-                          </span>
-                        </span>
-                        <svg
-                          className={`shrink-0 size-[18px] md:size-[20px] text-white/40 transition-transform duration-300 ${isOpen ? "rotate-180 text-mint" : ""}`}
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          aria-hidden="true"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </span>
-                      <AnimatePresence initial={false}>
-                        {isOpen && (
-                          <motion.span
-                            className="block"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: dur.accordion, ease: "easeInOut" }}
-                            style={{ overflow: "hidden" }}
-                          >
-                            <span className="block px-[14px] pb-[16px] md:px-[16px] md:pb-[20px]">
-                              <span className="block pt-[14px] md:pt-[16px] border-t border-white/10">
-                                {svc.badge && (
-                                  <span className="inline-block font-display font-medium text-[10px] md:text-[11px] tracking-[0.06em] uppercase text-mint bg-teal/[0.15] px-[8px] py-[4px] md:px-[10px] md:py-[5px] rounded-[6px] mb-[10px] md:mb-[12px]">
-                                    {svc.badge}
-                                  </span>
-                                )}
-                                <span className="block font-body font-normal text-[14px] md:text-[15px] text-white/[0.85] leading-[1.6] md:leading-[1.65]">
-                                  {svc.description}
-                                </span>
-                                <span className="block mt-[12px] md:mt-[14px] space-y-[8px]">
-                                  {svc.bullets.map((b) => (
-                                    <span key={b} className="flex gap-[10px] items-start">
-                                      <Check className="shrink-0 mt-[3px] size-[14px] md:size-[16px] text-mint" />
-                                      <span className="font-body font-normal text-[13px] md:text-[14px] text-white/75 leading-[1.5]">
-                                        {b}
-                                      </span>
-                                    </span>
-                                  ))}
-                                </span>
-                              </span>
-                            </span>
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </button>
-                  );
-                })}
-              </div>
-            </Reveal>
-          </Reveal>
+        {/* ── Specialty services ───────────────────────────── */}
+        <div className="flex flex-col gap-6 pt-4">
+          <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-4">
+            <h3 className="font-display font-semibold text-d-3 text-ink">{s.specialtyHeading}</h3>
+            <p className="font-display font-semibold text-[0.9375rem] tracking-[0.04em] text-ink-2">{s.specialtyLabel}</p>
+          </div>
+          <RevealGroup as="ul" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {specialtyServices.map((svc, i) => (
+              <RevealItem
+                as="li"
+                key={svc.key}
+                index={i}
+                className="flex flex-col gap-4 rounded border border-rule bg-white p-6"
+              >
+                <div className="flex items-start gap-4">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded bg-teal/10 text-teal-dark">
+                    <PathIcon d={svc.icon} className="size-[22px]" />
+                  </span>
+                  <div className="flex flex-col gap-0.5">
+                    <h4 className="font-display font-semibold text-[1.1875rem] leading-tight text-ink">{svc.name}</h4>
+                    {svc.badge ? (
+                      <p className="inline-flex items-center gap-1.5 text-[0.875rem] font-semibold text-green">
+                        <Check className="size-3.5" />
+                        {svc.badge}
+                      </p>
+                    ) : (
+                      <p className="text-[0.875rem] text-ink-2">{svc.meta}</p>
+                    )}
+                  </div>
+                </div>
+                <p className="text-[0.9375rem] leading-relaxed text-ink-2">{svc.description}</p>
+                <ul className="mt-auto flex flex-col gap-2 border-t border-rule pt-4">
+                  {svc.bullets.map((b) => (
+                    <li key={b} className="flex gap-2.5 text-[0.9375rem] text-ink">
+                      <Check className="size-4 shrink-0 mt-[3px] text-teal" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </RevealItem>
+            ))}
+          </RevealGroup>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

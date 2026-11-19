@@ -3,34 +3,24 @@
 /**
  * Scroll reveals.
  *
- *   <Reveal>            one block that rises into place, once, when it
- *                       scrolls into view.
- *   <RevealGroup>       a container that watches the viewport for its
- *     <RevealItem i>    children, which scale in one after another —
- *                       the old site's card grids with REVEAL_DELAYS.
+ *   <Reveal>            a block that settles into place, once, as it
+ *                       scrolls into view — 16px of travel, 600ms.
+ *   <RevealGroup>       watches the viewport for its children, which
+ *     <RevealItem i>    settle one after another, 70ms apart.
  *
- * Every hidden state carries data-reveal, so the stylesheet can force
- * it visible when JavaScript never runs or the visitor asked for
- * reduced motion (app/globals.css, app/layout.tsx).
+ * Hidden states carry data-reveal so the stylesheet can show them when
+ * JavaScript never runs (app/layout.tsx) and drop the travel under
+ * reduced motion (app/globals.css).
  */
 import { motion, type Variants } from "framer-motion";
-import type { ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 import { cascade, dur, ease, travel, viewport } from "@/lib/motion";
 
-const rise: Variants = {
+const settle: Variants = {
   hidden: { opacity: 0, y: travel.rise },
-  visible: {
+  visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: dur.reveal, ease: ease.out },
-  },
-};
-
-const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: travel.scaleFrom },
-  visible: (i: number) => ({
-    opacity: 1,
-    scale: 1,
     transition: { duration: dur.reveal, ease: ease.out, delay: cascade(i) },
   }),
 };
@@ -38,47 +28,39 @@ const scaleIn: Variants = {
 type Props = {
   children: ReactNode;
   className?: string;
-  id?: string;
+  as?: "div" | "li" | "ul" | "ol" | "dl";
 };
 
-export function Reveal({ children, className, id }: Props) {
+export function Reveal({ children, className, as = "div" }: Props) {
+  const M = motion[as] as ElementType;
   return (
-    <motion.div
-      id={id}
+    <M
       data-reveal=""
       className={className}
-      variants={rise}
+      variants={settle}
       initial="hidden"
       whileInView="visible"
       viewport={viewport.reveal}
     >
       {children}
-    </motion.div>
+    </M>
   );
 }
 
-/** Watches the viewport on behalf of its RevealItems. */
-export function RevealGroup({ children, className }: Props) {
+export function RevealGroup({ children, className, as = "div" }: Props) {
+  const M = motion[as] as ElementType;
   return (
-    <motion.div
-      className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={viewport.reveal}
-    >
+    <M className={className} initial="hidden" whileInView="visible" viewport={viewport.reveal}>
       {children}
-    </motion.div>
+    </M>
   );
 }
 
-export function RevealItem({
-  children,
-  className,
-  index,
-}: Props & { index: number }) {
+export function RevealItem({ children, className, index, as = "div" }: Props & { index: number }) {
+  const M = motion[as] as ElementType;
   return (
-    <motion.div data-reveal="" className={className} variants={scaleIn} custom={index}>
+    <M data-reveal="" className={className} variants={settle} custom={index}>
       {children}
-    </motion.div>
+    </M>
   );
 }

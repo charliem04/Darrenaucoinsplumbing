@@ -9,6 +9,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { client } from "@/client.config";
 import { phoneDisplay, withPhone } from "@/lib/phone";
 import { submitContact } from "@/lib/submitContact";
+import { Check } from "./Icons";
 
 const f = client.form;
 
@@ -19,11 +20,13 @@ type Fields = typeof EMPTY;
 const RATE_LIMIT_MS = 10_000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// 16px text in every field: anything smaller and iOS zooms the page on
+// focus. The focus ring is the field's own border plus a soft halo,
+// replacing the global outline (which would double up here).
 const fieldCls =
-  "bg-transparent border border-white/20 rounded-[8px] px-[16px] py-[12px] text-white placeholder-white/50 outline-none focus:border-teal transition-colors";
-const selectCls =
-  "bg-navy-bar border border-white/20 rounded-[8px] px-[16px] py-[12px] text-white outline-none focus:border-teal transition-colors cursor-pointer";
-const labelCls = "font-body font-semibold text-[16px] text-white";
+  "w-full h-12 bg-white border border-rule rounded px-4 text-[1rem] text-ink placeholder:text-ink-2/60 outline-none transition-[border-color,box-shadow] duration-150 hover:border-ink/30 focus-visible:outline-none focus:border-teal focus:shadow-[0_0_0_3px_rgb(11_132_131/0.18)]";
+const selectCls = `${fieldCls} appearance-none cursor-pointer bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A5B66' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")] bg-[length:18px] bg-[right_0.875rem_center] bg-no-repeat pr-10`;
+const labelCls = "font-body font-semibold text-[0.9375rem] text-ink";
 
 export function ContactForm() {
   const [form, setForm] = useState<Fields>(EMPTY);
@@ -79,10 +82,10 @@ export function ContactForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-navy-bar border border-white/20 rounded-[16px] p-[24px] md:p-[48px] w-full"
+      className="relative w-full"
     >
-      <div className="flex flex-col gap-[24px] md:grid md:grid-cols-2 md:gap-[32px]">
-        <div className="flex flex-col gap-[8px]">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="cf-name" className={labelCls}>{f.labels.name}</label>
           <input
             id="cf-name"
@@ -98,13 +101,15 @@ export function ContactForm() {
           />
         </div>
 
-        <div className="flex flex-col gap-[8px]">
+        <div className="flex flex-col gap-2">
           <label htmlFor="cf-email" className={labelCls}>{f.labels.email}</label>
           <input
             id="cf-email"
             name="email"
             type="email"
             autoComplete="email"
+            inputMode="email"
+            spellCheck={false}
             required
             maxLength={254}
             value={form.email}
@@ -114,13 +119,14 @@ export function ContactForm() {
           />
         </div>
 
-        <div className="flex flex-col gap-[8px]">
+        <div className="flex flex-col gap-2">
           <label htmlFor="cf-phone" className={labelCls}>{f.labels.phone}</label>
           <input
             id="cf-phone"
             name="phone"
             type="tel"
             autoComplete="tel"
+            inputMode="tel"
             required
             maxLength={30}
             value={form.phone}
@@ -130,7 +136,7 @@ export function ContactForm() {
           />
         </div>
 
-        <div className="flex flex-col gap-[8px]">
+        <div className="flex flex-col gap-2">
           <label htmlFor="cf-service" className={labelCls}>{f.labels.service}</label>
           <select id="cf-service" name="service" required value={form.service} onChange={set("service")} className={selectCls}>
             <option value="">{f.placeholders.service}</option>
@@ -140,7 +146,7 @@ export function ContactForm() {
           </select>
         </div>
 
-        <div className="flex flex-col gap-[8px]">
+        <div className="flex flex-col gap-2">
           <label htmlFor="cf-urgency" className={labelCls}>{f.labels.urgency}</label>
           <select id="cf-urgency" name="urgency" required value={form.urgency} onChange={set("urgency")} className={selectCls}>
             <option value="">{f.placeholders.urgency}</option>
@@ -150,7 +156,7 @@ export function ContactForm() {
           </select>
         </div>
 
-        <div className="flex flex-col gap-[8px] md:col-span-2">
+        <div className="flex flex-col gap-2 sm:col-span-2">
           <label htmlFor="cf-message" className={labelCls}>{f.labels.message}</label>
           <textarea
             id="cf-message"
@@ -159,7 +165,7 @@ export function ContactForm() {
             rows={4}
             value={form.message}
             onChange={set("message")}
-            className={`${fieldCls} resize-none`}
+            className={`${fieldCls} h-auto py-3 resize-y min-h-[7.5rem]`}
             placeholder={f.placeholders.message}
           />
         </div>
@@ -192,23 +198,30 @@ export function ContactForm() {
           />
         </div>
 
+        {/* Sent: green, the page's "confirmed" colour. */}
         {state === "success" && (
-          <div role="status" className="md:col-span-2 bg-teal/20 border border-teal rounded-[8px] px-[16px] py-[12px] text-white text-[16px]">
-            {withPhone(f.success)}
+          <div role="status" className="sm:col-span-2 flex gap-3 rounded border border-green/30 bg-green/[0.06] px-4 py-3 text-ink">
+            <Check className="size-5 shrink-0 mt-0.5 text-green" />
+            <span>{withPhone(f.success).replace(/^✓\s*/, "")}</span>
           </div>
         )}
+        {/* Not sent: always says so, and always gives the phone number. */}
         {state === "error" && (
-          <div role="alert" className="md:col-span-2 bg-red-900/40 border border-red-500 rounded-[8px] px-[16px] py-[12px] text-white text-[16px]">
+          <div role="alert" className="sm:col-span-2 rounded border border-danger/30 bg-danger/[0.06] px-4 py-3 text-danger-ink">
             {error}
           </div>
         )}
 
-        <div className="md:col-span-2">
+        <div className="sm:col-span-2 pt-1">
           <button
             type="submit"
             disabled={state === "sending"}
-            className="bg-blue w-full px-[24px] py-[12px] rounded-[12px] font-body font-medium text-[18px] text-white hover:bg-blue-press disabled:opacity-60 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            aria-busy={state === "sending"}
+            className="press w-full h-12 inline-flex items-center justify-center gap-2.5 rounded bg-teal font-body font-semibold text-[1.0625rem] text-white hover:bg-teal-dark active:bg-teal-dark disabled:cursor-progress disabled:bg-teal-dark"
           >
+            {state === "sending" && (
+              <span aria-hidden="true" className="size-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+            )}
             {state === "sending" ? f.sending : f.submit}
           </button>
         </div>

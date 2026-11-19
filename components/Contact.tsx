@@ -2,85 +2,86 @@ import { client } from "@/client.config";
 import { phoneDisplay } from "@/lib/phone";
 import { CallLink } from "./CallCard";
 import { ContactForm } from "./ContactForm";
-import { ContactIcon } from "./Icons";
+import { MailIcon, PhoneIcon, PinIcon } from "./Icons";
 import { Reveal } from "./Reveal";
+import { Section } from "./Section";
+import { SectionHead } from "./SectionHead";
 
-const linkCls =
-  "block [text-decoration-skip-ink:none] decoration-solid font-body font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] underline w-full text-left hover:text-teal transition-colors cursor-pointer";
-
+/**
+ * The last band, where every route ends: the old CTA band's message,
+ * the three ways to reach DA, and the request form — together, so a
+ * visitor who has decided does not have to choose between two
+ * sections that both say "get in touch".
+ */
 export function Contact() {
   const c = client.contact;
   const a = client.address;
 
-  const cards = [
+  const rows = [
     {
-      icon: "mail" as const,
-      ...c.cards.email,
-      link: (
-        <a href={`mailto:${client.email}`} className={linkCls}>
+      icon: <PhoneIcon className="size-5" />,
+      title: c.cards.phone.title,
+      desc: c.cards.phone.desc,
+      value: (
+        <CallLink className="font-display font-semibold text-[1.375rem] tabular text-white hover:text-teal-light active:text-white underline-offset-4 hover:underline">
+          {phoneDisplay}
+        </CallLink>
+      ),
+    },
+    {
+      icon: <MailIcon className="size-5" />,
+      title: c.cards.email.title,
+      desc: c.cards.email.desc,
+      value: (
+        <a
+          href={`mailto:${client.email}`}
+          className="font-body font-semibold text-white [overflow-wrap:anywhere] hover:text-teal-light active:text-white underline-offset-4 hover:underline"
+        >
           {client.emailDisplay}
         </a>
       ),
     },
     {
-      icon: "call" as const,
-      ...c.cards.phone,
-      link: <CallLink className={linkCls}>{phoneDisplay}</CallLink>,
-    },
-    {
-      icon: "location" as const,
-      ...c.cards.office,
-      // Not a link on the live site either: there is no street address
-      // to send anyone to. Same look, nothing to click.
-      link: (
-        <span className={linkCls}>
+      icon: <PinIcon className="size-5" />,
+      title: c.cards.office.title,
+      desc: c.cards.office.desc,
+      value: (
+        <p className="font-body font-semibold text-white">
           {a.city}, {a.regionName} {a.postalCode}
-        </span>
+        </p>
       ),
     },
   ];
 
   return (
-    <section id="contact" className="bg-navy relative shrink-0 w-full">
-      <div className="overflow-clip size-full">
-        <div className="flex flex-col items-center px-[20px] py-[64px] md:px-[64px] md:py-[112px] relative size-full">
-          <Reveal className="flex flex-col gap-[80px] items-center max-w-[1280px] relative shrink-0 w-full">
-            <div className="flex flex-col gap-[48px] items-start md:flex-row md:items-center relative shrink-0 w-full">
-              {cards.map((card) => (
-                <div
-                  key={card.icon}
-                  className="flex flex-col gap-[20px] items-start relative shrink-0 w-full md:gap-[24px] md:flex-[1_0_0] md:min-w-px"
-                >
-                  <ContactIcon kind={card.icon} />
-                  <div className="flex flex-col gap-[20px] md:gap-[24px] items-start relative shrink-0 text-white w-full">
-                    <div className="flex flex-col gap-[12px] md:gap-[16px] items-start relative shrink-0 w-full">
-                      <h3 className="font-display font-medium leading-[1.3] relative shrink-0 w-full text-[24px] tracking-[-0.24px] md:text-[36px] md:tracking-[-0.36px]">
-                        {card.title}
-                      </h3>
-                      <p className="font-body font-normal leading-[1.5] not-italic relative shrink-0 text-[16px] w-full">
-                        {card.desc}
-                      </p>
-                    </div>
-                    {card.link}
-                  </div>
+    <Section id="contact" ground="deep" labelledBy="contact-h">
+      <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16 items-start">
+        <div className="flex flex-col gap-10">
+          <SectionHead id="contact-h" tone="dark" label={c.label} heading={c.heading} lede={c.lede} />
+          <Reveal as="ul" className="flex flex-col divide-y divide-white/10 border-y border-white/10">
+            {rows.map((r) => (
+              <li key={r.title} className="flex gap-4 py-5">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded bg-teal/20 text-teal-light">
+                  {r.icon}
+                </span>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <h3 className="font-display font-semibold text-[0.9375rem] tracking-[0.04em] text-white/60">{r.title}</h3>
+                  {r.value}
+                  <p className="text-[0.9375rem] text-white/65">{r.desc}</p>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-[24px] md:gap-[32px] items-start relative shrink-0 w-full">
-              <div className="flex flex-col gap-[12px] md:gap-[16px] items-start relative shrink-0 w-full">
-                <h2 className="font-display font-medium leading-[1.2] text-white text-[32px] tracking-[-0.32px] md:text-[44px] md:tracking-[-0.44px]">
-                  {c.formHeading}
-                </h2>
-                <p className="font-body font-normal leading-[1.5] not-italic text-white text-[16px] md:text-[18px]">
-                  {c.formLede}
-                </p>
-              </div>
-              <ContactForm />
-            </div>
+              </li>
+            ))}
           </Reveal>
         </div>
+
+        <Reveal className="rounded bg-white text-ink p-6 md:p-8">
+          <div className="flex flex-col gap-1.5 mb-6">
+            <h3 className="font-display font-semibold text-d-3 text-ink">{c.formHeading}</h3>
+            <p className="text-ink-2">{c.formLede}</p>
+          </div>
+          <ContactForm />
+        </Reveal>
       </div>
-    </section>
+    </Section>
   );
 }

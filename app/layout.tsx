@@ -1,7 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-// No web fonts — deliberately, to match the live site. See the TYPE
-// note in globals.css before adding one.
+// Barlow, self-hosted — see the type note in globals.css for why.
+// Only the weights the page uses: text 400/500/600, display 500/600/700.
+import "@fontsource/barlow/400.css";
+import "@fontsource/barlow/500.css";
+import "@fontsource/barlow/600.css";
+import "@fontsource/barlow-semi-condensed/500.css";
+import "@fontsource/barlow-semi-condensed/600.css";
+import "@fontsource/barlow-semi-condensed/700.css";
 import "./globals.css";
 import { client } from "@/client.config";
 import { withPhone } from "@/lib/phone";

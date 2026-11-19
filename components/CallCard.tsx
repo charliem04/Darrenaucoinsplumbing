@@ -65,33 +65,33 @@ export function CallCardProvider({ children }: { children: ReactNode }) {
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="call-card-heading"
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                initial={{ opacity: 0, scale: 0.96, y: 8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                exit={{ opacity: 0, scale: 0.98, y: 4 }}
                 transition={spring.callCard}
-                className="pointer-events-auto bg-white rounded-[24px] p-[48px] shadow-2xl max-w-[500px] w-full"
+                // The one shadow on the site: the only surface that floats.
+                className="pointer-events-auto mx-5 w-full max-w-[26rem] rounded bg-white p-8 shadow-[0_24px_60px_-12px_rgb(0_26_43/0.45)]"
               >
-                <div className="flex flex-col gap-[32px] items-center text-center">
-                  <div className="flex flex-col gap-[16px]">
-                    <h3
-                      id="call-card-heading"
-                      className="font-display font-medium text-[32px] text-ink leading-[1.2] tracking-[-0.32px]"
-                    >
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <h3 id="call-card-heading" className="font-display font-semibold text-d-3 text-ink">
                       {client.callCard.heading}
                     </h3>
-                    <p className="font-body font-normal text-[16px] text-ink leading-[1.5]">
+                    <p className="inline-flex items-center gap-2 text-ink-2">
+                      <span className="size-2 rounded-full bg-green" aria-hidden="true" />
                       {client.callCard.body}
                     </p>
                   </div>
-                  <p className="font-display font-medium text-[40px] text-blue leading-[1.2] tracking-[-0.4px]">
+                  <p className="font-display font-bold text-[2.75rem] leading-none tabular text-ink border-y border-rule py-5">
                     {phoneDashed}
                   </p>
-                  <div className="flex flex-col gap-[12px] w-full">
+                  <div className="grid grid-cols-2 gap-3">
+                    <CopyNumber />
                     <button
                       type="button"
                       autoFocus
                       onClick={close}
-                      className="text-ink font-body font-medium text-[16px] px-[24px] py-[12px] rounded-[12px] hover:bg-gray-100 transition-colors"
+                      className="press h-12 rounded border border-rule font-body font-semibold text-ink hover:bg-ground active:bg-rule/50"
                     >
                       {client.callCard.close}
                     </button>
@@ -103,6 +103,34 @@ export function CallCardProvider({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
     </CallCardContext.Provider>
+  );
+}
+
+/**
+ * On a computer there is nothing to dial with, so the useful action is
+ * putting the number on the clipboard. Says "Copied" for two seconds.
+ */
+function CopyNumber() {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(phoneDashed);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked (permissions, insecure context): the number is
+      // on screen in 44px type, which is the fallback.
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      aria-live="polite"
+      className="press h-12 rounded bg-teal font-body font-semibold text-white hover:bg-teal-dark active:bg-teal-dark"
+    >
+      {copied ? client.callCard.copied : client.callCard.copy}
+    </button>
   );
 }
 

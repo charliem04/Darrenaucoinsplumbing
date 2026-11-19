@@ -17,7 +17,7 @@ export default function NotFound() {
       </p>
       <a
         href="/"
-        className="inline-flex mt-[32px] items-center justify-center px-[12px] py-[6px] rounded-[12px] border border-white/20 hover:bg-white/10 transition-colors font-medium"
+        className="press inline-flex mt-8 items-center justify-center h-12 px-5 rounded border border-white/30 hover:bg-white/[0.06] active:bg-white/10 font-semibold"
       >
         Back to the home page
       </a>

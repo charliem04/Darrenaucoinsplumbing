@@ -139,78 +139,68 @@ export const client = {
 
   // ── Navigation ────────────────────────────────────────────────────
   nav: {
-    home: "Home",
     about: "About us",
     services: "Services",
-    more: "More",
+    testimonials: "Testimonials",
     faq: "FAQ",
     contact: "Contact",
     call: "Call",
-    book: "Book",
-    logoAlt: "Company Logo",
+    /**
+     * Was "Book" — but there is no booking system behind it; it opens
+     * the request form. Named for what it does.
+     */
+    request: "Request service",
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
 
   // ── Hero ──────────────────────────────────────────────────────────
+  // The availability line above the headline is callCard.body.
   hero: {
     headline: "Fast, Honest Plumbing When You Need it Most",
     body: "Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.",
     imageAlt: "Darren Aucoin's Plumbing service truck",
-    primaryCta: "Call now",
-    secondaryCta: "Learn more",
+    /** Followed by the phone number on the button. */
+    primaryCta: "Call",
+    secondaryCta: "Request service",
   },
 
   // ── Services ──────────────────────────────────────────────────────
-  // Tab and accordion content lives in content/services.ts.
+  // Tab and specialty content lives in content/services.ts.
+  // `label` is the pipe-fitting label above each section heading.
   services: {
-    eyebrow: "Services",
+    label: "Services",
     heading: "What we handle",
     lede: "From burst pipes at midnight to sewer lines that need serious work, we've got the tools and know-how to get it done. Every job gets our full attention.",
-    tabCta: "Learn more",
-    specialtyEyebrow: "Also available",
+    tabCta: "Request this service",
+    specialtyLabel: "Also available",
     specialtyHeading: "Specialty services",
   },
 
   // ── About / Equipment ─────────────────────────────────────────────
-  /** The white band the "About us" nav link lands on. */
+  /** The band the "About us" links land on. */
   about: {
-    eyebrow: "Equipment",
+    label: "Equipment",
     heading: "Professional tools that make the difference",
     body: "We don't cut corners on equipment. Hydro-jetting systems, excavation capabilities, and diagnostic tools mean we solve problems instead of just patching them.",
-    cta: "See services",
+    cta: "Request service",
     imageAlt: "Equipment",
   },
 
   // ── Testimonials ──────────────────────────────────────────────────
-  // Quotes live in content/testimonials.ts.
+  // Quotes live in content/testimonials.ts; figures in content/stats.ts
+  // (shown in the strip under the hero).
   testimonials: {
+    label: "Testimonials",
     heading: "What customers say",
     lede: "Trusted by Lafayette homeowners",
-  },
-
-  // ── Track record ──────────────────────────────────────────────────
-  // Figures live in content/stats.ts.
-  stats: {
-    eyebrow: "Track record",
-    heading: "Numbers that speak for themselves",
-    body: "We've built our reputation on showing up fast, doing the work right, and keeping customers satisfied. These numbers reflect what we've earned through years of honest service.",
-    cta: "Learn more",
-  },
-
-  // ── CTA band ──────────────────────────────────────────────────────
-  ctaBand: {
-    heading: "Ready for reliable plumbing",
-    body: "Call us now or schedule a time that works for you. We're here when you need us.",
-    primaryCta: "Call now",
-    secondaryCta: "Schedule service",
-    imageAlt: "CTA Background",
   },
 
   // ── FAQ ───────────────────────────────────────────────────────────
   // Questions live in content/faqs.ts.
   faq: {
-    heading: "FAQ",
+    label: "FAQ",
+    heading: "Common questions",
     lede: "Common questions about our services, pricing, and how we work",
     followUpHeading: "Still have questions?",
     followUpBody: "Reach out and we'll answer what you need to know.",
@@ -218,7 +208,11 @@ export const client = {
   },
 
   // ── Contact ───────────────────────────────────────────────────────
+  // The old CTA band's message now heads this section.
   contact: {
+    label: "Contact",
+    heading: "Ready for reliable plumbing",
+    lede: "Call us now or schedule a time that works for you. We're here when you need us.",
     cards: {
       email: {
         title: "Email",
@@ -292,7 +286,7 @@ export const client = {
     sending: "Sending…",
     /** `{phone}` is replaced with the formatted business number. */
     success:
-      "✓ Thanks — we got your request and will be in touch soon. For emergencies, call {phone}.",
+      "Thanks — we got your request and will be in touch soon. For emergencies, call {phone}.",
     errors: {
       rateLimited: "Please wait a few seconds before submitting again.",
       invalidEmail: "Please enter a valid email address.",
@@ -311,12 +305,18 @@ export const client = {
   callCard: {
     heading: "Call Us Now",
     body: "We're available 24/7 for emergency plumbing services",
+    copy: "Copy number",
+    copied: "Copied",
     close: "Close",
   },
 
   // ── Footer ────────────────────────────────────────────────────────
   footer: {
-    logoAlt: "Logo",
+    logoAlt: "Darren Aucoin's Plumbing — Commercial & Residential",
+    /** From the FAQ's answer on service area. */
+    blurb: "Serving Lafayette and the surrounding Acadiana area.",
+    navHeading: "Navigate",
+    contactHeading: "Get in touch",
     links: {
       about: "About us",
       services: "Services",
@@ -328,14 +328,6 @@ export const client = {
     ctaBody: "Get a free estimate — no obligation.",
     cta: "Get a free estimate",
     privacy: "Privacy Policy",
-    /**
-     * TODO(charlie): on the live site these two are underlined text that
-     * goes nowhere — there are no terms, and no cookie settings because
-     * the site sets no cookies. Kept as inert text so the footer looks
-     * the same; consider removing them in the design pass.
-     */
-    terms: "Terms of Service",
-    cookies: "Cookies Settings",
     rights: "All rights reserved.",
   },
 } as const;

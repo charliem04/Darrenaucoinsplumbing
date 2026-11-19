@@ -54,11 +54,11 @@ export default function Privacy() {
       <h2 className={h2}>Your choices</h2>
       <p className={p}>
         To ask what we hold about you, or to have it corrected or deleted, contact us at{" "}
-        <a className="underline hover:text-teal" href={`mailto:${client.email}`}>
+        <a className="underline hover:text-teal active:text-teal-light" href={`mailto:${client.email}`}>
           {client.email}
         </a>{" "}
         or call{" "}
-        <a className="underline hover:text-teal" href={phoneHref}>
+        <a className="underline hover:text-teal active:text-teal-light" href={phoneHref}>
           {phoneDisplay}
         </a>
         .

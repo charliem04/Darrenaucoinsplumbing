@@ -5,123 +5,185 @@
 /*
  * ── TOKENS ──────────────────────────────────────────────────────────
  * Space-separated RGB channels so Tailwind can apply opacity
- * (bg-teal/20). Names and roles are documented in tailwind.config.ts.
+ * (bg-teal/20). Roles are documented in tailwind.config.ts.
  */
 :root {
   --navy: 0 47 72; /* #002f48 */
   --navy-deep: 0 26 43; /* #001a2b */
   --navy-bar: 0 35 54; /* #002336 */
-  --navy-lift: 0 58 89; /* #003a59 */
   --teal: 11 132 131; /* #0b8483 */
   --teal-light: 13 150 148; /* #0d9694 */
   --teal-dark: 10 113 112; /* #0a7170 */
-  --teal-hover: 10 115 114; /* #0a7372 */
-  --mint: 93 202 165; /* #5dcaa5 */
-  --blue: 0 119 182; /* #0077b6 */
-  --blue-press: 0 90 138; /* #005a8a */
-  --ink: 7 3 1; /* #070301 */
+  --ground: 244 247 248; /* #F4F7F8 */
+  --ink: 14 30 40; /* #0E1E28 */
+  --ink-2: 74 91 102; /* #4A5B66 */
+  --rule: 214 222 226; /* #D6DEE2 */
+  --green: 0 108 66; /* #006C42 — the logo */
+  --green-lift: 36 168 104; /* #24A868 — same hue, lifted to read on navy */
+  --danger: 180 35 24; /* #B42318 — form failures only */
+  --danger-ink: 143 28 19; /* #8F1C13 — failure text, 7.6:1 on its tint */
 
   /*
-   * ── TYPE ──────────────────────────────────────────────────────────
-   * Read this before "fixing" it.
-   *
-   * The Figma export named its fonts "Rubik:Medium", "Inter:Regular",
-   * "Roboto:Bold" — Figma's internal style names, not CSS families —
-   * and never loaded Rubik, Inter or Roboto at all. Every one of those
-   * declarations fell through to the generic `sans-serif`, which is
-   * what the client has been looking at on the live site (Arial on
-   * Windows, Helvetica on a Mac).
-   *
-   * The wordmark was meant to be Fraunces, imported from Google Fonts
-   * in theme.css — but the import sat below other rules, so the build
-   * dropped it and the live site loads no web font at all. The
-   * wordmark has always rendered in the generic `serif` (Times New
-   * Roman on Windows).
-   *
-   * The rebuild is "no redesign", so all four roles reproduce that
-   * exactly. The design pass can give each role a real face by
-   * changing one line here and adding its @fontsource package.
+   * Barlow: drawn from the lettering on California highway signs and
+   * vehicles. That is the register of this business's own brand — the
+   * condensed caps on the logo and the lettering on the truck door —
+   * which is why it is here and not a general-purpose UI face.
+   * Self-hosted via @fontsource (app/layout.tsx).
    */
-  --font-display: sans-serif;
-  --font-body: sans-serif;
-  --font-figure: sans-serif;
-  --font-wordmark: serif;
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Barlow", system-ui, sans-serif;
+
+  color-scheme: light;
+  caret-color: rgb(var(--teal));
 }
 
-/*
- * ── BASE ────────────────────────────────────────────────────────────
- * The element defaults the old theme.css applied in @layer base. A
- * handful of controls (the nav dropdown items, the form fields) carry
- * no type classes of their own and rely on these.
- */
 @layer base {
-  * {
-    border-color: rgb(0 0 0 / 0.1);
-  }
-
   html {
     font-size: 16px;
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background: #ffffff;
-    color: #0a0a0a;
+    background: #fff;
+    color: rgb(var(--ink));
+    font-family: var(--font-body);
+    font-feature-settings: "kern", "liga";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
-  button,
-  label {
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.5;
+  /* Anchored sections land below the sticky nav, not under it. */
+  section[id] {
+    scroll-margin-top: 4.5rem;
   }
 
-  input {
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
+  ::selection {
+    background: rgb(var(--teal) / 0.22);
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--teal-light));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  a {
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  /* Firefox + Chromium scrollbar, tinted to the navy. */
+  html {
+    scrollbar-color: rgb(var(--ink-2) / 0.45) transparent;
   }
 }
 
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  /* A pressed control acknowledges the press on pointer-down. */
+  .press {
+    transition-property: transform, background-color, border-color, color;
+    transition-duration: 140ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+}
+
+/*
+ * ── AMBIENT MOTION ──────────────────────────────────────────────────
+ * CSS, not Framer, because these never stop: a CSS animation on
+ * transform runs on the compositor and costs the main thread nothing.
+ */
+
+/* Flow lines drifting through the navy bands (components/FlowLines). */
+@keyframes flow {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.flow-strip {
+  animation: flow var(--flow-dur, 48s) linear infinite;
+  will-change: transform;
+}
+
+/* The availability dot: a slow ring, like a pressure gauge settling. */
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  80%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.ping-soft {
+  animation: ping-soft 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* The hero photo fades in on load — CSS so it never waits on hydration. */
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-fade {
+  animation: hero-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+/*
+ * The hero's text settles in on load — also CSS, for the same reason:
+ * it is the first thing on screen, and a JavaScript-driven reveal
+ * would hold the headline invisible until hydration. Each line sets
+ * its own --d (delay) inline.
+ */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+.hero-rise {
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) both;
+}
+
+/*
+ * Reduced motion: not "no feedback" — the state changes stay, the
+ * travel goes. Loops stop; reveals become plain fades.
+ */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-}
-
-/*
- * ── MOTION THAT RUNS BEFORE JAVASCRIPT ──────────────────────────────
- * The hero photo fades in on load. It is a CSS animation rather than a
- * Framer one because it is the largest thing above the fold: tying it
- * to hydration would hold the page's main image at opacity 0 until the
- * JavaScript arrived. Values mirror dur.heroFade in lib/motion.ts.
- */
-@keyframes hero-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.hero-fade {
-  opacity: 0;
-  animation: hero-fade 1s ease 0.15s forwards;
-}
-
-/*
- * Scroll reveals are Framer Motion (components/Reveal.tsx), which
- * server-renders the hidden state inline. These two rules make sure
- * that state never strands content: without JavaScript (see the
- * <noscript> in app/layout.tsx) or with reduced motion, it is shown.
- */
-@media (prefers-reduced-motion: reduce) {
-  .hero-fade {
-    opacity: 1;
+  .flow-strip,
+  .ping-soft {
     animation: none;
   }
+  .hero-fade,
+  .hero-rise {
+    animation-name: fade-only;
+  }
+  .press:active {
+    transform: none;
+  }
   [data-reveal] {
-    opacity: 1 !important;
     transform: none !important;
+  }
+}
+@keyframes fade-only {
+  from {
+    opacity: 0;
   }
 }

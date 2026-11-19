@@ -1,80 +1,68 @@
 /**
  * ── MOTION TOKENS ───────────────────────────────────────────────────
  * One vocabulary for every animation on the site. Components reach for
- * a name here rather than writing their own duration or curve.
+ * a name here instead of writing their own duration or curve.
  *
- * These values are a PORT, not a design: each one reproduces what the
- * Figma-export site did (its animations.css and useScrollReveal /
- * useCountUp hooks) so the rebuilt page moves exactly as the live one
- * does. The design pass is the time to change them — and when it does,
- * this is the only file it should need to touch.
+ * The page is meant to feel alive but never busy. Every moving part has
+ * a job, and they come in three registers:
+ *
+ *   ambient   always running, barely there: flow lines in the navy
+ *             bands, the availability dot. CSS, compositor-only.
+ *   scroll    tied to the reader: the pipe filling down the gutter,
+ *             sections and fittings settling in as they arrive.
+ *   response  answering a hand: press, hover, tab indicator, accordion,
+ *             call card. Fast — under 300ms — because it is feedback.
+ *
+ * Reduced motion keeps every state change and drops the travel.
  * ────────────────────────────────────────────────────────────────────
  */
 
-/**
- * The reveal curve: cubic-bezier(0.22, 1, 0.36, 1), a strong ease-out
- * with no overshoot. Carried from animations.css.
- */
+/** The site curve: leaves fast, lands soft, no overshoot. */
 export const ease = {
   out: [0.22, 1, 0.36, 1] as const,
-  /** easeOutCubic — the count-up's curve: fast start, gentle finish. */
+  /** Symmetric, for anything that has to run backwards as well. */
+  inOut: [0.65, 0, 0.35, 1] as const,
+  /** easeOutCubic — the count-up. */
   outCubic: (t: number) => 1 - Math.pow(1 - t, 3),
 };
 
 export const dur = {
-  /** 700ms — every scroll reveal. */
-  reveal: 0.7,
-  /** 1000ms — the hero photo's fade on load. */
-  heroFade: 1,
-  /** 1600ms — a stat counting up. */
-  countUp: 1.6,
-  /** 300ms — accordion open/close. */
-  accordion: 0.3,
+  /** Press, hover, small state change. */
+  quick: 0.16,
+  /** Accordion, tab panel, call card. */
+  panel: 0.28,
+  /** A section settling in as it scrolls into view. */
+  reveal: 0.6,
+  /** A pipe fitting drawing across to its heading. */
+  fitting: 0.9,
+  /** A stat counting up. */
+  countUp: 1.4,
 } as const;
 
-/** Travel distances, px. */
+/** Travel, px. Short: things settle into place, they don't fly in. */
 export const travel = {
-  /** A block rising into place. */
-  rise: 28,
-  /** A card scaling in starts at 94%. */
-  scaleFrom: 0.94,
+  rise: 16,
 } as const;
 
-/**
- * Stagger for cards in a grid — the old REVEAL_DELAYS array
- * ("reveal-delay-1" … "-5"), which applied 80ms × (index + 1).
- * Note the +1: the first card waits 80ms too.
- */
-export const STAGGER = 0.08;
+/** Card cascades: 70ms per item, capped so a list never becomes a queue. */
+export const STAGGER = 0.07;
 export function cascade(index: number): number {
-  return Math.min(index + 1, 5) * STAGGER;
+  return Math.min(index, 6) * STAGGER;
 }
 
-/**
- * Viewport triggers. `once` everywhere: nothing re-hides on the way
- * back up.
- *
- *   reveal  — the old IntersectionObserver: 15% visible, with the
- *             bottom 10% of the viewport excluded.
- *   countUp — fires when 40% of the number is on screen.
- */
 export const viewport = {
-  reveal: { once: true, amount: 0.15, margin: "0px 0px -10% 0px" },
-  countUp: { once: true, amount: 0.4 },
+  reveal: { once: true, amount: 0.2, margin: "0px 0px -8% 0px" },
+  countUp: { once: true, amount: 0.6 },
 } as const;
 
-/** The springs the old site used, named for where they appear. */
+/** Springs are critically damped (no bounce): nothing here was thrown. */
 export const spring = {
-  /** Desktop service tabs swapping. */
-  tabs: { type: "spring", stiffness: 260, damping: 30, mass: 0.8 },
-  /** Mobile service accordion opening. */
-  accordion: { type: "spring", stiffness: 260, damping: 32 },
-  /** The call card popping in. */
-  callCard: { type: "spring", stiffness: 300, damping: 30 },
+  tabs: { type: "spring", stiffness: 380, damping: 38 },
+  callCard: { type: "spring", stiffness: 420, damping: 40 },
 } as const;
 
-/**
- * The phone/desktop split for the call buttons, matching Tailwind's
- * `md`. Below it, Call dials; at or above it, Call opens the call card.
- */
+/** Call buttons dial below this width and open the call card above it. */
 export const DESKTOP_QUERY = "(min-width: 768px)";
+
+/** The pipe and its fittings appear from here up (Tailwind's lg). */
+export const PIPE_MIN_WIDTH = 1024;
