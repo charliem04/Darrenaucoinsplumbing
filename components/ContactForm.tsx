@@ -36,8 +36,11 @@ export function ContactForm() {
   const lastSubmit = useRef(0);
   const honeypot = useRef<HTMLInputElement>(null);
 
-  const set = (k: keyof Fields) => (e: { target: { value: string } }) =>
+  const set = (k: keyof Fields) => (e: { target: { value: string } }) => {
     setForm((prev) => ({ ...prev, [k]: e.target.value }));
+    // The "we got it" message stays until the visitor starts another request.
+    setState((s) => (s === "success" ? "idle" : s));
+  };
 
   // "Request this service" anywhere on the page pre-selects it here —
   // only if it is a real option, so the dropdown never holds a value
@@ -86,9 +89,9 @@ export function ContactForm() {
     const result = await submitContact({ ...form, referralNote: honeypot.current?.value ?? "" });
 
     if (result.ok) {
+      // No timer: someone who glanced away still sees it when they look back.
       setState("success");
       setForm(EMPTY);
-      setTimeout(() => setState("idle"), 6000);
     } else {
       fail(result.error);
     }

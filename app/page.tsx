@@ -1,3 +1,4 @@
+import { client } from "@/client.config";
 import { About } from "@/components/About";
 import { BookingBand } from "@/components/BookingBand";
 import { CallCardProvider } from "@/components/CallCard";
@@ -30,9 +31,16 @@ export default function Home() {
   return (
     <CallCardProvider>
       <div id="top" className="relative w-full overflow-x-clip">
+        {/* Hidden until a keyboard user tabs to it; jumps past the nav. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-ink"
+        >
+          {client.nav.skip}
+        </a>
         <Nav />
         <Pipe />
-        <main>
+        <main id="main">
           <Hero />
           <TrustStrip />
           <Services />

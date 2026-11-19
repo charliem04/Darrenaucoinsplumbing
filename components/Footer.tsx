@@ -13,6 +13,9 @@ import { CallLink } from "./CallCard";
  */
 export function Footer({ base = "" }: { base?: string }) {
   const ft = client.footer;
+  // "2025–2027": the end year is the build's, so it never goes stale.
+  const now = new Date().getFullYear();
+  const years = now > client.copyrightYear ? `${client.copyrightYear}–${now}` : `${client.copyrightYear}`;
   const links = [
     { label: ft.links.services, href: `${base}#services` },
     { label: ft.links.about, href: `${base}#about` },
@@ -82,7 +85,7 @@ export function Footer({ base = "" }: { base?: string }) {
 
           <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between border-t border-white/10 pt-6 text-[0.875rem] text-white/55">
             <p>
-              © {client.copyrightYear} {client.legalName}. {ft.rights}
+              © {years} {client.legalName}. {ft.rights}
             </p>
             <a href="/privacy/" className="hover:text-white underline-offset-4 hover:underline">
               {ft.privacy}

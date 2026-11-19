@@ -152,6 +152,8 @@ export const client = {
      * the request form. Named for what it does.
      */
     request: "Request service",
+    /** First thing a keyboard user tabs to. */
+    skip: "Skip to content",
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
