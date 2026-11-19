@@ -1,7 +1,8 @@
 import { client } from "@/client.config";
 import { testimonials } from "@/content/testimonials";
 import { Stars } from "./Icons";
-import { RevealGroup, RevealItem } from "./Reveal";
+import { Rail } from "./Rail";
+import { Reveal } from "./Reveal";
 import { Section } from "./Section";
 import { SectionHead } from "./SectionHead";
 
@@ -17,12 +18,13 @@ export function Testimonials() {
   const t = client.testimonials;
   return (
     <Section id="testimonials" ground="navy" labelledBy="reviews-h">
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-8 md:gap-12">
         <SectionHead id="reviews-h" tone="dark" label={t.label} heading={t.heading} lede={t.lede} />
-        <RevealGroup as="ul" className="grid gap-4 md:grid-cols-3">
-          {testimonials.map((q, i) => (
-            <RevealItem as="li" key={q.name} index={i}>
-              <figure className="flex h-full flex-col gap-6 rounded border border-white/10 bg-white/[0.03] p-6 md:p-7">
+        {/* Phones: a swipe carousel. md+: three across. */}
+        <Reveal>
+        <Rail label={t.heading} tone="dark" gridClassName="md:grid md:grid-cols-3 md:gap-4" itemClassName="basis-[86%]">
+          {testimonials.map((q) => (
+            <figure key={q.name} className="flex h-full flex-col gap-6 rounded border border-white/10 bg-white/[0.03] p-6 md:p-7">
                 <Stars className="text-teal-light" />
                 <blockquote className="text-[1.0625rem] leading-relaxed text-white/90 text-pretty">
                   &ldquo;{q.quote}&rdquo;
@@ -40,9 +42,10 @@ export function Testimonials() {
                   </span>
                 </figcaption>
               </figure>
-            </RevealItem>
+
           ))}
-        </RevealGroup>
+        </Rail>
+        </Reveal>
       </div>
     </Section>
   );

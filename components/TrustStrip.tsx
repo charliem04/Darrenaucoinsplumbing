@@ -13,6 +13,7 @@ import { animate, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { stats } from "@/content/stats";
 import { dur, ease, viewport } from "@/lib/motion";
+import { Rail } from "./Rail";
 
 
 function parse(value: string) {
@@ -59,7 +60,25 @@ function CountUp({ value }: { value: string }) {
 export function TrustStrip() {
   return (
     <div className="relative bg-white border-b border-rule">
-      <div className="px-5 md:px-10 lg:px-24">
+      {/*
+        Phones: a swipe rail of stat cards, two and a bit on screen, so
+        the figures read as a set instead of a cramped 2×2 block.
+      */}
+      <div className="md:hidden px-5 py-6">
+        <Rail label="Track record" gridClassName="" itemClassName="basis-[44%]" as="div">
+          {stats.map((s) => (
+            <div key={s.label} className="flex h-full flex-col gap-1.5 rounded border border-rule bg-ground/60 p-4">
+              <span className="font-display font-bold text-[2.25rem] leading-none tabular text-teal-dark">
+                <CountUp value={s.value} />
+              </span>
+              <span className="font-display font-semibold text-[0.9375rem] leading-tight text-ink">{s.label}</span>
+              <span className="text-[0.8125rem] leading-snug text-ink-2">{s.desc}</span>
+            </div>
+          ))}
+        </Rail>
+      </div>
+
+      <div className="hidden md:block px-5 md:px-10 lg:px-24">
         <dl
           className="mx-auto max-w-content grid grid-cols-2 md:grid-cols-4 md:divide-x md:divide-rule"
         >

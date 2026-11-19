@@ -3,6 +3,7 @@ import { phoneDisplay } from "@/lib/phone";
 import { CallLink } from "./CallCard";
 import { ContactForm } from "./ContactForm";
 import { MailIcon, PhoneIcon, PinIcon } from "./Icons";
+import { Rail } from "./Rail";
 import { Reveal } from "./Reveal";
 import { Section } from "./Section";
 import { SectionHead } from "./SectionHead";
@@ -55,10 +56,40 @@ export function Contact() {
 
   return (
     <Section id="contact" ground="deep" labelledBy="contact-h">
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16 items-start">
-        <div className="flex flex-col gap-10">
+      <div className="grid gap-10 md:gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16 items-start">
+        <div className="flex flex-col gap-8 md:gap-10">
           <SectionHead id="contact-h" tone="dark" label={c.label} heading={c.heading} lede={c.lede} />
-          <Reveal as="ul" className="flex flex-col divide-y divide-white/10 border-y border-white/10">
+
+          {/* Phones: the three ways in, as a rail of quick-action cards. */}
+          <div className="md:hidden">
+            <Rail label={c.label} tone="dark" gridClassName="" itemClassName="basis-[78%]">
+              {rows.map((r, i) => (
+                <div
+                  key={r.title}
+                  className={`flex h-full flex-col gap-3 rounded p-5 ${
+                    i === 0 ? "bg-teal" : "border border-white/15 bg-white/[0.04]"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`flex size-10 shrink-0 items-center justify-center rounded ${
+                        i === 0 ? "bg-white/15 text-white" : "bg-teal/20 text-teal-light"
+                      }`}
+                    >
+                      {r.icon}
+                    </span>
+                    <h3 className={`font-display font-semibold text-[0.9375rem] tracking-[0.04em] ${i === 0 ? "text-white" : "text-white/60"}`}>
+                      {r.title}
+                    </h3>
+                  </div>
+                  {r.value}
+                  <p className={`text-[0.9375rem] ${i === 0 ? "text-white" : "text-white/65"}`}>{r.desc}</p>
+                </div>
+              ))}
+            </Rail>
+          </div>
+
+          <Reveal as="ul" className="hidden md:flex flex-col divide-y divide-white/10 border-y border-white/10">
             {rows.map((r) => (
               <li key={r.title} className="flex gap-4 py-5">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded bg-teal/20 text-teal-light">

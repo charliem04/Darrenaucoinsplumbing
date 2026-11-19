@@ -86,6 +86,13 @@
 }
 
 @layer utilities {
+  /* Swipe rails scroll without a visible bar; the dots below show position. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
   .tabular {
     font-variant-numeric: tabular-nums lining-nums;
   }

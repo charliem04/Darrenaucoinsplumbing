@@ -43,7 +43,7 @@ export function Section({
       className={`relative isolate w-full ${GROUNDS[ground]} ${className}`}
     >
       {dark && <FlowLines />}
-      <div className={`relative px-5 md:px-10 lg:px-24 py-16 md:py-24 ${innerClassName}`}>
+      <div className={`relative px-5 md:px-10 lg:px-24 py-14 md:py-24 ${innerClassName}`}>
         <div className="mx-auto w-full max-w-content">{children}</div>
       </div>
     </section>

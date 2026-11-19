@@ -25,7 +25,7 @@ export function Footer({ base = "" }: { base?: string }) {
 
   return (
     <footer className="bg-navy-bar text-white">
-      <div className="px-5 md:px-10 lg:px-24 pt-14 pb-8">
+      <div className="px-5 md:px-10 lg:px-24 pt-12 pb-8 md:pt-14">
         <div className="mx-auto max-w-content flex flex-col gap-12">
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_1.4fr_1.1fr]">
             <div className="flex flex-col gap-5">
@@ -37,7 +37,7 @@ export function Footer({ base = "" }: { base?: string }) {
 
             <nav aria-label="Footer" className="flex flex-col gap-3">
               <h2 className={heading}>{ft.navHeading}</h2>
-              <ul className="flex flex-col gap-2.5">
+              <ul className="flex flex-wrap gap-x-5 gap-y-2.5 md:flex-col">
                 {links.map((l) => (
                   <li key={l.label}>
                     <a href={l.href} className={link}>

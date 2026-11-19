@@ -11,7 +11,7 @@
  * selection reads as a door into the panel. The photo is shown as it
  * is, with no tint over it.
  *
- * md+: list + panel. Phones: an accordion whose open row is teal.
+ * md+: list + panel. Phones: a swipe rail of layered service cards.
  */
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -21,7 +21,8 @@ import { serviceTabs } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
 import { dur, ease } from "@/lib/motion";
 import { FlowLines } from "./FlowLines";
-import { ArrowRight, ChevronDown, DropIcon } from "./Icons";
+import { ArrowRight, DropIcon } from "./Icons";
+import { Rail } from "./Rail";
 import { RequestButton } from "./RequestButton";
 import { Section } from "./Section";
 import { SectionHead } from "./SectionHead";
@@ -56,7 +57,7 @@ export function Services() {
 
   return (
     <Section id="services" ground="ground" labelledBy="services-h">
-      <div className="flex flex-col gap-12 md:gap-14">
+      <div className="flex flex-col gap-10 md:gap-14">
         <SectionHead id="services-h" label={s.label} heading={s.heading} lede={s.lede} />
 
         {/* ── md+: white list + teal panel ──────────────────── */}
@@ -137,47 +138,33 @@ export function Services() {
           </div>
         </div>
 
-        {/* ── phones: accordion; the open row is teal, like the panel ── */}
-        <div className="md:hidden flex flex-col rounded overflow-hidden border border-teal/40 bg-white divide-y divide-rule">
-          {serviceTabs.map((tab) => {
-            const on = tab.key === activeKey;
-            return (
-              <div key={tab.key}>
-                <button
-                  type="button"
-                  aria-expanded={on}
-                  aria-controls={`svc-${tab.key}`}
-                  onClick={() => setActiveKey(tab.key)}
-                  className={`w-full flex items-center justify-between gap-4 min-h-14 px-5 text-left transition-colors duration-200 ${
-                    on ? "bg-teal text-white" : "text-ink active:bg-teal/10"
-                  }`}
-                >
-                  <span className="font-display font-semibold text-[1.125rem]">{tab.label}</span>
-                  <ChevronDown
-                    className={`size-5 shrink-0 transition-transform duration-200 ease-brand ${on ? "rotate-180 text-white" : "text-teal-dark"}`}
-                  />
-                </button>
-                {/* Height via grid rows — never animate height directly. */}
-                <div
-                  id={`svc-${tab.key}`}
-                  className={`grid transition-[grid-template-rows] duration-300 ease-brand ${on ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
-                >
-                  <div className="overflow-hidden">
-                    <div className="flex flex-col gap-4 px-5 pt-1 pb-6 bg-teal text-white">
-                      <div className="relative aspect-[4/3] rounded overflow-hidden bg-teal-dark">
-                        <Photo tab={tab} sizes="calc(100vw - 40px)" />
-                      </div>
-                      <h3 className="font-display font-semibold text-[1.375rem] leading-tight text-white">{tab.title}</h3>
-                      <p className="leading-relaxed text-white">{tab.description}</p>
-                      <div>
-                        <RequestButton service={tab.key} onTeal />
-                      </div>
-                    </div>
+        {/*
+          ── phones: a swipe rail of layered cards ──────────────
+          The photo sits at the back; a teal panel overlaps its lower
+          edge, so each service is one object with depth rather than a
+          row in a long list. Seven services side by side, not stacked.
+        */}
+        <div className="md:hidden">
+          <Rail label={s.heading} gridClassName="" itemClassName="basis-[86%]">
+            {serviceTabs.map((tab) => (
+              <article key={tab.key} className="flex h-full flex-col">
+                <div className="relative aspect-[4/3] overflow-hidden rounded bg-teal-dark">
+                  <Photo tab={tab} sizes="86vw" />
+                  <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 font-display font-semibold text-[0.875rem] text-teal-dark">
+                    {tab.label}
+                  </span>
+                </div>
+                <div className="relative isolate mx-3 -mt-10 flex flex-1 flex-col gap-3 overflow-hidden rounded bg-teal p-5 text-white">
+                  <FlowLines />
+                  <h3 className="relative font-display font-semibold text-[1.3125rem] leading-tight">{tab.title}</h3>
+                  <p className="relative text-[0.9375rem] leading-relaxed">{tab.description}</p>
+                  <div className="relative mt-auto pt-2">
+                    <RequestButton service={tab.key} onTeal className="w-full justify-center" />
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              </article>
+            ))}
+          </Rail>
         </div>
 
         <SpecialtyServices />

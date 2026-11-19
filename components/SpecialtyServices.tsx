@@ -30,6 +30,7 @@ import type { SpecialtyService } from "@/content/types";
 import { ease } from "@/lib/motion";
 import { FlowLines } from "./FlowLines";
 import { Check, PathIcon } from "./Icons";
+import { Rail } from "./Rail";
 import { RequestButton } from "./RequestButton";
 
 const s = client.services;
@@ -76,7 +77,7 @@ function TileFace({ svc, motionIds = false }: { svc: SpecialtyService; motionIds
       </span>
       <span
         aria-hidden="true"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full border border-teal/40 text-teal-dark transition-colors duration-200 group-hover:border-teal group-hover:bg-teal group-hover:text-white"
+        className="absolute right-4 top-4 flex size-9 shrink-0 items-center justify-center rounded-full border border-teal/40 text-teal-dark transition-colors duration-200 group-hover:border-teal group-hover:bg-teal group-hover:text-white md:static"
       >
         <span className="relative block size-3.5">
           <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rounded-full bg-current" />
@@ -87,8 +88,9 @@ function TileFace({ svc, motionIds = false }: { svc: SpecialtyService; motionIds
   );
 }
 
+// Upright on phones (icon above name, in a swipe rail), a row from md up.
 const tileCls =
-  "group flex w-full items-center gap-4 rounded border border-rule bg-white p-5 text-left";
+  "group relative flex h-full w-full flex-col items-start gap-3 rounded border border-rule bg-white p-5 text-left md:flex-row md:items-center md:gap-4";
 
 function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -225,16 +227,21 @@ export function SpecialtyServices() {
       </div>
 
       <LayoutGroup id="specialty">
-        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {specialtyServices.map((svc) => (
-            <li key={svc.key} className="relative">
-              {openKey === svc.key ? (
+        {/* Phones: a swipe rail of upright tiles. md+: the grid. */}
+        <Rail
+          label={s.specialtyHeading}
+          gridClassName="md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3"
+          itemClassName="basis-[62%] relative"
+        >
+          {specialtyServices.map((svc) =>
+            openKey === svc.key ? (
                 // Holds the slot so the grid never moves while the card is out.
-                <div aria-hidden="true" className={`${tileCls} invisible`}>
+                <div key={svc.key} aria-hidden="true" className={`${tileCls} invisible`}>
                   <TileFace svc={svc} />
                 </div>
               ) : (
                 <motion.button
+                  key={svc.key}
                   ref={(el) => {
                     tileRefs.current[svc.key] = el;
                   }}
@@ -250,10 +257,9 @@ export function SpecialtyServices() {
                   <TileFace svc={svc} motionIds />
                   <span className="sr-only">— show details</span>
                 </motion.button>
-              )}
-            </li>
-          ))}
-        </ul>
+              )
+          )}
+        </Rail>
 
         <AnimatePresence>{open && <OpenCard key={open.key} svc={open} onClose={close} />}</AnimatePresence>
       </LayoutGroup>
