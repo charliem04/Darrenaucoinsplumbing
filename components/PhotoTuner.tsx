@@ -254,7 +254,7 @@ export default function PhotoTuner() {
       ref={panel}
       role="region"
       aria-label="Photo tuner"
-      className="fixed bottom-4 right-4 z-[200] w-[19rem] rounded-lg border border-ink/15 bg-white text-[0.8125rem] text-ink shadow-2xl"
+      className="fixed bottom-4 right-4 z-[200] w-[19rem] rounded-lg bg-white text-[0.8125rem] text-ink shadow-2xl"
     >
       <div className="flex items-center justify-between gap-2 border-b border-ink/10 px-3 py-2">
         <strong className="font-display text-[0.9375rem]">Photo tuner</strong>
