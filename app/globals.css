@@ -124,6 +124,16 @@
   will-change: transform;
 }
 
+/* A rail's current dot filling while it waits to drift (components/Rail). */
+@keyframes rail-timer {
+  from {
+    transform: scaleX(0);
+  }
+}
+.rail-timer {
+  animation: rail-timer 4.5s linear both;
+}
+
 /* The availability dot: a slow ring, like a pressure gauge settling. */
 @keyframes ping-soft {
   0% {
@@ -180,7 +190,8 @@
     scroll-behavior: auto;
   }
   .flow-strip,
-  .ping-soft {
+  .ping-soft,
+  .rail-timer {
     animation: none;
   }
   .hero-fade,

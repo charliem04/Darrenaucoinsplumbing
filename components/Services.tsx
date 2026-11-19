@@ -69,6 +69,41 @@ function ServicesPhone({
     row.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
   }, [activeKey]);
 
+  // The peek: the first time the chip row is fully on screen, it glides
+  // a little way sideways and settles back — showing, rather than
+  // saying, that more services sit off to the right. Once only; skipped
+  // if a hand got there first, and under reduced motion.
+  useEffect(() => {
+    const row = chips.current;
+    if (!row || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let touched = false;
+    const timers: number[] = [];
+    const markTouched = () => {
+      touched = true;
+      timers.forEach(window.clearTimeout);
+    };
+    row.addEventListener("pointerdown", markTouched, { passive: true });
+    row.addEventListener("touchstart", markTouched, { passive: true });
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting || touched || row.scrollWidth <= row.clientWidth) return;
+        io.disconnect();
+        timers.push(
+          window.setTimeout(() => !touched && row.scrollTo({ left: 72, behavior: "smooth" }), 500),
+          window.setTimeout(() => !touched && row.scrollTo({ left: 0, behavior: "smooth" }), 1400)
+        );
+      },
+      { threshold: 0.9 }
+    );
+    io.observe(row);
+    return () => {
+      io.disconnect();
+      timers.forEach(window.clearTimeout);
+      row.removeEventListener("pointerdown", markTouched);
+      row.removeEventListener("touchstart", markTouched);
+    };
+  }, []);
+
   return (
     <div className="md:hidden flex min-w-0 flex-col gap-4">
       <div
