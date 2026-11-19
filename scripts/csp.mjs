@@ -73,7 +73,6 @@ const INERT = new Set([
   "https://use.typekit.net",
   "https://tailwindcss.com",
   "https://www.w3.org", // SVG/XML namespaces
-  "https://fontsource.org", // licence banner in the Fraunces CSS
 ]);
 
 export function buildCsp() {
@@ -85,7 +84,7 @@ export function buildCsp() {
     "style-src 'self' 'unsafe-inline'",
     // data: for any inlined SVG. Every photo is served from /images.
     "img-src 'self' data:",
-    // Fraunces is self-hosted from @fontsource — nothing external.
+    // No web fonts today; any added later should be self-hosted.
     "font-src 'self'",
     // The contact form posts here from the browser (lib/submitContact.ts).
     // When the provider switches to Haptic Forms, its endpoint goes here.

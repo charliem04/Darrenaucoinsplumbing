@@ -45,10 +45,13 @@ export function Footer({ base = "" }: { base?: string }) {
                   className="flex flex-col gap-[16px] items-start max-w-[480px] w-full md:max-w-none md:w-auto md:flex-row md:flex-wrap md:content-start md:gap-[32px] md:whitespace-nowrap font-body font-semibold leading-[1.5] not-italic text-[14px] text-white"
                 >
                   {links.map((l) => (
+                    // 16px / 500, not the 14px semibold on the <nav>: on the
+                    // live site these were <button>s, and the base button
+                    // style overrode what they inherited. Matched as rendered.
                     <a
                       key={l.label}
                       href={l.href}
-                      className="relative shrink-0 w-full md:w-auto text-left hover:text-teal transition-colors cursor-pointer"
+                      className="relative shrink-0 w-full md:w-auto text-left text-[16px] font-medium hover:text-teal transition-colors cursor-pointer"
                     >
                       {l.label}
                     </a>

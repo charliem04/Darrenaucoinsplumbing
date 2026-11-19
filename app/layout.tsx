@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-// Fraunces, self-hosted. The old site pulled it from Google Fonts with
-// the optical-size axis; this is the same variable font with the same
-// axes, served from our own origin (one less third party, and nothing
-// for the CSP to allow).
-import "@fontsource-variable/fraunces/opsz.css";
+// No web fonts — deliberately, to match the live site. See the TYPE
+// note in globals.css before adding one.
 import "./globals.css";
 import { client } from "@/client.config";
 import { withPhone } from "@/lib/phone";

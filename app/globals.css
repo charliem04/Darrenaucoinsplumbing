@@ -30,17 +30,22 @@
    * and never loaded Rubik, Inter or Roboto at all. Every one of those
    * declarations fell through to the generic `sans-serif`, which is
    * what the client has been looking at on the live site (Arial on
-   * Windows, Helvetica on a Mac). Only Fraunces, the nav wordmark,
-   * was ever loaded.
+   * Windows, Helvetica on a Mac).
    *
-   * The rebuild is "no redesign", so the three roles below reproduce
-   * that exactly. The design pass can give each role a real face by
+   * The wordmark was meant to be Fraunces, imported from Google Fonts
+   * in theme.css — but the import sat below other rules, so the build
+   * dropped it and the live site loads no web font at all. The
+   * wordmark has always rendered in the generic `serif` (Times New
+   * Roman on Windows).
+   *
+   * The rebuild is "no redesign", so all four roles reproduce that
+   * exactly. The design pass can give each role a real face by
    * changing one line here and adding its @fontsource package.
    */
   --font-display: sans-serif;
   --font-body: sans-serif;
   --font-figure: sans-serif;
-  --font-wordmark: "Fraunces Variable", serif;
+  --font-wordmark: serif;
 }
 
 /*
