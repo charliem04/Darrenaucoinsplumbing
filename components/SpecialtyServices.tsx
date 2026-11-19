@@ -211,13 +211,14 @@ function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void
             ))}
           </ul>
           </div>
-          <div className="flex shrink-0 items-center gap-3 border-t border-rule bg-white px-6 py-4 md:px-8 lg:px-9">
-            <RequestButton service={svc.name} className="flex-1 justify-center sm:flex-none" />
+          {/* Phones: stacked, full width — the primary action first. sm+: side by side. */}
+          <div className="grid shrink-0 gap-2 border-t border-rule bg-white px-5 py-4 sm:flex sm:items-center sm:gap-3 sm:px-6 md:px-8 lg:px-9">
+            <RequestButton service={svc.name} className="w-full justify-center sm:w-auto" />
             <button
               ref={closeRef}
               type="button"
               onClick={onClose}
-              className="press h-12 rounded border border-rule px-5 font-body font-semibold text-ink hover:bg-ground active:bg-rule/50"
+              className="press h-11 w-full rounded border border-rule px-5 font-body font-semibold text-ink-2 hover:bg-ground hover:text-ink active:bg-rule/50 sm:h-12 sm:w-auto sm:text-ink"
             >
               {s.specialtyClose}
             </button>

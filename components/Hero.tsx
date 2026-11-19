@@ -5,13 +5,35 @@ import { Button } from "./Button";
 import { FlowLines } from "./FlowLines";
 import type { CSSProperties } from "react";
 
+/** The truck. Rendered in one of two slots depending on width (below). */
+function HeroPhoto({ className = "" }: { className?: string }) {
+  return (
+    <div className={`hero-fade relative ${className}`}>
+      <div className="relative overflow-hidden rounded ring-1 ring-white/10 bg-navy-deep">
+        <Image
+          alt={client.hero.imageAlt}
+          src="/images/hero.webp"
+          width={903}
+          height={508}
+          priority
+          sizes="(min-width: 1024px) 45vw, 100vw"
+          className="block w-full h-auto"
+        />
+      </div>
+    </div>
+  );
+}
+
 /**
  * The opening band: what DA does, the number to call, and the truck.
  *
- * Order is by urgency: on a phone the headline and the call button are
- * on screen before the photo; on desktop the photo sits beside them.
- * The old page put the photo first, which pushed the phone number below
- * the fold on every phone.
+ * Stacked (phones and tablets, below lg): headline, then the truck right
+ * under it, then the availability line, the intro and the buttons — the
+ * photo anchors the headline instead of trailing after the buttons.
+ * lg+: text on the left, the truck beside it.
+ *
+ * The photo has a slot in each layout and CSS shows one; both point at
+ * the same file, so it is downloaded once.
  */
 export function Hero() {
   const h = client.hero;
@@ -21,11 +43,12 @@ export function Hero() {
       <div className="relative px-5 md:px-10 lg:px-24 pt-10 pb-14 md:pt-16 md:pb-20">
         <div className="mx-auto max-w-content grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16 items-center">
           <div className="flex flex-col gap-6">
-            {/* Headline, then the availability line tucked right under it. */}
-            <div className="flex flex-col gap-4">
+            {/* Headline, (stacked: the truck), then the availability line. */}
+            <div className="flex flex-col gap-5 lg:gap-4">
               <div className="hero-rise" style={{ "--d": "0.05s" } as CSSProperties}>
                 <h1 className="font-display font-bold text-d-1 text-balance max-w-[16ch]">{h.headline}</h1>
               </div>
+              <HeroPhoto className="lg:hidden" />
               <div className="hero-rise" style={{ "--d": "0.12s" } as CSSProperties}>
                 {/* The one green on the page means "available". */}
                 <p className="inline-flex items-center gap-2.5 font-body font-medium text-[1rem] text-white/85">
@@ -52,19 +75,7 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="hero-fade relative">
-            <div className="relative overflow-hidden rounded ring-1 ring-white/10 bg-navy-deep">
-              <Image
-                alt={h.imageAlt}
-                src="/images/hero.webp"
-                width={903}
-                height={508}
-                priority
-                sizes="(min-width: 1024px) 45vw, 100vw"
-                className="block w-full h-auto"
-              />
-            </div>
-          </div>
+          <HeroPhoto className="hidden lg:block" />
         </div>
       </div>
     </section>
