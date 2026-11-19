@@ -20,6 +20,7 @@ import { client } from "@/client.config";
 import { serviceTabs } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
 import { dur, ease } from "@/lib/motion";
+import { DriftEdges, inertRef, useDrift } from "./drift";
 import { FlowLines } from "./FlowLines";
 import { ArrowRight, DropIcon } from "./Icons";
 import { RequestButton } from "./RequestButton";
@@ -43,8 +44,8 @@ function Photo({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
 }
 
 /**
- * Phones: a row of service chips you can swipe sideways, and one card
- * below for the chosen service — the photo, then a teal panel with the
+ * Phones: a row of service chips that drifts sideways on its own (and
+ * can be swiped), and one card below for the chosen service — the photo, then a teal panel with the
  * copy and the button. One thing on screen at a time, the same
  * list-then-detail idea as the desktop widget, at a phone's scale.
  */
@@ -58,9 +59,13 @@ function ServicesPhone({
   active: ServiceTab;
 }) {
   const chips = useRef<HTMLDivElement>(null);
+  const chipArea = useRef<HTMLDivElement>(null);
+  // The chip row drifts like the card rails: a slow, steady, looping
+  // glide with blurred edges (components/drift). A tap holds it.
+  const { canDrift } = useDrift({ scroller: chips, area: chipArea, count: serviceTabs.length });
 
   // Keep the chosen chip in view inside the chip row (row only — never
-  // scrolls the page).
+  // scrolls the page). Only the real chips carry data-key, not the copy.
   useEffect(() => {
     const row = chips.current;
     const chip = row?.querySelector<HTMLElement>(`[data-key="${CSS.escape(activeKey)}"]`);
@@ -69,68 +74,46 @@ function ServicesPhone({
     row.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
   }, [activeKey]);
 
-  // The peek: the first time the chip row is fully on screen, it glides
-  // a little way sideways and settles back — showing, rather than
-  // saying, that more services sit off to the right. Once only; skipped
-  // if a hand got there first, and under reduced motion.
-  useEffect(() => {
-    const row = chips.current;
-    if (!row || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let touched = false;
-    const timers: number[] = [];
-    const markTouched = () => {
-      touched = true;
-      timers.forEach(window.clearTimeout);
-    };
-    row.addEventListener("pointerdown", markTouched, { passive: true });
-    row.addEventListener("touchstart", markTouched, { passive: true });
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting || touched || row.scrollWidth <= row.clientWidth) return;
-        io.disconnect();
-        timers.push(
-          window.setTimeout(() => !touched && row.scrollTo({ left: 72, behavior: "smooth" }), 500),
-          window.setTimeout(() => !touched && row.scrollTo({ left: 0, behavior: "smooth" }), 1400)
-        );
-      },
-      { threshold: 0.9 }
-    );
-    io.observe(row);
-    return () => {
-      io.disconnect();
-      timers.forEach(window.clearTimeout);
-      row.removeEventListener("pointerdown", markTouched);
-      row.removeEventListener("touchstart", markTouched);
-    };
-  }, []);
+  const chipCls = (on: boolean) =>
+    `press h-10 shrink-0 whitespace-nowrap rounded-full border px-4 font-display font-semibold text-[0.9375rem] transition-colors duration-150 ${
+      on ? "border-teal bg-teal text-white" : "border-rule bg-white text-ink active:bg-teal/10"
+    }`;
 
   return (
     <div className="md:hidden flex min-w-0 flex-col gap-4">
-      <div
-        ref={chips}
-        role="tablist"
-        aria-label={s.heading}
-        className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1"
-      >
-        {serviceTabs.map((tab) => {
-          const on = tab.key === activeKey;
-          return (
-            <button
-              key={tab.key}
-              data-key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              aria-controls="service-card"
-              onClick={() => setActiveKey(tab.key)}
-              className={`press h-10 shrink-0 whitespace-nowrap rounded-full border px-4 font-display font-semibold text-[0.9375rem] transition-colors duration-150 ${
-                on ? "border-teal bg-teal text-white" : "border-rule bg-white text-ink active:bg-teal/10"
-              }`}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+      <div ref={chipArea} className="relative">
+        <div
+          ref={chips}
+          role="tablist"
+          aria-label={s.heading}
+          className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1"
+        >
+          {serviceTabs.map((tab) => {
+            const on = tab.key === activeKey;
+            return (
+              <button
+                key={tab.key}
+                data-key={tab.key}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                aria-controls="service-card"
+                onClick={() => setActiveKey(tab.key)}
+                className={chipCls(on)}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+          {/* The loop's visual copy: inert, hidden from assistive tech. */}
+          {canDrift &&
+            serviceTabs.map((tab) => (
+              <span key={`copy-${tab.key}`} ref={inertRef} aria-hidden="true" className={`${chipCls(tab.key === activeKey)} inline-flex items-center`}>
+                {tab.label}
+              </span>
+            ))}
+        </div>
+        {canDrift && <DriftEdges />}
       </div>
 
       <div id="service-card" role="tabpanel" className="overflow-hidden rounded border border-teal/40 bg-teal">
