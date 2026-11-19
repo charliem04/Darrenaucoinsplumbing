@@ -8,18 +8,26 @@ assets. No backend: the contact form posts straight to Web3Forms.
 
 ```sh
 npm install
-cp .env.example .env.local   # then paste the Web3Forms key
+cp .env.example .env.local   # then paste the Web3Forms access key
 npm run dev                  # http://localhost:3000
 ```
 
-`npm run build` writes the site to `out/` and then runs two checks that
-fail the build on purpose:
+| Command                  | What it does                                                        |
+| ------------------------ | ------------------------------------------------------------------- |
+| `npm run dev`            | Local dev server                                                    |
+| `npm run tune`           | Dev server plus the photo tuner (see below)                         |
+| `npm run build`          | Builds the site into `out/`, then runs the CSP and SEO checks       |
+| `npm run typecheck`      | TypeScript check only                                               |
+| `npm run preview:deploy` | Builds and uploads a **preview** version; production is untouched   |
+| `npm run deploy`         | Builds and **publishes to production**                              |
 
-- `scripts/csp.mjs` — appends the Content-Security-Policy to
-  `out/_headers` and fails if any external origin in the output is not
-  accounted for.
-- `scripts/seo.mjs` — fails on a missing or over-long title or
-  description, or missing JSON-LD.
+`npm run build` fails on purpose when:
+
+- `scripts/csp.mjs`: an external origin in the output isn't covered by the
+  Content-Security-Policy it appends to `out/_headers`.
+- `scripts/seo.mjs`: a page's title or description is missing or too long,
+  its JSON-LD is missing or invalid, it doesn't have exactly one `<h1>`, or
+  an image has no alt text (or a one-word one).
 
 ## Change something
 
@@ -27,24 +35,46 @@ fail the build on purpose:
 | -------------------------------------------- | ---------------------------- |
 | Phone, email, address, hours, any copy line  | `client.config.ts`           |
 | Services, FAQs, testimonials, stats          | `content/*.ts`               |
+| How each photo is cropped / zoomed           | `npm run tune`, or `content/photoFraming.json` |
 | Colours                                      | `app/globals.css` (tokens)   |
 | Animation timing                             | `lib/motion.ts`              |
 | Where the form sends                         | `lib/submitContact.ts`       |
 | Photos                                       | `public/images/`             |
 
-Change `phone` **and** `phoneE164` together — every number on the page
+Change `phone` **and** `phoneE164` together. Every number on the page
 derives from them, and the build fails if they disagree.
+
+### Photo tuner
+
+`npm run tune` starts the dev server with a panel for reframing photos:
+drag a photo (orange outline) to choose which part shows, zoom with the
+slider, nudge with the arrow keys. Each photo has a **mobile** framing
+(under 1024px wide) and a **desktop** one; the tuner edits whichever
+matches the window's width. Changes save straight to
+`content/photoFraming.json`; commit that file. The tuner never ships: it is
+compiled out of production builds.
+
+A new photo becomes tunable by adding it to `content/photoFraming.json`
+and spreading `framing("its-key")` onto its `<Image>` (see `lib/framing.ts`).
+
+## SEO notes
+
+It's one page on purpose. Everything a search engine needs is in that
+page's HTML: every service's copy (tab panels and specialty details are
+in the HTML, hidden until opened), descriptive alt text, and one JSON-LD
+graph (Plumber, WebSite, WebPage, FAQPage) built from `client.config.ts`
+and `content/`, so it can't disagree with the page. `/privacy/` is
+`noindex`; the sitemap lists only `/`.
 
 ## Deploy
 
 ```sh
-npm run preview:deploy   # uploads a version and prints a preview URL — production untouched
-npm run deploy           # promotes to production
+npm run preview:deploy   # prints a preview URL; production untouched
+npm run deploy           # publishes to production
 ```
 
-`NEXT_PUBLIC_WEB3FORMS_KEY` must be set in the environment that runs the
-build, or the deployed form will refuse to send (and say so).
+`NEXT_PUBLIC_WEB3FORMS_KEY` must be set (in `.env.local`) on the machine
+that runs the build, or the deployed form refuses to send and tells the
+visitor to call instead.
 
-`docs/` holds the motion and depth notes written for the old Figma
-export; they reference files that no longer exist but are kept for the
-design pass.
+`docs/rebuild-brief.md` is the brief the Next.js rebuild was done to.
