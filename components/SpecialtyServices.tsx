@@ -1,45 +1,48 @@
 "use client";
 
 /**
- * Specialty services: a grid of teal icon tiles, each of which opens
- * in place into a full-width card.
+ * Specialty services: a static grid of teal icon tiles. Clicking one
+ * grows it, from exactly where it sits, into a card centred on the
+ * screen; closing shrinks it back into its place. The grid itself never
+ * moves — the tile's slot is held by an invisible copy while it's open.
  *
- * Closed, a tile is just the essentials — the service's mark, its name,
- * and its credential if it has one — so six of them scan at a glance.
- * Open, the card spans the row: a teal panel carrying the mark at full
- * size with a slow ripple around it (water, not decoration for its own
- * sake), and beside it the description, the checklist, and a button
- * that takes you to the form with this service already selected.
+ * The motion is a shared-layout morph (Framer's layoutId): the tile and
+ * the centred card are "the same element", so it travels and resizes as
+ * one surface instead of the page reflowing. Unhurried and without
+ * overshoot — `morph` below — with the details fading in only once the
+ * card has arrived, so nothing is read mid-flight.
  *
- * One open at a time. The grid uses dense auto-flow so the opened card
- * claims a full row without leaving holes, and Framer's layout
- * animation slides the other tiles to their new places rather than
- * snapping them.
+ * The open card is a modal dialog: the page behind is dimmed and stops
+ * scrolling, Escape or a click outside closes it, focus moves into it
+ * and returns to the tile afterwards.
  *
  * There are no photographs of these jobs, so the "visual" is the
- * service's own mark, drawn large — not a borrowed photo of a
- * different job. Credentials are marked in green: the page's one
- * meaning for green is verified.
+ * service's own mark drawn large on teal with a slow ripple — not a
+ * borrowed photo of a different job. Credentials are marked in green:
+ * the page's one meaning for green is verified.
  */
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { client } from "@/client.config";
 import { specialtyServices } from "@/content/services";
 import type { SpecialtyService } from "@/content/types";
-import { dur, ease } from "@/lib/motion";
+import { ease } from "@/lib/motion";
 import { FlowLines } from "./FlowLines";
 import { Check, PathIcon } from "./Icons";
 import { RequestButton } from "./RequestButton";
 
 const s = client.services;
-const layoutTransition = { duration: 0.42, ease: ease.out };
+
+/** The open/close morph: half a second, smooth in and out, no bounce. */
+const morph = { duration: 0.5, ease: [0.32, 0.72, 0, 1] as const };
 
 function Credential({ svc, onTeal = false }: { svc: SpecialtyService; onTeal?: boolean }) {
   if (!svc.badge) return <span className={onTeal ? "text-white" : "text-ink-2"}>{svc.meta}</span>;
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-semibold ${
-        onTeal ? "rounded-full bg-white px-2.5 py-1 text-green" : "text-green"
+      className={`inline-flex items-center gap-1.5 font-semibold text-green ${
+        onTeal ? "rounded-full bg-white px-2.5 py-1" : ""
       }`}
     >
       <Check className="size-3.5" />
@@ -48,148 +51,171 @@ function Credential({ svc, onTeal = false }: { svc: SpecialtyService; onTeal?: b
   );
 }
 
-/** The plus that turns into a close mark. */
-function Toggle({ open }: { open: boolean }) {
+/** What a closed tile shows. Used for the tile and for its placeholder. */
+function TileFace({ svc, motionIds = false }: { svc: SpecialtyService; motionIds?: boolean }) {
   return (
-    <span
-      aria-hidden="true"
-      className={`relative flex size-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-200 ${
-        open ? "border-white/50 text-white" : "border-teal/40 text-teal-dark group-hover:border-teal group-hover:bg-teal group-hover:text-white"
-      }`}
-    >
-      <span className="absolute h-[2px] w-3.5 rounded-full bg-current" />
+    <>
+      <motion.span
+        layoutId={motionIds ? `mark-${svc.key}` : undefined}
+        transition={morph}
+        className="flex size-14 shrink-0 items-center justify-center rounded-full bg-teal text-white transition-colors duration-200 group-hover:bg-teal-dark"
+      >
+        <PathIcon d={svc.icon} className="size-7" />
+      </motion.span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <motion.span
+          layoutId={motionIds ? `name-${svc.key}` : undefined}
+          transition={morph}
+          className="font-display font-semibold text-[1.1875rem] leading-tight text-ink group-hover:text-teal-dark"
+        >
+          {svc.name}
+        </motion.span>
+        <span className="text-[0.875rem]">
+          <Credential svc={svc} />
+        </span>
+      </span>
       <span
-        className={`absolute h-3.5 w-[2px] rounded-full bg-current transition-transform duration-300 ease-brand ${open ? "rotate-90 scale-y-0" : ""}`}
-      />
-    </span>
+        aria-hidden="true"
+        className="flex size-9 shrink-0 items-center justify-center rounded-full border border-teal/40 text-teal-dark transition-colors duration-200 group-hover:border-teal group-hover:bg-teal group-hover:text-white"
+      >
+        <span className="relative block size-3.5">
+          <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rounded-full bg-current" />
+          <span className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 rounded-full bg-current" />
+        </span>
+      </span>
+    </>
   );
 }
 
-function Tile({
-  svc,
-  open,
-  onToggle,
-}: {
-  svc: SpecialtyService;
-  open: boolean;
-  onToggle: () => void;
-}) {
-  const ref = useRef<HTMLLIElement>(null);
+const tileCls =
+  "group flex w-full items-center gap-4 rounded border border-rule bg-white p-5 text-left";
 
-  return (
-    <motion.li
-      ref={ref}
-      layout
-      transition={{ layout: layoutTransition }}
-      onLayoutAnimationComplete={() => {
-        // Bring an opened card fully into view if it grew off-screen.
-        if (open) ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }}
-      className={open ? "md:col-span-2 lg:col-span-3" : ""}
+function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Modal behaviour: Escape closes, the page stops scrolling, focus moves in.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    const t = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 350);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      html.style.overflow = prev;
+      window.clearTimeout(t);
+    };
+  }, [onClose]);
+
+  // Portalled to <body>: the section creates its own stacking context,
+  // so rendered in place the sticky nav would paint over the dialog.
+  //
+  // The wrapper is a motion element with an exit of its own: that is
+  // what tells AnimatePresence when the close is finished. Without it
+  // the card shrinks back onto the tile and then stays mounted there.
+  return createPortal(
+    <motion.div
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: morph.duration, ease: ease.inOut } }}
     >
       <motion.div
-        layout
-        transition={{ layout: layoutTransition }}
-        className={`overflow-hidden rounded border ${
-          open ? "grid md:grid-cols-[17rem_1fr] lg:grid-cols-[20rem_1fr] border-teal bg-white" : "border-rule bg-white"
-        }`}
+        aria-hidden="true"
+        className="absolute inset-0 bg-navy-deep/60"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4, ease: ease.inOut }}
+        onClick={onClose}
+      />
+      <motion.div
+        layoutId={`card-${svc.key}`}
+        transition={morph}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`specialty-title-${svc.key}`}
+        className="relative grid w-full max-w-4xl max-h-[calc(100vh-2rem)] overflow-hidden rounded bg-white md:grid-cols-[17rem_1fr] lg:grid-cols-[19rem_1fr]"
+        style={{ borderRadius: 8 }}
       >
-        {/* The teal panel: currents drift behind the button, not inside it. */}
-        <div className={open ? "relative isolate overflow-hidden bg-teal text-white" : ""}>
-        {open && <FlowLines />}
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-expanded={open}
-          aria-controls={`specialty-${svc.key}`}
-          className={`press group relative w-full text-left ${
-            open
-              ? "flex h-full flex-col gap-5 p-6 md:gap-6 md:p-7"
-              : "flex items-center gap-4 p-5 hover:bg-teal/[0.04] active:bg-teal/[0.08]"
-          }`}
-        >
-          {/* The mark. Closed: a solid teal tile. Open: drawn large, with a ripple. */}
+        {/* The visual: the service's mark, large, on teal. */}
+        <div className="relative isolate flex flex-col gap-5 overflow-hidden bg-teal p-6 text-white md:gap-6 md:p-8">
+          <FlowLines />
           <motion.span
-            layout="position"
-            className={`relative flex shrink-0 items-center justify-center rounded-full ${
-              open ? "size-20 md:size-28 self-start" : "size-14 bg-teal text-white transition-colors duration-200 group-hover:bg-teal-dark"
-            }`}
+            layoutId={`mark-${svc.key}`}
+            transition={morph}
+            className="relative flex size-20 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/30 md:size-28"
           >
-            {open && (
-              <>
-                <span aria-hidden="true" className="ping-soft absolute inset-0 rounded-full border-2 border-white/40" />
-                <span aria-hidden="true" className="absolute inset-0 rounded-full bg-white/10 ring-1 ring-white/30" />
-              </>
-            )}
-            <PathIcon d={svc.icon} className={`relative ${open ? "size-10 md:size-14" : "size-7"}`} />
+            <span aria-hidden="true" className="ping-soft absolute inset-0 rounded-full border-2 border-white/40" />
+            <PathIcon d={svc.icon} className="relative size-10 md:size-14" />
           </motion.span>
-
-          <motion.span layout="position" className="flex min-w-0 flex-1 flex-col gap-1">
-            <span
-              className={`font-display font-semibold leading-tight ${
-                open ? "text-[1.75rem]" : "text-[1.1875rem] text-ink group-hover:text-teal-dark"
-              }`}
+          <div className="relative flex flex-col gap-2">
+            <motion.h4
+              layoutId={`name-${svc.key}`}
+              transition={morph}
+              id={`specialty-title-${svc.key}`}
+              className="font-display font-semibold text-[1.75rem] leading-tight"
             >
               {svc.name}
-            </span>
-            <span className="text-[0.875rem]">
-              <Credential svc={svc} onTeal={open} />
-            </span>
-          </motion.span>
-
-          <span className={open ? "absolute right-5 top-5" : ""}>
-            <Toggle open={open} />
-          </span>
-          <span className="sr-only">{open ? "Close" : "Show details"}</span>
-        </button>
+            </motion.h4>
+            <motion.span
+              className="text-[0.875rem]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.35 } }}
+              exit={{ opacity: 0, transition: { duration: 0.1 } }}
+            >
+              <Credential svc={svc} onTeal />
+            </motion.span>
+          </div>
         </div>
 
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.div
-              id={`specialty-${svc.key}`}
-              key="details"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0, transition: { duration: dur.reveal, ease: ease.out, delay: 0.15 } }}
-              exit={{ opacity: 0, transition: { duration: 0.12 } }}
-              className="flex flex-col gap-6 p-7 lg:p-9"
+        {/* The details: fade in once the card has arrived. */}
+        <motion.div
+          className="flex flex-col gap-6 overflow-y-auto p-6 md:p-8 lg:p-9"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 0.35, ease: ease.out, delay: 0.32 } }}
+          exit={{ opacity: 0, transition: { duration: 0.12 } }}
+        >
+          <p className="text-[1.0625rem] leading-relaxed text-ink-2">{svc.description}</p>
+          <ul className="grid gap-3 border-y border-rule py-5 sm:grid-cols-2">
+            {svc.bullets.map((b) => (
+              <li key={b} className="flex items-start gap-3 text-ink">
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-teal text-white">
+                  <Check className="size-3" />
+                </span>
+                {b}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-wrap items-center gap-3">
+            <RequestButton service={svc.name} />
+            <button
+              ref={closeRef}
+              type="button"
+              onClick={onClose}
+              className="press h-12 rounded border border-rule px-5 font-body font-semibold text-ink hover:bg-ground active:bg-rule/50"
             >
-              <p className="text-[1.0625rem] leading-relaxed text-ink-2 max-w-[62ch]">{svc.description}</p>
-              <ul className="grid gap-3 sm:grid-cols-2 border-y border-rule py-5">
-                {svc.bullets.map((b, i) => (
-                  <motion.li
-                    key={b}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0, transition: { duration: dur.panel, ease: ease.out, delay: 0.25 + i * 0.06 } }}
-                    className="flex items-start gap-3 text-ink"
-                  >
-                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-teal text-white">
-                      <Check className="size-3" />
-                    </span>
-                    {b}
-                  </motion.li>
-                ))}
-              </ul>
-              <div className="flex flex-wrap items-center gap-3">
-                <RequestButton service={svc.name} />
-                <button
-                  type="button"
-                  onClick={onToggle}
-                  className="press h-12 px-5 rounded border border-rule font-body font-semibold text-ink hover:bg-ground active:bg-rule/50"
-                >
-                  {s.specialtyClose}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              {s.specialtyClose}
+            </button>
+          </div>
+        </motion.div>
       </motion.div>
-    </motion.li>
+    </motion.div>,
+    document.body
   );
 }
 
 export function SpecialtyServices() {
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const open = specialtyServices.find((x) => x.key === openKey) ?? null;
+
+  const close = () => {
+    const key = openKey;
+    setOpenKey(null);
+    // Return focus to the tile it came from, once it is back in place.
+    if (key) window.setTimeout(() => tileRefs.current[key]?.focus({ preventScroll: true }), 520);
+  };
 
   return (
     <div className="flex flex-col gap-6 pt-4">
@@ -197,17 +223,39 @@ export function SpecialtyServices() {
         <h3 className="font-display font-semibold text-d-3 text-ink">{s.specialtyHeading}</h3>
         <p className="font-body text-[0.9375rem] text-ink-2">{s.specialtyHint}</p>
       </div>
-      <LayoutGroup>
-        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 grid-flow-row-dense">
+
+      <LayoutGroup id="specialty">
+        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {specialtyServices.map((svc) => (
-            <Tile
-              key={svc.key}
-              svc={svc}
-              open={openKey === svc.key}
-              onToggle={() => setOpenKey((k) => (k === svc.key ? null : svc.key))}
-            />
+            <li key={svc.key} className="relative">
+              {openKey === svc.key ? (
+                // Holds the slot so the grid never moves while the card is out.
+                <div aria-hidden="true" className={`${tileCls} invisible`}>
+                  <TileFace svc={svc} />
+                </div>
+              ) : (
+                <motion.button
+                  ref={(el) => {
+                    tileRefs.current[svc.key] = el;
+                  }}
+                  layoutId={`card-${svc.key}`}
+                  transition={morph}
+                  type="button"
+                  onClick={() => setOpenKey(svc.key)}
+                  aria-haspopup="dialog"
+                  // No .press scale here: Framer owns this element's transform for the morph.
+                  className={`${tileCls} transition-colors duration-150 hover:border-teal/50 active:bg-teal/[0.06]`}
+                  style={{ borderRadius: 8 }}
+                >
+                  <TileFace svc={svc} motionIds />
+                  <span className="sr-only">— show details</span>
+                </motion.button>
+              )}
+            </li>
           ))}
         </ul>
+
+        <AnimatePresence>{open && <OpenCard key={open.key} svc={open} onClose={close} />}</AnimatePresence>
       </LayoutGroup>
     </div>
   );

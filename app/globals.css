@@ -74,9 +74,14 @@
     text-decoration-thickness: 1px;
   }
 
-  /* Firefox + Chromium scrollbar, tinted to the navy. */
+  /*
+   * Firefox + Chromium scrollbar, tinted to the navy. The gutter is
+   * always reserved, so locking scroll for a dialog (which hides the
+   * scrollbar) doesn't shift the whole page sideways.
+   */
   html {
     scrollbar-color: rgb(var(--ink-2) / 0.45) transparent;
+    scrollbar-gutter: stable;
   }
 }
 
