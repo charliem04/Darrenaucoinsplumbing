@@ -1,7 +1,11 @@
 {
+  // Static assets only — no Worker script, no backend.
   "name": "darrenaucoinsplumbing",
   "compatibility_date": "2026-05-15",
   "assets": {
-    "directory": "./dist"
+    // Next's static export (`npm run build`).
+    "directory": "./out",
+    // Serve out/404.html for unknown paths, with a 404 status.
+    "not_found_handling": "404-page"
   }
 }
