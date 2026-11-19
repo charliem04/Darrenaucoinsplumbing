@@ -49,6 +49,9 @@ export const client = {
     "water meter installation Lafayette",
     "Acadiana plumbing",
   ],
+  /** The business description in the JSON-LD (search engines only). */
+  schemaDescription:
+    "Trusted plumbing services in Lafayette, Louisiana. Emergency repairs, sewer work, hydro-jetting, excavation, water heater installation, gas lines, and backflow testing.",
   ogTitle: "Darren Aucoin's Plumbing | Lafayette, LA",
   ogDescription:
     "Fast, honest plumbing in Lafayette, LA. 24/7 emergency service. Call {phone}.",
