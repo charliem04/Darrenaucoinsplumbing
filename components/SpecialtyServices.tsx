@@ -30,7 +30,7 @@ import type { SpecialtyService } from "@/content/types";
 import { ease } from "@/lib/motion";
 import { FlowLines } from "./FlowLines";
 import { Check, PathIcon } from "./Icons";
-import { Rail } from "./Rail";
+import { Rail, useRailClone } from "./Rail";
 import { RequestButton } from "./RequestButton";
 
 const s = client.services;
@@ -207,6 +207,57 @@ function OpenCard({ svc, onClose }: { svc: SpecialtyService; onClose: () => void
   );
 }
 
+/**
+ * One tile. In the drifting rail's visual copy (useRailClone) it is a
+ * plain look-alike: a second real tile would register the same layoutId
+ * twice and break the open/close morph. The copy is inert anyway — a
+ * touch on the rail first moves it back onto the real tiles.
+ */
+function SpecialtyTile({
+  svc,
+  isOpen,
+  onOpen,
+  tileRef,
+}: {
+  svc: SpecialtyService;
+  isOpen: boolean;
+  onOpen: () => void;
+  tileRef: (el: HTMLButtonElement | null) => void;
+}) {
+  const clone = useRailClone();
+  if (clone) {
+    return (
+      <div className={tileCls}>
+        <TileFace svc={svc} />
+      </div>
+    );
+  }
+  if (isOpen) {
+    // Holds the slot so the grid never moves while the card is out.
+    return (
+      <div aria-hidden="true" className={`${tileCls} invisible`}>
+        <TileFace svc={svc} />
+      </div>
+    );
+  }
+  return (
+    <motion.button
+      ref={tileRef}
+      layoutId={`card-${svc.key}`}
+      transition={morph}
+      type="button"
+      onClick={onOpen}
+      aria-haspopup="dialog"
+      // No .press scale here: Framer owns this element's transform for the morph.
+      className={`${tileCls} transition-colors duration-150 hover:border-teal/50 active:bg-teal/[0.06]`}
+      style={{ borderRadius: 8 }}
+    >
+      <TileFace svc={svc} motionIds />
+      <span className="sr-only">— show details</span>
+    </motion.button>
+  );
+}
+
 export function SpecialtyServices() {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -227,38 +278,23 @@ export function SpecialtyServices() {
       </div>
 
       <LayoutGroup id="specialty">
-        {/* Phones: a swipe rail of upright tiles. md+: the grid. */}
+        {/* Phones: a drifting rail of upright tiles. md+: the grid. */}
         <Rail
           label={s.specialtyHeading}
           gridClassName="md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3"
           itemClassName="basis-[62%] relative"
         >
-          {specialtyServices.map((svc) =>
-            openKey === svc.key ? (
-                // Holds the slot so the grid never moves while the card is out.
-                <div key={svc.key} aria-hidden="true" className={`${tileCls} invisible`}>
-                  <TileFace svc={svc} />
-                </div>
-              ) : (
-                <motion.button
-                  key={svc.key}
-                  ref={(el) => {
-                    tileRefs.current[svc.key] = el;
-                  }}
-                  layoutId={`card-${svc.key}`}
-                  transition={morph}
-                  type="button"
-                  onClick={() => setOpenKey(svc.key)}
-                  aria-haspopup="dialog"
-                  // No .press scale here: Framer owns this element's transform for the morph.
-                  className={`${tileCls} transition-colors duration-150 hover:border-teal/50 active:bg-teal/[0.06]`}
-                  style={{ borderRadius: 8 }}
-                >
-                  <TileFace svc={svc} motionIds />
-                  <span className="sr-only">— show details</span>
-                </motion.button>
-              )
-          )}
+          {specialtyServices.map((svc) => (
+            <SpecialtyTile
+              key={svc.key}
+              svc={svc}
+              isOpen={openKey === svc.key}
+              onOpen={() => setOpenKey(svc.key)}
+              tileRef={(el) => {
+                tileRefs.current[svc.key] = el;
+              }}
+            />
+          ))}
         </Rail>
 
         <AnimatePresence>{open && <OpenCard key={open.key} svc={open} onClose={close} />}</AnimatePresence>
