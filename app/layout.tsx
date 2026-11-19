@@ -16,6 +16,7 @@ import { PhotoTunerMount } from "@/components/PhotoTunerMount";
 export const metadata: Metadata = {
   metadataBase: new URL(client.siteUrl),
   title: client.metaTitle,
+  applicationName: client.businessName,
   description: withPhone(client.metaDescription),
   keywords: [...client.metaKeywords],
   authors: [{ name: client.businessName }],
@@ -29,9 +30,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
+    siteName: client.businessName,
+    locale: "en_US",
     title: client.ogTitle,
     description: withPhone(client.ogDescription),
-    images: [client.ogImagePath],
+    images: [{ url: client.ogImagePath, width: 1200, height: 630, alt: client.ogImageAlt }],
   },
   twitter: {
     card: "summary_large_image",
@@ -60,7 +63,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-US">
       <head>
         {/*
           Scroll reveals server-render their hidden state inline. Without

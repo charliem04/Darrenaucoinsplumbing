@@ -322,6 +322,25 @@ export function SpecialtyServices() {
 
         <AnimatePresence>{open && <OpenCard key={open.key} svc={open} onClose={close} />}</AnimatePresence>
       </LayoutGroup>
+
+      {/*
+        What each card shows when opened, kept in the page's HTML but
+        `hidden`. The cards only build their details on a click, so
+        without this none of it was in the page for search engines.
+      */}
+      <div hidden>
+        {specialtyServices.map((svc) => (
+          <div key={svc.key}>
+            <h4>{svc.name}</h4>
+            <p>{svc.description}</p>
+            <ul>
+              {svc.bullets.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

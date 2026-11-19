@@ -56,6 +56,8 @@ export const client = {
   ogDescription:
     "Fast, honest plumbing in Lafayette, LA. 24/7 emergency service. Call {phone}.",
   ogImagePath: "/og-image.jpg",
+  /** Read aloud / shown when the share image can't load. */
+  ogImageAlt: "Darren Aucoin's Plumbing — Lafayette, LA",
   /** Browser UI tint on mobile — the nav bar's colour. */
   themeColor: "#002336",
 
@@ -159,7 +161,7 @@ export const client = {
   hero: {
     headline: "Fast, Honest Plumbing When You Need it Most",
     body: "Darren Aucoin's Plumbing serves Lafayette and Acadiana with the expertise to handle everything from simple repairs to complex sewer work. We show up prepared, fix it right the first time, and keep our prices fair.",
-    imageAlt: "Darren Aucoin's Plumbing service truck",
+    imageAlt: "Darren Aucoin's Plumbing service truck parked at the shop",
     /** Followed by the phone number on the button. */
     primaryCta: "Call",
     secondaryCta: "Request service",
@@ -187,7 +189,7 @@ export const client = {
     heading: "Professional tools that make the difference",
     body: "We don't cut corners on equipment. Hydro-jetting systems, excavation capabilities, and diagnostic tools mean we solve problems instead of just patching them.",
     cta: "Request service",
-    imageAlt: "Equipment",
+    imageAlt: "Mini excavator digging a trench while a plumber lays new sewer pipe",
   },
 
   // ── Testimonials ──────────────────────────────────────────────────

@@ -8,6 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: `${client.siteUrl}/`,
+      // The build date: every deploy is a fresh build of the one page.
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
     },

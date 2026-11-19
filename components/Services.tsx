@@ -31,6 +31,11 @@ import { SpecialtyServices } from "./SpecialtyServices";
 
 const s = client.services;
 
+/** Tab keys have spaces ("Sewer work"); an id can't, or ARIA reads it as two ids. */
+const slug = (key: string) => key.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const tabId = (tab: ServiceTab) => `service-tab-${slug(tab.key)}`;
+const panelId = (tab: ServiceTab) => `service-panel-${slug(tab.key)}`;
+
 function Photo({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
   return (
     <Image
@@ -151,12 +156,23 @@ export function Services() {
   const [activeKey, setActiveKey] = useState(serviceTabs[0].key);
   const active = serviceTabs.find((t) => t.key === activeKey) ?? serviceTabs[0];
 
-  // Warm the cache for every service photo so switching never flashes.
+  // Warm the cache for every service photo so switching never flashes —
+  // once the browser is idle, so they never compete with the hero photo
+  // for bandwidth while the page is first loading.
   useEffect(() => {
-    for (const t of serviceTabs) {
-      const img = new window.Image();
-      img.src = t.photo.src;
+    const warm = () => {
+      for (const t of serviceTabs) {
+        const img = new window.Image();
+        img.src = t.photo.src;
+      }
+    };
+    // Safari has no requestIdleCallback; a short delay does the same job there.
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(warm, { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
     }
+    const id = setTimeout(warm, 2500);
+    return () => clearTimeout(id);
   }, []);
 
   return (
@@ -178,9 +194,9 @@ export function Services() {
                     key={tab.key}
                     type="button"
                     role="tab"
-                    id={`tab-${tab.key}`}
+                    id={tabId(tab)}
                     aria-selected={on}
-                    aria-controls="service-panel"
+                    aria-controls={panelId(tab)}
                     onClick={() => setActiveKey(tab.key)}
                     className={`press relative flex items-center justify-between gap-2 text-left h-12 px-3 rounded font-display font-semibold text-[1.0625rem] transition-colors duration-150 ${
                       on ? "text-white" : "text-ink hover:bg-teal/[0.08] hover:text-teal-dark active:bg-teal/[0.14]"
@@ -207,9 +223,9 @@ export function Services() {
           </div>
 
           <div
-            id="service-panel"
+            id={panelId(active)}
             role="tabpanel"
-            aria-labelledby={`tab-${active.key}`}
+            aria-labelledby={tabId(active)}
             className="relative isolate overflow-hidden min-h-[27rem] bg-teal text-white"
           >
             <FlowLines />
@@ -240,6 +256,22 @@ export function Services() {
               </motion.div>
             </AnimatePresence>
           </div>
+
+          {/*
+            The other tabs' panels, `hidden` until chosen — the usual tab
+            pattern. They keep every service's copy in the page's HTML,
+            where search engines read it; without them only the first
+            tab's text was in the page at all.
+          */}
+          {serviceTabs
+            .filter((tab) => tab.key !== active.key)
+            .map((tab) => (
+              <div key={tab.key} id={panelId(tab)} role="tabpanel" aria-labelledby={tabId(tab)} hidden>
+                <p>{tab.tagline}</p>
+                <h3>{tab.title}</h3>
+                <p>{tab.description}</p>
+              </div>
+            ))}
         </div>
 
         <ServicesPhone activeKey={activeKey} setActiveKey={setActiveKey} active={active} />

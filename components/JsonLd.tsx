@@ -11,7 +11,7 @@
 import { client } from "@/client.config";
 import { faqs } from "@/content/faqs";
 import { serviceTabs, specialtyServices } from "@/content/services";
-import { phoneDashed } from "@/lib/phone";
+import { phoneDashed, withPhone } from "@/lib/phone";
 
 function ld(data: object) {
   // `<` escaped so a string can never close the <script> element.
@@ -20,15 +20,40 @@ function ld(data: object) {
 
 export function JsonLd() {
   const url = `${client.siteUrl}/`;
+  const abs = (path: string) => `${client.siteUrl}${path}`;
+  const ids = { business: `${url}#business`, website: `${url}#website`, page: `${url}#webpage` };
+
+  // The site itself, and the one page on it, both pointing at the business.
+  const website = {
+    "@type": "WebSite",
+    "@id": ids.website,
+    url,
+    name: client.businessName,
+    inLanguage: "en-US",
+    publisher: { "@id": ids.business },
+  };
+  const page = {
+    "@type": "WebPage",
+    "@id": ids.page,
+    url,
+    name: client.metaTitle,
+    description: withPhone(client.metaDescription),
+    inLanguage: "en-US",
+    isPartOf: { "@id": ids.website },
+    about: { "@id": ids.business },
+    primaryImageOfPage: { "@type": "ImageObject", url: abs("/images/hero.webp") },
+  };
+
   const business = {
-    "@context": "https://schema.org",
     "@type": "Plumber",
-    "@id": `${url}#business`,
+    "@id": ids.business,
     name: client.businessName,
     legalName: client.legalName,
-    image: `${client.siteUrl}${client.ogImagePath}`,
-    logo: `${client.siteUrl}/logo.png`,
+    // Real photos of the trucks and the work, the share image first.
+    image: [client.ogImagePath, "/images/hero.webp", "/images/septic-tank-pump-out.webp", "/images/equipment.webp"].map(abs),
+    logo: abs("/logo.png"),
     url,
+    ...(client.socials.googleMaps ? { hasMap: client.socials.googleMaps } : {}),
     telephone: `+1-${phoneDashed}`,
     email: client.email,
     priceRange: "$$",
@@ -63,8 +88,9 @@ export function JsonLd() {
   };
 
   const faqPage = {
-    "@context": "https://schema.org",
     "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    isPartOf: { "@id": ids.page },
     mainEntity: faqs.map((f) => ({
       "@type": "Question",
       name: f.q,
@@ -72,10 +98,8 @@ export function JsonLd() {
     })),
   };
 
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={ld(business)} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={ld(faqPage)} />
-    </>
-  );
+  // One graph, so search engines see these as one business, site and page.
+  const graph = { "@context": "https://schema.org", "@graph": [business, website, page, faqPage] };
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={ld(graph)} />;
 }

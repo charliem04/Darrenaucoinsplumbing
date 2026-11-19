@@ -23,7 +23,7 @@ export const serviceTabs: ServiceTab[] = [
       "We answer the phone at three in the morning because that's when people need us. Fast response, fair price, problem solved.",
     photo: {
       src: "/images/emergency-water-line.jpg",
-      alt: "Emergency",
+      alt: "Crew digging out a broken water line beside an apartment building",
       width: 473,
       height: 1024,
     },
@@ -37,7 +37,7 @@ export const serviceTabs: ServiceTab[] = [
       "From simple cleanouts to complete line replacement, including camera sewer line inspection to pinpoint problems without guesswork. We have the equipment and expertise to handle any sewer issue with precision.",
     photo: {
       src: "/images/sewer-work.jpg",
-      alt: "Sewer work",
+      alt: "Plumbers cleaning out an underground sewer tank with a vacuum hose and water jet",
       width: 768,
       height: 1024,
     },
@@ -51,7 +51,7 @@ export const serviceTabs: ServiceTab[] = [
       "Licensed and certified to install water meters for residential and commercial properties. We ensure proper installation and compliance with all local regulations.",
     photo: {
       src: "/images/water-meter-installation.jpg",
-      alt: "Water meter installation",
+      alt: "Plumbers connecting a new water meter in an excavated trench",
       width: 473,
       height: 1024,
     },
@@ -65,7 +65,7 @@ export const serviceTabs: ServiceTab[] = [
       "When repairs require digging, we have the equipment and expertise to get it done right, minimizing disruption to your property.",
     photo: {
       src: "/images/excavation.jpg",
-      alt: "Excavation",
+      alt: "Plumber laying new sewer pipe in a trench next to a mini excavator bucket",
       width: 768,
       height: 1024,
     },
@@ -79,7 +79,7 @@ export const serviceTabs: ServiceTab[] = [
       "From routine maintenance to major repairs, we treat your home with the care and respect it deserves.",
     photo: {
       src: "/images/residential-plumbing.jpg",
-      alt: "Residential",
+      alt: "New PVC plumbing lines laid in trenches for a new home",
       width: 473,
       height: 1024,
     },
@@ -93,7 +93,7 @@ export const serviceTabs: ServiceTab[] = [
       "No job too big or small. We diagnose problems accurately and fix them right the first time.",
     photo: {
       src: "/images/plumbing-repairs.jpg",
-      alt: "Repairs",
+      alt: "New PVC drain line replacing old cast-iron pipe along the side of a house",
       width: 473,
       height: 1024,
     },
@@ -107,7 +107,7 @@ export const serviceTabs: ServiceTab[] = [
       "Routine septic tank pumping keeps your system running and prevents costly backups or drain field failure. Most tanks need service every 3–5 years; we'll inspect the tank while we're there and flag anything that needs attention.",
     photo: {
       src: "/images/septic-tank-pump-out.webp",
-      alt: "Septic Solutions",
+      alt: "Darren Aucoin's Plumbing vacuum truck used for septic tank pump-outs",
       width: 985,
       height: 455,
     },

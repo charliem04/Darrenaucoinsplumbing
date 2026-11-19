@@ -50,7 +50,30 @@ export function checkSeo() {
 
     if (!desc) problems.push(`${path} has no description`);
     else if (desc.length > MAX_DESCRIPTION) problems.push(`${path} description is ${desc.length} chars`);
-    if (!/application\/ld\+json/.test(html)) problems.push(`${path} has no JSON-LD`);
+
+    // Structured data: present, and valid JSON (a syntax slip makes
+    // search engines ignore the whole block, silently).
+    const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+    if (!blocks.length) problems.push(`${path} has no JSON-LD`);
+    for (const [, json] of blocks) {
+      try {
+        JSON.parse(json);
+      } catch (err) {
+        problems.push(`${path} JSON-LD does not parse: ${err.message}`);
+      }
+    }
+
+    // Exactly one main heading.
+    const h1s = (html.match(/<h1[\s>]/g) ?? []).length;
+    if (h1s !== 1) problems.push(`${path} has ${h1s} <h1> elements (want exactly 1)`);
+
+    // Every image says what it shows, or is marked decorative with alt="".
+    for (const [img] of html.matchAll(/<img\b[^>]*>/g)) {
+      if (!/\balt="/.test(img)) problems.push(`${path} image has no alt attribute: ${img.slice(0, 90)}…`);
+      const alt = (img.match(/\balt="([^"]*)"/) ?? [, ""])[1];
+      // One-word alts ("Equipment") describe nothing; a decorative "" is fine.
+      if (alt && !/\s/.test(alt.trim())) problems.push(`${path} image alt "${alt}" is too vague`);
+    }
   }
 
   if (problems.length) {
