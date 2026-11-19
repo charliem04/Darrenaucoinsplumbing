@@ -21,7 +21,7 @@ export function CtaBand() {
                   */}
                   <Image
                     alt={c.imageAlt}
-                    src="/images/sewer-work.webp"
+                    src="/images/sewer-work.jpg"
                     width={768}
                     height={1024}
                     sizes="(min-width: 1408px) 1280px, 100vw"

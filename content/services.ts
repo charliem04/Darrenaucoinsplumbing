@@ -22,7 +22,7 @@ export const serviceTabs: ServiceTab[] = [
     description:
       "We answer the phone at three in the morning because that's when people need us. Fast response, fair price, problem solved.",
     photo: {
-      src: "/images/emergency-water-line.webp",
+      src: "/images/emergency-water-line.jpg",
       alt: "Emergency",
       width: 473,
       height: 1024,
@@ -37,7 +37,7 @@ export const serviceTabs: ServiceTab[] = [
     description:
       "From simple cleanouts to complete line replacement, including camera sewer line inspection to pinpoint problems without guesswork. We have the equipment and expertise to handle any sewer issue with precision.",
     photo: {
-      src: "/images/sewer-work.webp",
+      src: "/images/sewer-work.jpg",
       alt: "Sewer work",
       width: 768,
       height: 1024,
@@ -52,7 +52,7 @@ export const serviceTabs: ServiceTab[] = [
     description:
       "Licensed and certified to install water meters for residential and commercial properties. We ensure proper installation and compliance with all local regulations.",
     photo: {
-      src: "/images/water-meter-installation.webp",
+      src: "/images/water-meter-installation.jpg",
       alt: "Water meter installation",
       width: 473,
       height: 1024,
@@ -67,7 +67,7 @@ export const serviceTabs: ServiceTab[] = [
     description:
       "When repairs require digging, we have the equipment and expertise to get it done right, minimizing disruption to your property.",
     photo: {
-      src: "/images/excavation.webp",
+      src: "/images/excavation.jpg",
       alt: "Excavation",
       width: 768,
       height: 1024,
@@ -82,7 +82,7 @@ export const serviceTabs: ServiceTab[] = [
     description:
       "From routine maintenance to major repairs, we treat your home with the care and respect it deserves.",
     photo: {
-      src: "/images/residential-plumbing.webp",
+      src: "/images/residential-plumbing.jpg",
       alt: "Residential",
       width: 473,
       height: 1024,
@@ -97,7 +97,7 @@ export const serviceTabs: ServiceTab[] = [
     description:
       "No job too big or small. We diagnose problems accurately and fix them right the first time.",
     photo: {
-      src: "/images/plumbing-repairs.webp",
+      src: "/images/plumbing-repairs.jpg",
       alt: "Repairs",
       width: 473,
       height: 1024,
