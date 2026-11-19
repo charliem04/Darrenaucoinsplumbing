@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * ── TOKENS ──────────────────────────────────────────────────────────
+ * Space-separated RGB channels so Tailwind can apply opacity
+ * (bg-teal/20). Names and roles are documented in tailwind.config.ts.
+ */
+:root {
+  --navy: 0 47 72; /* #002f48 */
+  --navy-deep: 0 26 43; /* #001a2b */
+  --navy-bar: 0 35 54; /* #002336 */
+  --navy-lift: 0 58 89; /* #003a59 */
+  --teal: 11 132 131; /* #0b8483 */
+  --teal-light: 13 150 148; /* #0d9694 */
+  --teal-dark: 10 113 112; /* #0a7170 */
+  --teal-hover: 10 115 114; /* #0a7372 */
+  --mint: 93 202 165; /* #5dcaa5 */
+  --blue: 0 119 182; /* #0077b6 */
+  --blue-press: 0 90 138; /* #005a8a */
+  --ink: 7 3 1; /* #070301 */
+
+  /*
+   * ── TYPE ──────────────────────────────────────────────────────────
+   * Read this before "fixing" it.
+   *
+   * The Figma export named its fonts "Rubik:Medium", "Inter:Regular",
+   * "Roboto:Bold" — Figma's internal style names, not CSS families —
+   * and never loaded Rubik, Inter or Roboto at all. Every one of those
+   * declarations fell through to the generic `sans-serif`, which is
+   * what the client has been looking at on the live site (Arial on
+   * Windows, Helvetica on a Mac). Only Fraunces, the nav wordmark,
+   * was ever loaded.
+   *
+   * The rebuild is "no redesign", so the three roles below reproduce
+   * that exactly. The design pass can give each role a real face by
+   * changing one line here and adding its @fontsource package.
+   */
+  --font-display: sans-serif;
+  --font-body: sans-serif;
+  --font-figure: sans-serif;
+  --font-wordmark: "Fraunces Variable", serif;
+}
+
+/*
+ * ── BASE ────────────────────────────────────────────────────────────
+ * The element defaults the old theme.css applied in @layer base. A
+ * handful of controls (the nav dropdown items, the form fields) carry
+ * no type classes of their own and rely on these.
+ */
+@layer base {
+  * {
+    border-color: rgb(0 0 0 / 0.1);
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: #ffffff;
+    color: #0a0a0a;
+  }
+
+  button,
+  label {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/*
+ * ── MOTION THAT RUNS BEFORE JAVASCRIPT ──────────────────────────────
+ * The hero photo fades in on load. It is a CSS animation rather than a
+ * Framer one because it is the largest thing above the fold: tying it
+ * to hydration would hold the page's main image at opacity 0 until the
+ * JavaScript arrived. Values mirror dur.heroFade in lib/motion.ts.
+ */
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.hero-fade {
+  opacity: 0;
+  animation: hero-fade 1s ease 0.15s forwards;
+}
+
+/*
+ * Scroll reveals are Framer Motion (components/Reveal.tsx), which
+ * server-renders the hidden state inline. These two rules make sure
+ * that state never strands content: without JavaScript (see the
+ * <noscript> in app/layout.tsx) or with reduced motion, it is shown.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade {
+    opacity: 1;
+    animation: none;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
