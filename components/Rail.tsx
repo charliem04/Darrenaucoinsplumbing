@@ -72,7 +72,9 @@ export function Rail({
   const dark = tone === "dark";
 
   return (
-    <div className="flex flex-col gap-4">
+    // min-w-0: inside a grid or flex parent, a scroller's content width
+    // would otherwise widen the parent past the screen.
+    <div className="flex min-w-0 w-full flex-col gap-4">
       <Tag
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={ref as any}

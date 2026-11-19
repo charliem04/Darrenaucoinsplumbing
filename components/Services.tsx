@@ -11,18 +11,17 @@
  * selection reads as a door into the panel. The photo is shown as it
  * is, with no tint over it.
  *
- * md+: list + panel. Phones: a swipe rail of layered service cards.
+ * md+: list + panel. Phones: a chip row + one card (ServicesPhone).
  */
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { client } from "@/client.config";
 import { serviceTabs } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
 import { dur, ease } from "@/lib/motion";
 import { FlowLines } from "./FlowLines";
 import { ArrowRight, DropIcon } from "./Icons";
-import { Rail } from "./Rail";
 import { RequestButton } from "./RequestButton";
 import { Section } from "./Section";
 import { SectionHead } from "./SectionHead";
@@ -40,6 +39,92 @@ function Photo({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
       className="object-cover"
       style={{ objectPosition: tab.objectPosition }}
     />
+  );
+}
+
+/**
+ * Phones: a row of service chips you can swipe sideways, and one card
+ * below for the chosen service — the photo, then a teal panel with the
+ * copy and the button. One thing on screen at a time, the same
+ * list-then-detail idea as the desktop widget, at a phone's scale.
+ */
+function ServicesPhone({
+  activeKey,
+  setActiveKey,
+  active,
+}: {
+  activeKey: string;
+  setActiveKey: (k: string) => void;
+  active: ServiceTab;
+}) {
+  const chips = useRef<HTMLDivElement>(null);
+
+  // Keep the chosen chip in view inside the chip row (row only — never
+  // scrolls the page).
+  useEffect(() => {
+    const row = chips.current;
+    const chip = row?.querySelector<HTMLElement>(`[data-key="${CSS.escape(activeKey)}"]`);
+    if (!row || !chip) return;
+    const target = chip.offsetLeft - (row.clientWidth - chip.offsetWidth) / 2;
+    row.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+  }, [activeKey]);
+
+  return (
+    <div className="md:hidden flex min-w-0 flex-col gap-4">
+      <div
+        ref={chips}
+        role="tablist"
+        aria-label={s.heading}
+        className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1"
+      >
+        {serviceTabs.map((tab) => {
+          const on = tab.key === activeKey;
+          return (
+            <button
+              key={tab.key}
+              data-key={tab.key}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              aria-controls="service-card"
+              onClick={() => setActiveKey(tab.key)}
+              className={`press h-10 shrink-0 whitespace-nowrap rounded-full border px-4 font-display font-semibold text-[0.9375rem] transition-colors duration-150 ${
+                on ? "border-teal bg-teal text-white" : "border-rule bg-white text-ink active:bg-teal/10"
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div id="service-card" role="tabpanel" className="overflow-hidden rounded border border-teal/40 bg-teal">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={active.key}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: ease.out }}
+          >
+            <div className="relative aspect-[16/10] bg-teal-dark">
+              <Photo tab={active} sizes="calc(100vw - 40px)" />
+            </div>
+            <div className="flex flex-col gap-3 p-5 text-white">
+              <p className="inline-flex items-center gap-2 font-display font-semibold text-[0.875rem] tracking-[0.04em]">
+                <DropIcon className="size-4" />
+                {active.tagline}
+              </p>
+              <h3 className="font-display font-semibold text-[1.375rem] leading-tight">{active.title}</h3>
+              <p className="text-[1rem] leading-relaxed">{active.description}</p>
+              <div className="pt-2">
+                <RequestButton service={active.key} onTeal className="w-full justify-center" />
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }
 
@@ -138,34 +223,7 @@ export function Services() {
           </div>
         </div>
 
-        {/*
-          ── phones: a swipe rail of layered cards ──────────────
-          The photo sits at the back; a teal panel overlaps its lower
-          edge, so each service is one object with depth rather than a
-          row in a long list. Seven services side by side, not stacked.
-        */}
-        <div className="md:hidden">
-          <Rail label={s.heading} gridClassName="" itemClassName="basis-[86%]">
-            {serviceTabs.map((tab) => (
-              <article key={tab.key} className="flex h-full flex-col">
-                <div className="relative aspect-[4/3] overflow-hidden rounded bg-teal-dark">
-                  <Photo tab={tab} sizes="86vw" />
-                  <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 font-display font-semibold text-[0.875rem] text-teal-dark">
-                    {tab.label}
-                  </span>
-                </div>
-                <div className="relative isolate mx-3 -mt-10 flex flex-1 flex-col gap-3 overflow-hidden rounded bg-teal p-5 text-white">
-                  <FlowLines />
-                  <h3 className="relative font-display font-semibold text-[1.3125rem] leading-tight">{tab.title}</h3>
-                  <p className="relative text-[0.9375rem] leading-relaxed">{tab.description}</p>
-                  <div className="relative mt-auto pt-2">
-                    <RequestButton service={tab.key} onTeal className="w-full justify-center" />
-                  </div>
-                </div>
-              </article>
-            ))}
-          </Rail>
-        </div>
+        <ServicesPhone activeKey={activeKey} setActiveKey={setActiveKey} active={active} />
 
         <SpecialtyServices />
       </div>

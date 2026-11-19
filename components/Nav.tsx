@@ -74,7 +74,7 @@ export function Nav({ base = "" }: { base?: string }) {
             <span className="relative shrink-0 h-8 w-[53px] md:h-11 md:w-[73px] overflow-hidden rounded-[4px] bg-white">
               <Image src="/images/logo-nav.webp" alt="" fill priority sizes="73px" className="object-contain p-0.5" />
             </span>
-            <span className="font-display font-semibold text-[1.0625rem] md:text-[1.375rem] leading-tight truncate">
+            <span className="font-display font-semibold text-[0.9375rem] leading-[1.1] min-[380px]:text-[1.0625rem] min-[380px]:leading-tight min-[380px]:truncate md:text-[1.375rem]">
               {client.businessName}
             </span>
           </a>
