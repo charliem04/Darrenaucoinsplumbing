@@ -5,9 +5,10 @@
  * lib/submitContact.ts; this file only collects, checks the obvious,
  * and tells the visitor what happened — truthfully.
  */
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { client } from "@/client.config";
 import { phoneDisplay, withPhone } from "@/lib/phone";
+import { REQUEST_SERVICE_EVENT } from "@/lib/requestService";
 import { submitContact } from "@/lib/submitContact";
 import { Check } from "./Icons";
 
@@ -37,6 +38,20 @@ export function ContactForm() {
 
   const set = (k: keyof Fields) => (e: { target: { value: string } }) =>
     setForm((prev) => ({ ...prev, [k]: e.target.value }));
+
+  // "Request this service" anywhere on the page pre-selects it here —
+  // only if it is a real option, so the dropdown never holds a value
+  // the submit check would refuse. See lib/requestService.ts.
+  useEffect(() => {
+    const onRequest = (e: Event) => {
+      const service = (e as CustomEvent<string>).detail;
+      if ((f.serviceOptions as readonly string[]).includes(service)) {
+        setForm((prev) => ({ ...prev, service }));
+      }
+    };
+    window.addEventListener(REQUEST_SERVICE_EVENT, onRequest);
+    return () => window.removeEventListener(REQUEST_SERVICE_EVENT, onRequest);
+  }, []);
 
   const fail = (msg: string) => {
     setState("error");

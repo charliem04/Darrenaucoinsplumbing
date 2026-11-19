@@ -1,29 +1,30 @@
 "use client";
 
 /**
- * "What we handle" + "Specialty services".
+ * "What we handle" — the core services widget, and below it the
+ * specialty services (components/SpecialtyServices).
  *
- * Core services: one piece of state over content/services.ts, drawn
- * as a vertical list beside a detail panel at md+ (the old row of
- * seven tabs crushed to 54px-wide labels at tablet width), and as an
- * accordion on phones.
+ * The widget is teal-led on the light ground: the service list is a
+ * solid teal rail (with the same slow currents as the navy bands), and
+ * the selected service is a white tab that slides between items and
+ * opens into the white detail panel beside it — one surface, so the
+ * selection reads as a door into the panel.
  *
- * Specialty services are laid out open, not behind accordions: they
- * are the services people search for by name (gas, backflow, water
- * heaters), so they should be readable at a glance. Credentials are
- * marked in green — the page's one meaning for green: verified.
+ * md+: rail + panel. Phones: an accordion whose open row turns teal.
  */
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { client } from "@/client.config";
-import { serviceTabs, specialtyServices } from "@/content/services";
+import { serviceTabs } from "@/content/services";
 import type { ServiceTab } from "@/content/types";
 import { dur, ease } from "@/lib/motion";
-import { ArrowRight, Check, ChevronDown, PathIcon } from "./Icons";
-import { RevealGroup, RevealItem } from "./Reveal";
+import { FlowLines } from "./FlowLines";
+import { ArrowRight, ChevronDown, DropIcon } from "./Icons";
+import { RequestButton } from "./RequestButton";
 import { Section } from "./Section";
 import { SectionHead } from "./SectionHead";
+import { SpecialtyServices } from "./SpecialtyServices";
 
 const s = client.services;
 
@@ -37,18 +38,6 @@ function Photo({ tab, sizes }: { tab: ServiceTab; sizes: string }) {
       className="object-cover"
       style={{ objectPosition: tab.objectPosition }}
     />
-  );
-}
-
-function RequestLink() {
-  return (
-    <a
-      href="#contact"
-      className="press group inline-flex items-center gap-2 font-body font-semibold text-teal-dark hover:text-teal active:text-teal-dark rounded"
-    >
-      {s.tabCta}
-      <ArrowRight className="size-[18px] transition-transform duration-150 ease-brand group-hover:translate-x-0.5" />
-    </a>
   );
 }
 
@@ -69,44 +58,52 @@ export function Services() {
       <div className="flex flex-col gap-12 md:gap-14">
         <SectionHead id="services-h" label={s.label} heading={s.heading} lede={s.lede} />
 
-        {/* ── md+: list + panel ─────────────────────────────── */}
-        <div className="hidden md:grid grid-cols-[13rem_1fr] lg:grid-cols-[16rem_1fr] gap-6 lg:gap-8 items-start">
-          <div role="tablist" aria-orientation="vertical" aria-label={s.heading} className="flex flex-col">
-            {serviceTabs.map((tab) => {
-              const on = tab.key === activeKey;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  role="tab"
-                  id={`tab-${tab.key}`}
-                  aria-selected={on}
-                  aria-controls="service-panel"
-                  onClick={() => setActiveKey(tab.key)}
-                  className={`press relative text-left h-12 pl-5 pr-3 rounded font-display font-semibold text-[1.0625rem] ${
-                    on ? "text-ink bg-white" : "text-ink-2 hover:text-ink hover:bg-white/60 active:bg-white"
-                  }`}
-                >
-                  {on && (
-                    <motion.span
-                      layoutId="service-indicator"
-                      aria-hidden="true"
-                      className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-teal"
-                      transition={{ type: "spring", stiffness: 500, damping: 42 }}
+        {/* ── md+: teal rail + white panel ──────────────────── */}
+        <div className="hidden md:grid grid-cols-[14rem_1fr] lg:grid-cols-[17rem_1fr] rounded overflow-hidden border border-teal/40 bg-white">
+          <div className="relative isolate overflow-hidden bg-teal p-3 lg:p-4">
+            <FlowLines />
+            <p className="relative px-3 pt-2 pb-3 font-display font-semibold text-[0.875rem] tracking-[0.06em] text-white">
+              {serviceTabs.length} {s.railLabel}
+            </p>
+            <div role="tablist" aria-orientation="vertical" aria-label={s.heading} className="relative flex flex-col gap-0.5">
+              {serviceTabs.map((tab) => {
+                const on = tab.key === activeKey;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    role="tab"
+                    id={`tab-${tab.key}`}
+                    aria-selected={on}
+                    aria-controls="service-panel"
+                    onClick={() => setActiveKey(tab.key)}
+                    className={`press relative flex items-center justify-between gap-2 text-left h-12 px-3 rounded font-display font-semibold text-[1.0625rem] transition-colors duration-150 ${
+                      on ? "text-teal-dark" : "text-white hover:bg-white/10 active:bg-white/15"
+                    }`}
+                  >
+                    {on && (
+                      <motion.span
+                        layoutId="service-tab"
+                        aria-hidden="true"
+                        className="absolute inset-0 rounded bg-white"
+                        transition={{ type: "spring", stiffness: 480, damping: 40 }}
+                      />
+                    )}
+                    <span className="relative">{tab.label}</span>
+                    <ArrowRight
+                      className={`relative size-4 shrink-0 transition-[opacity,transform] duration-200 ease-brand ${
+                        on ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-1"
+                      }`}
                     />
-                  )}
-                  {tab.label}
-                </button>
-              );
-            })}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div
-            id="service-panel"
-            role="tabpanel"
-            aria-labelledby={`tab-${active.key}`}
-            className="relative bg-white rounded border border-rule overflow-hidden min-h-[26rem]"
-          >
+          <div id="service-panel" role="tabpanel" aria-labelledby={`tab-${active.key}`} className="relative min-h-[27rem]">
+            {/* A teal edge where the rail meets the panel. */}
+            <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-teal" />
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={active.key}
@@ -114,28 +111,31 @@ export function Services() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: dur.panel, ease: ease.out }}
-                className="grid lg:grid-cols-[1fr_minmax(0,22rem)] h-full"
+                className="grid lg:grid-cols-[1fr_minmax(0,21rem)] h-full"
               >
                 <div className="flex flex-col gap-4 p-7 lg:p-10 justify-center">
-                  <p className="font-display font-semibold text-[0.9375rem] tracking-[0.04em] text-teal-dark">
+                  <p className="inline-flex items-center gap-2 font-display font-semibold text-[0.9375rem] tracking-[0.04em] text-teal-dark">
+                    <DropIcon className="size-4" />
                     {active.tagline}
                   </p>
                   <h3 className="font-display font-semibold text-d-3 text-ink text-balance">{active.title}</h3>
                   <p className="text-[1.0625rem] leading-relaxed text-ink-2 max-w-[52ch]">{active.description}</p>
-                  <div className="pt-2">
-                    <RequestLink />
+                  <div className="pt-3">
+                    <RequestButton service={active.key} />
                   </div>
                 </div>
-                <div className="relative hidden lg:block min-h-[26rem] bg-ground">
-                  <Photo tab={active} sizes="22rem" />
+                <div className="relative hidden lg:block min-h-[27rem] bg-teal/10">
+                  <Photo tab={active} sizes="21rem" />
+                  {/* Teal wash at the foot of the photo ties it to the rail. */}
+                  <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-teal/45 to-transparent" />
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
 
-        {/* ── phones: accordion ─────────────────────────────── */}
-        <div className="md:hidden flex flex-col rounded border border-rule bg-white divide-y divide-rule overflow-hidden">
+        {/* ── phones: accordion; the open row turns teal ────── */}
+        <div className="md:hidden flex flex-col rounded overflow-hidden border border-teal/40 bg-white divide-y divide-rule">
           {serviceTabs.map((tab) => {
             const on = tab.key === activeKey;
             return (
@@ -145,13 +145,13 @@ export function Services() {
                   aria-expanded={on}
                   aria-controls={`svc-${tab.key}`}
                   onClick={() => setActiveKey(tab.key)}
-                  className="press w-full flex items-center justify-between gap-4 min-h-14 px-5 text-left"
+                  className={`w-full flex items-center justify-between gap-4 min-h-14 px-5 text-left transition-colors duration-200 ${
+                    on ? "bg-teal text-white" : "text-ink active:bg-teal/10"
+                  }`}
                 >
-                  <span className={`font-display font-semibold text-[1.125rem] ${on ? "text-teal-dark" : "text-ink"}`}>
-                    {tab.label}
-                  </span>
+                  <span className="font-display font-semibold text-[1.125rem]">{tab.label}</span>
                   <ChevronDown
-                    className={`size-5 shrink-0 transition-transform duration-200 ease-brand ${on ? "rotate-180 text-teal-dark" : "text-ink-2"}`}
+                    className={`size-5 shrink-0 transition-transform duration-200 ease-brand ${on ? "rotate-180 text-white" : "text-teal-dark"}`}
                   />
                 </button>
                 {/* Height via grid rows — never animate height directly. */}
@@ -160,13 +160,15 @@ export function Services() {
                   className={`grid transition-[grid-template-rows] duration-300 ease-brand ${on ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
-                    <div className="flex flex-col gap-4 px-5 pb-6">
-                      <div className="relative aspect-[4/3] rounded overflow-hidden bg-ground">
+                    <div className="flex flex-col gap-4 px-5 pt-5 pb-6 border-l-4 border-teal">
+                      <div className="relative aspect-[4/3] rounded overflow-hidden bg-teal/10">
                         <Photo tab={tab} sizes="calc(100vw - 40px)" />
                       </div>
                       <h3 className="font-display font-semibold text-[1.375rem] leading-tight text-ink">{tab.title}</h3>
                       <p className="leading-relaxed text-ink-2">{tab.description}</p>
-                      <RequestLink />
+                      <div>
+                        <RequestButton service={tab.key} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -175,49 +177,7 @@ export function Services() {
           })}
         </div>
 
-        {/* ── Specialty services ───────────────────────────── */}
-        <div className="flex flex-col gap-6 pt-4">
-          <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-4">
-            <h3 className="font-display font-semibold text-d-3 text-ink">{s.specialtyHeading}</h3>
-            <p className="font-display font-semibold text-[0.9375rem] tracking-[0.04em] text-ink-2">{s.specialtyLabel}</p>
-          </div>
-          <RevealGroup as="ul" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {specialtyServices.map((svc, i) => (
-              <RevealItem
-                as="li"
-                key={svc.key}
-                index={i}
-                className="flex flex-col gap-4 rounded border border-rule bg-white p-6"
-              >
-                <div className="flex items-start gap-4">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded bg-teal/10 text-teal-dark">
-                    <PathIcon d={svc.icon} className="size-[22px]" />
-                  </span>
-                  <div className="flex flex-col gap-0.5">
-                    <h4 className="font-display font-semibold text-[1.1875rem] leading-tight text-ink">{svc.name}</h4>
-                    {svc.badge ? (
-                      <p className="inline-flex items-center gap-1.5 text-[0.875rem] font-semibold text-green">
-                        <Check className="size-3.5" />
-                        {svc.badge}
-                      </p>
-                    ) : (
-                      <p className="text-[0.875rem] text-ink-2">{svc.meta}</p>
-                    )}
-                  </div>
-                </div>
-                <p className="text-[0.9375rem] leading-relaxed text-ink-2">{svc.description}</p>
-                <ul className="mt-auto flex flex-col gap-2 border-t border-rule pt-4">
-                  {svc.bullets.map((b) => (
-                    <li key={b} className="flex gap-2.5 text-[0.9375rem] text-ink">
-                      <Check className="size-4 shrink-0 mt-[3px] text-teal" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
+        <SpecialtyServices />
       </div>
     </Section>
   );

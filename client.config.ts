@@ -173,8 +173,11 @@ export const client = {
     heading: "What we handle",
     lede: "From burst pipes at midnight to sewer lines that need serious work, we've got the tools and know-how to get it done. Every job gets our full attention.",
     tabCta: "Request this service",
-    specialtyLabel: "Also available",
+    /** Heads the teal rail: "7 services". */
+    railLabel: "services",
     specialtyHeading: "Specialty services",
+    specialtyHint: "Select a service to see what's included.",
+    specialtyClose: "Close",
   },
 
   // ── About / Equipment ─────────────────────────────────────────────

@@ -21,18 +21,21 @@ export function Hero() {
       <div className="relative px-5 md:px-10 lg:px-24 pt-10 pb-14 md:pt-16 md:pb-20">
         <div className="mx-auto max-w-content grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16 items-center">
           <div className="flex flex-col gap-6">
-            <div className="hero-rise" style={{ "--d": "0.05s" } as CSSProperties}>
-              {/* The one green on the page means "available". */}
-              <p className="inline-flex items-center gap-2.5 font-body font-medium text-[0.9375rem] text-white/80">
-                <span className="relative flex size-2.5" aria-hidden="true">
-                  <span className="ping-soft absolute inset-0 rounded-full bg-green-lift" />
-                  <span className="relative size-2.5 rounded-full bg-green-lift" />
-                </span>
-                {client.callCard.body}
-              </p>
-            </div>
-            <div className="hero-rise" style={{ "--d": "0.12s" } as CSSProperties}>
-              <h1 className="font-display font-bold text-d-1 text-balance max-w-[16ch]">{h.headline}</h1>
+            {/* Headline, then the availability line tucked right under it. */}
+            <div className="flex flex-col gap-4">
+              <div className="hero-rise" style={{ "--d": "0.05s" } as CSSProperties}>
+                <h1 className="font-display font-bold text-d-1 text-balance max-w-[16ch]">{h.headline}</h1>
+              </div>
+              <div className="hero-rise" style={{ "--d": "0.12s" } as CSSProperties}>
+                {/* The one green on the page means "available". */}
+                <p className="inline-flex items-center gap-2.5 font-body font-medium text-[1rem] text-white/85">
+                  <span className="relative flex size-2.5 shrink-0" aria-hidden="true">
+                    <span className="ping-soft absolute inset-0 rounded-full bg-green-lift" />
+                    <span className="relative size-2.5 rounded-full bg-green-lift" />
+                  </span>
+                  {client.callCard.body}
+                </p>
+              </div>
             </div>
             <div className="hero-rise" style={{ "--d": "0.19s" } as CSSProperties}>
               <p className="text-[1.0625rem] md:text-lg leading-relaxed text-white/75 max-w-[54ch] text-pretty">
