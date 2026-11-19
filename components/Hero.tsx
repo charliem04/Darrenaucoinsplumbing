@@ -9,7 +9,8 @@ import type { CSSProperties } from "react";
 function HeroPhoto({ className = "" }: { className?: string }) {
   return (
     <div className={`hero-fade relative ${className}`}>
-      <div className="relative overflow-hidden rounded ring-1 ring-white/10 bg-navy-deep">
+      {/* A thin teal frame — a ring (box-shadow), so it adds no layout. */}
+      <div className="relative overflow-hidden rounded ring-2 ring-teal-light bg-navy-deep">
         <Image
           alt={client.hero.imageAlt}
           src="/images/hero.webp"
