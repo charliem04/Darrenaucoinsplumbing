@@ -37,7 +37,7 @@ export function Contact() {
           href={`mailto:${client.email}`}
           className="font-body font-semibold text-white [overflow-wrap:anywhere] hover:text-teal-light active:text-white underline-offset-4 hover:underline"
         >
-          {client.emailDisplay}
+          {client.email}
         </a>
       ),
     },
@@ -47,7 +47,9 @@ export function Contact() {
       desc: c.cards.office.desc,
       value: (
         <p className="font-body font-semibold text-white">
-          {a.city}, {a.regionName} {a.postalCode}
+          {a.street}
+          <br />
+          {a.city}, {a.region} {a.postalCode}
         </p>
       ),
     },

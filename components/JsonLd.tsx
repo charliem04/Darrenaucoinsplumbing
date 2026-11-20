@@ -60,12 +60,12 @@ export function JsonLd() {
     description: client.schemaDescription,
     address: {
       "@type": "PostalAddress",
+      streetAddress: client.address.street,
       addressLocality: client.address.city,
       addressRegion: client.address.region,
       postalCode: client.address.postalCode,
       addressCountry: client.address.country,
     },
-    geo: { "@type": "GeoCoordinates", ...client.geo },
     areaServed: [
       ...client.serviceAreas.map((name) => ({ "@type": "City", name })),
       { "@type": "AdministrativeArea", name: client.serviceRegion },
@@ -75,7 +75,6 @@ export function JsonLd() {
       dayOfWeek: h.days,
       opens: h.opens,
       closes: h.closes,
-      ...("description" in h ? { description: h.description } : {}),
     })),
     sameAs: Object.values(client.socials).filter(Boolean),
     hasOfferCatalog: {

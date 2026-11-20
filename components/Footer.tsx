@@ -60,11 +60,11 @@ export function Footer({ base = "" }: { base?: string }) {
                 <li>
                   {/* Wraps only if it truly cannot fit — never mid-word otherwise. */}
                   <a href={`mailto:${client.email}`} className={`${link} [overflow-wrap:anywhere]`}>
-                    {client.emailDisplay}
+                    {client.email}
                   </a>
                 </li>
                 <li className="text-white/65">
-                  {client.address.city}, {client.address.regionName} {client.address.postalCode}
+                  {client.address.street}, {client.address.city}, {client.address.region} {client.address.postalCode}
                 </li>
               </ul>
             </div>

@@ -51,7 +51,7 @@ export const client = {
   ],
   /** The business description in the JSON-LD (search engines only). */
   schemaDescription:
-    "Trusted plumbing services in Lafayette, Louisiana. Emergency repairs, sewer work, hydro-jetting, excavation, water heater installation, gas lines, and backflow testing.",
+    "Trusted plumbing services in Lafayette, Louisiana, from our shop in Scott. Open 7am–5pm weekdays, with emergency service around the clock. Emergency repairs, sewer work, hydro-jetting, excavation, septic pump-outs, water heater installation, gas lines, and backflow testing.",
   ogTitle: "Darren Aucoin's Plumbing | Lafayette, LA",
   ogDescription:
     "Fast, honest plumbing in Lafayette, LA. 24/7 emergency service. Call {phone}.",
@@ -71,48 +71,30 @@ export const client = {
   phone: "337-224-4852",
   phoneE164: "+13372244852", // E.164, used for tel: links and schema
 
-  /**
-   * TODO(charlie): three different addresses appear in the old code.
-   *   · the Email card's mailto: sends to contact@darrenaucoinplumbing.com
-   *     (no "s") — this is `email`, the address mail actually goes to;
-   *   · the Email card's visible text reads darrenaucoinsplumbing@gmail.com
-   *     — kept as `emailDisplay` so the page looks as it does today;
-   *   · the old JSON-LD listed contact@darrenaucoinsplumbing.com.
-   * A visitor who copies the text gets a different inbox from one who
-   * clicks it. Pick one with the client and set both fields to it.
-   */
-  email: "contact@darrenaucoinplumbing.com",
-  emailDisplay: "darrenaucoinsplumbing@gmail.com",
+  /** Confirmed by the client. Shown on the page and used as the mailto:. */
+  email: "darrenaucoinsplumbing@gmail.com",
 
+  /** The shop, confirmed by the client (it's also lettered on the truck). */
   address: {
-    city: "Lafayette",
+    street: "111 N. Bud St.",
+    city: "Scott",
     region: "LA",
     regionName: "Louisiana",
-    postalCode: "70501",
+    postalCode: "70583",
     country: "US",
   },
-  /** From the old JSON-LD. Used for schema only — no map on the page. */
-  geo: { latitude: 30.2241, longitude: -92.0198 },
 
   /**
-   * Opening hours, for schema only. Carried over from the old JSON-LD.
-   *
-   * TODO(charlie): the old schema claims weekdays 7am–6pm and weekends
-   * "24/7 emergency service", while the call card says "available 24/7"
-   * and the FAQ says routine work is Monday–Friday. Confirm the real
-   * hours before Google shows them.
+   * Regular hours, confirmed by the client, for schema only. Outside
+   * them the phone is answered for emergencies, which the page says in
+   * the call card and FAQ. That isn't listed as opening hours, or Google
+   * would show the shop as open 24/7.
    */
   hours: [
     {
       days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "07:00",
-      closes: "18:00",
-    },
-    {
-      days: ["Saturday", "Sunday"],
-      opens: "00:00",
-      closes: "23:59",
-      description: "24/7 emergency service",
+      closes: "17:00",
     },
   ],
 
@@ -231,7 +213,7 @@ export const client = {
       },
       office: {
         title: "Office",
-        desc: "Visit us in Lafayette during business hours or call ahead to schedule a time.",
+        desc: "Open 7am–5pm, Monday to Friday. Emergency calls answered any time.",
       },
     },
     formHeading: "Request a Service",
@@ -278,6 +260,7 @@ export const client = {
       "New construction",
       "Repairs",
       "Residential",
+      "Septic Solutions",
       "Sewer work",
       "Water heaters",
       "Water meter installation",
