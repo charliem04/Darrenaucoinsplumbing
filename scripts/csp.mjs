@@ -79,7 +79,9 @@ export function buildCsp() {
   return [
     "default-src 'self'",
     // See the header comment for why 'unsafe-inline' is here.
-    "script-src 'self' 'unsafe-inline'",
+    // static.cloudflareinsights.com: the Cloudflare Web Analytics beacon,
+    // which Cloudflare injects into the HTML at the edge (it isn't in out/).
+    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
     // React and Framer Motion write style attributes; no nonce for those.
     "style-src 'self' 'unsafe-inline'",
     // data: for any inlined SVG. Every photo is served from /images.
@@ -88,7 +90,9 @@ export function buildCsp() {
     "font-src 'self'",
     // The contact form posts here from the browser (lib/submitContact.ts).
     // When the provider switches to Haptic Forms, its endpoint goes here.
-    "connect-src 'self' https://api.web3forms.com",
+    // cloudflareinsights.com: where the analytics beacon reports page
+    // loads and Core Web Vitals.
+    "connect-src 'self' https://api.web3forms.com https://cloudflareinsights.com",
     "frame-src 'none'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
