@@ -8,8 +8,9 @@
  *  use — the form calls submitContact() and renders what comes back.
  *
  *  Straight to the provider from the browser. No server, no Worker, no
- *  relay. The contact form is the revenue path; a static page posting
- *  to a hosted form service has almost nothing that can break.
+ *  relay: Web3Forms refuses server-side calls on its free plan. What is
+ *  sent is decided in lib/formRules.ts — validated, cleaned of control
+ *  characters, and serialized from a fixed list of keys.
  *
  *  ── ABOUT THE ACCESS KEY ────────────────────────────────────────────
  *
@@ -29,6 +30,7 @@
  * ════════════════════════════════════════════════════════════════════
  */
 import { client } from "@/client.config";
+import type { SerializedContact } from "@/lib/formRules";
 import { withPhone } from "@/lib/phone";
 
 export type FormProvider = "web3forms" | "hapticforms";
@@ -37,20 +39,15 @@ export type FormProvider = "web3forms" | "hapticforms";
 const PROVIDER: FormProvider = "web3forms";
 
 export type ContactPayload = {
-  name: string;
-  email: string;
-  phone: string;
-  /** One of client.form.serviceOptions */
-  service: string;
-  /** One of client.form.urgencyOptions */
-  urgency: string;
-  /** Free text; optional on the form */
-  message: string;
+  /** Validated and built by serializeContact() in lib/formRules.ts. */
+  fields: SerializedContact;
   /**
    * Honeypot — must be empty; bots fill it. See the field's markup in
    * components/ContactForm.tsx for why it is named what it is.
    */
-  referralNote?: string;
+  referralNote: string;
+  /** Cloudflare Turnstile token, or "" when Turnstile isn't switched on. */
+  turnstileToken: string;
 };
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
@@ -68,36 +65,10 @@ export function contactConfigured(): boolean {
   }
 }
 
-/**
- * Strip control characters and collapse whitespace.
- *
- * These strings become an email. A newline inside a name is the kind of
- * thing that reads as a header to whatever renders it, and a run of
- * control bytes is a mangled message somebody has to squint at. This is
- * for the benefit of whoever reads the notification — Web3Forms is the
- * side that has to be robust to what it is sent.
- *
- * `keepLines` preserves single line breaks for the free-text message,
- * where a visitor's paragraphs are meaningful.
- */
-export function scrub(value: string, max: number, keepLines = false): string {
-  const cleaned = keepLines
-    ? value
-        // eslint-disable-next-line no-control-regex
-        .replace(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/g, " ")
-        .replace(/[ \t]+/g, " ")
-        .replace(/\n{3,}/g, "\n\n")
-    : value
-        // eslint-disable-next-line no-control-regex
-        .replace(/[\u0000-\u001f\u007f-\u009f]/g, " ")
-        .replace(/\s+/g, " ");
-  return cleaned.trim().slice(0, max);
-}
-
 const NOT_SENT = () => withPhone(client.form.errors.notSent);
 const NETWORK = () => withPhone(client.form.errors.network);
 
-export async function submitContact(payload: ContactPayload): Promise<SubmitResult> {
+export async function submitContact({ fields, referralNote, turnstileToken }: ContactPayload): Promise<SubmitResult> {
   /*
    * Honeypot: report success so bots don't learn they were caught, but
    * send nothing.
@@ -108,7 +79,7 @@ export async function submitContact(payload: ContactPayload): Promise<SubmitResu
    * development, where somebody is watching; never in production, where
    * the silence is the mechanism.
    */
-  if (payload.referralNote) {
+  if (referralNote) {
     if (process.env.NODE_ENV !== "production") {
       console.warn(
         "[contact] honeypot field is not empty — this submission was DISCARDED. " +
@@ -119,18 +90,9 @@ export async function submitContact(payload: ContactPayload): Promise<SubmitResu
     return { ok: true };
   }
 
-  const fields = {
-    name: scrub(payload.name, 100),
-    email: scrub(payload.email, 254).toLowerCase(),
-    phone: scrub(payload.phone, 30),
-    service: scrub(payload.service, 120),
-    urgency: scrub(payload.urgency, 80),
-    message: scrub(payload.message, 2000, true) || client.form.emptyMessage,
-  };
-
   switch (PROVIDER) {
     case "web3forms":
-      return sendWeb3Forms(fields);
+      return sendWeb3Forms(fields, turnstileToken);
     case "hapticforms":
       // Not built yet. Fail loudly rather than pretend.
       console.error("[contact] PROVIDER is hapticforms, which is not implemented yet.");
@@ -138,38 +100,51 @@ export async function submitContact(payload: ContactPayload): Promise<SubmitResu
   }
 }
 
-async function sendWeb3Forms(fields: Record<string, string>): Promise<SubmitResult> {
+async function sendWeb3Forms(fields: SerializedContact, turnstileToken: string): Promise<SubmitResult> {
   if (!WEB3FORMS_KEY) {
     // The old site posted with an undefined key and showed whatever
     // came back. Unconfigured is a deploy bug; say so, and send the
     // visitor to the phone.
-    console.error(
-      "[contact] NEXT_PUBLIC_WEB3FORMS_KEY is not set — this submission was NOT delivered."
-    );
+    console.error("[contact] NEXT_PUBLIC_WEB3FORMS_KEY is not set — this submission was NOT delivered.");
     return { ok: false, error: NOT_SENT() };
   }
+
+  // Every key spelled out: the request carries these and nothing else.
+  const body = {
+    access_key: WEB3FORMS_KEY,
+    subject: client.form.emailSubject.replace("{name}", fields.name).replace("{urgency}", fields.urgency),
+    from_name: client.form.emailFromName,
+    // Web3Forms' own server-side honeypot field. Always false from this
+    // page (a filled honeypot never gets this far).
+    botcheck: false,
+    // Web3Forms uses `email` as the reply-to, so replying to the
+    // notification reaches the customer.
+    name: fields.name,
+    email: fields.email,
+    phone: fields.phone,
+    service: fields.service,
+    urgency: fields.urgency,
+    message: fields.message,
+    // Checked by Web3Forms once Turnstile is set up in its dashboard.
+    ...(turnstileToken ? { "cf-turnstile-response": turnstileToken } : {}),
+  };
 
   try {
     const res = await fetch(WEB3FORMS_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject: client.form.emailSubject
-          .replace("{name}", fields.name)
-          .replace("{urgency}", fields.urgency),
-        from_name: client.form.emailFromName,
-        // Web3Forms uses this as the reply-to, so replying to the
-        // notification reaches the customer.
-        ...fields,
-      }),
+      body: JSON.stringify(body),
+      // No cookies, and no following a redirect somewhere else.
+      credentials: "omit",
+      redirect: "error",
     });
 
     // Web3Forms answers 200 with {success:false} for its own rejections
-    // (bad key, spam heuristics), so the status alone is not the answer.
+    // (bad key, spam heuristics, failed captcha), so the status alone is
+    // not the answer.
     const data = await res.json().catch(() => null);
     if (!res.ok || !data || data.success !== true) {
-      console.error("[contact] Web3Forms rejected the submission:", data);
+      console.error("[contact] Web3Forms rejected the submission:", data?.message ?? res.status);
       return { ok: false, error: NOT_SENT() };
     }
     return { ok: true };

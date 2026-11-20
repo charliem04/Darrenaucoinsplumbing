@@ -79,7 +79,8 @@ export function buildCsp() {
   return [
     "default-src 'self'",
     // See the header comment for why 'unsafe-inline' is here.
-    "script-src 'self' 'unsafe-inline'",
+    // Cloudflare Turnstile's script (components/Turnstile.tsx).
+    "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
     // React and Framer Motion write style attributes; no nonce for those.
     "style-src 'self' 'unsafe-inline'",
     // data: for any inlined SVG. Every photo is served from /images.
@@ -89,7 +90,8 @@ export function buildCsp() {
     // The contact form posts here from the browser (lib/submitContact.ts).
     // When the provider switches to Haptic Forms, its endpoint goes here.
     "connect-src 'self' https://api.web3forms.com",
-    "frame-src 'none'",
+    // Turnstile runs its check in an iframe; nothing else may frame in.
+    "frame-src https://challenges.cloudflare.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

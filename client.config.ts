@@ -278,8 +278,14 @@ export const client = {
     success:
       "Thanks — we got your request and will be in touch soon. For emergencies, call {phone}.",
     errors: {
-      rateLimited: "Please wait a few seconds before submitting again.",
+      rateLimited: "You've sent a few requests already. Please wait a little, or call us at {phone}.",
+      tooFast: "That was quick! Please check your details and press Submit again.",
+      invalidName: "Please enter your name.",
       invalidEmail: "Please enter a valid email address.",
+      invalidPhone: "Please enter a 10-digit phone number, like {phone}.",
+      noLinks: "Please leave links out of the details. Describe the problem, or call us at {phone}.",
+      verifying: "Just a moment — we're checking this request isn't spam. Press Submit again in a second.",
+      humanCheckFailed: "We couldn't run our spam check. Please call us at {phone}, or reload the page and try again.",
       invalidSelection: "Invalid selection. Please refresh the page and try again.",
       /** Unconfigured, rejected, or any other failure where nothing was sent. */
       notSent: "We couldn't send that. Please call us at {phone} — we don't want to lose your request.",

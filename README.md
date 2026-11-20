@@ -66,6 +66,26 @@ graph (Plumber, WebSite, WebPage, FAQPage) built from `client.config.ts`
 and `content/`, so it can't disagree with the page. `/privacy/` is
 `noindex`; the sitemap lists only `/`.
 
+## Form security
+
+The form posts from the browser straight to Web3Forms (its free plan
+refuses server-side calls), so the checks here run in the page:
+
+| Check | Where |
+| --- | --- |
+| Each box accepts only its own characters as you type; control, zero-width and bidi characters are stripped | `lib/formRules.ts` (`filter`, `stripControl`) |
+| Answers must be the right shape (10-digit phone, real email, listed service, no links in details) | `lib/formRules.ts` (`validateContact`) |
+| Only a fixed set of cleaned keys is sent | `lib/formRules.ts` (`serializeContact`), `lib/submitContact.ts` |
+| Honeypot field: a filled one shows success and sends nothing | `components/ContactForm.tsx` |
+| Too fast after page load (bot), 10s between sends, 3 per 15 min per browser | `components/ContactForm.tsx`, `lib/rateLimit.ts` |
+| Cloudflare Turnstile, when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is set | `components/Turnstile.tsx` |
+
+A bot that posts to the Web3Forms API directly skips all of that. What
+stops it is on Web3Forms' side: its spam filter, and the Turnstile check
+once the widget's **secret** key is entered in the Web3Forms dashboard
+(form Settings → captcha → turnstile, a Web3Forms Pro feature). Until
+then the widget only stops bots that drive this page.
+
 ## Deploy
 
 ```sh

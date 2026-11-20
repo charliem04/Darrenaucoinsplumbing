@@ -1,25 +1,35 @@
 "use client";
 
 /**
- * The service request form. Everything about where it goes lives in
- * lib/submitContact.ts; this file only collects, checks the obvious,
- * and tells the visitor what happened — truthfully.
+ * The service request form. What each box accepts and what gets sent
+ * live in lib/formRules.ts; where it goes, in lib/submitContact.ts.
+ * This file collects, runs the anti-spam checks, and tells the visitor
+ * what happened — truthfully.
  */
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { client } from "@/client.config";
 import { phoneDisplay, withPhone } from "@/lib/phone";
 import { REQUEST_SERVICE_EVENT } from "@/lib/requestService";
+import { filter, LIMITS, serializeContact, validateContact } from "@/lib/formRules";
+import { canSend, recordSend } from "@/lib/rateLimit";
 import { submitContact } from "@/lib/submitContact";
 import { Check } from "./Icons";
+import { Turnstile, TURNSTILE_SITE_KEY, type TurnstileHandle } from "./Turnstile";
 
 const f = client.form;
 
 const EMPTY = { name: "", email: "", phone: "", service: "", urgency: "", message: "" };
 type Fields = typeof EMPTY;
 
-/** One submission per this many ms — carried from the old form. */
-const RATE_LIMIT_MS = 10_000;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/**
+ * A person needs longer than this between the page loading and pressing
+ * Submit; a script filling every field at once doesn't take it. Told to
+ * try again rather than silently dropped, so a fast human loses nothing.
+ */
+const MIN_FILL_MS = 3_000;
+
+/** Fields that only accept certain characters as they're typed. */
+const FILTERED = { name: filter.name, email: filter.email, phone: filter.phone, message: filter.message } as const;
 
 // 16px text in every field: anything smaller and iOS zooms the page on
 // focus. The focus ring is the field's own border plus a soft halo,
@@ -33,11 +43,25 @@ export function ContactForm() {
   const [form, setForm] = useState<Fields>(EMPTY);
   const [state, setState] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
-  const lastSubmit = useRef(0);
   const honeypot = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const shownAt = useRef(0);
+  const human = useRef<TurnstileHandle>(null);
+  const token = useRef("");
+  const [humanCheckFailed, setHumanCheckFailed] = useState(false);
+  // Until the page's JavaScript is running, Submit is disabled: a click
+  // before then would be a plain browser submit that skips every check.
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    shownAt.current = Date.now();
+    setReady(true);
+  }, []);
 
   const set = (k: keyof Fields) => (e: { target: { value: string } }) => {
-    setForm((prev) => ({ ...prev, [k]: e.target.value }));
+    const raw = e.target.value;
+    const value = k in FILTERED ? FILTERED[k as keyof typeof FILTERED](raw) : raw;
+    setForm((prev) => ({ ...prev, [k]: value }));
     // The "we got it" message stays until the visitor starts another request.
     setState((s) => (s === "success" ? "idle" : s));
   };
@@ -58,35 +82,44 @@ export function ContactForm() {
 
   const fail = (msg: string) => {
     setState("error");
-    setError(msg);
+    setError(withPhone(msg));
   };
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
 
+    if (state === "sending") return;
     const now = Date.now();
-    if (now - lastSubmit.current < RATE_LIMIT_MS) return fail(f.errors.rateLimited);
 
     // Native `required` stops an empty submit in any real browser; this
     // is the same check for anything that bypasses it.
     if (!(form.name && form.email && form.phone && form.service && form.urgency)) return;
 
-    if (!EMAIL_RE.test(form.email.trim())) return fail(f.errors.invalidEmail);
+    // Each answer is the shape it should be. The dropdowns and this
+    // check read the same lists, so an option is never offered and then
+    // refused.
+    const problem = validateContact(form);
+    if (problem) return fail(problem);
 
-    // The dropdowns and this check read the same list, so an option can
-    // never be offered and then refused.
-    if (
-      !(f.serviceOptions as readonly string[]).includes(form.service) ||
-      !(f.urgencyOptions as readonly string[]).includes(form.urgency)
-    ) {
-      return fail(f.errors.invalidSelection);
+    // Anti-spam, cheapest first.
+    if (now - shownAt.current < MIN_FILL_MS) return fail(f.errors.tooFast);
+    if (!canSend(now)) return fail(f.errors.rateLimited);
+    if (TURNSTILE_SITE_KEY) {
+      if (humanCheckFailed) return fail(f.errors.humanCheckFailed);
+      if (!token.current) return fail(f.errors.verifying);
     }
 
-    lastSubmit.current = now;
+    recordSend(now);
     setState("sending");
     setError("");
 
-    const result = await submitContact({ ...form, referralNote: honeypot.current?.value ?? "" });
+    const result = await submitContact({
+      fields: serializeContact(form),
+      referralNote: honeypot.current?.value ?? "",
+      turnstileToken: token.current,
+    });
+    // A token is good for one submission; get a fresh one either way.
+    human.current?.reset();
 
     if (result.ok) {
       // No timer: someone who glanced away still sees it when they look back.
@@ -99,6 +132,11 @@ export function ContactForm() {
 
   return (
     <form
+      ref={formRef}
+      // POST, never the default GET: if a submit ever happens without
+      // the JavaScript, the answers must not end up in the address bar,
+      // browser history or server logs.
+      method="post"
       onSubmit={onSubmit}
       className="relative w-full"
     >
@@ -111,7 +149,7 @@ export function ContactForm() {
             type="text"
             autoComplete="name"
             required
-            maxLength={100}
+            maxLength={LIMITS.name}
             value={form.name}
             onChange={set("name")}
             className={fieldCls}
@@ -129,7 +167,7 @@ export function ContactForm() {
             inputMode="email"
             spellCheck={false}
             required
-            maxLength={254}
+            maxLength={LIMITS.email}
             value={form.email}
             onChange={set("email")}
             className={fieldCls}
@@ -146,7 +184,7 @@ export function ContactForm() {
             autoComplete="tel"
             inputMode="tel"
             required
-            maxLength={30}
+            maxLength={LIMITS.phone}
             value={form.phone}
             onChange={set("phone")}
             className={fieldCls}
@@ -179,7 +217,7 @@ export function ContactForm() {
           <textarea
             id="cf-message"
             name="message"
-            maxLength={2000}
+            maxLength={LIMITS.message}
             rows={4}
             value={form.message}
             onChange={set("message")}
@@ -216,6 +254,16 @@ export function ContactForm() {
           />
         </div>
 
+        <Turnstile
+          ref={human}
+          watch={formRef}
+          onToken={(t) => {
+            token.current = t;
+            if (t) setHumanCheckFailed(false);
+          }}
+          onError={() => setHumanCheckFailed(true)}
+        />
+
         {/* Sent: green, the page's "confirmed" colour. */}
         {state === "success" && (
           <div role="status" className="sm:col-span-2 flex gap-3 rounded border border-green/30 bg-green/[0.06] px-4 py-3 text-ink">
@@ -233,7 +281,7 @@ export function ContactForm() {
         <div className="sm:col-span-2 pt-1">
           <button
             type="submit"
-            disabled={state === "sending"}
+            disabled={!ready || state === "sending"}
             aria-busy={state === "sending"}
             className="press w-full h-12 inline-flex items-center justify-center gap-2.5 rounded bg-teal font-body font-semibold text-[1.0625rem] text-white hover:bg-teal-dark active:bg-teal-dark disabled:cursor-progress disabled:bg-teal-dark"
           >
