@@ -7,5 +7,9 @@
     "directory": "./out",
     // Serve out/404.html for unknown paths, with a 404 status.
     "not_found_handling": "404-page"
-  }
+  },
+  // Enables `wrangler preview` (open beta): a shareable preview URL
+  // that never touches production. Empty on purpose; assets and
+  // compatibility settings above apply to previews too.
+  "previews": {}
 }

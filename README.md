@@ -18,6 +18,7 @@ npm run dev                  # http://localhost:3000
 | `npm run tune`           | Dev server plus the photo tuner (see below)                         |
 | `npm run build`          | Builds the site into `out/`, then runs the CSP and SEO checks       |
 | `npm run typecheck`      | TypeScript check only                                               |
+| `npm run preview`        | Builds and updates a named **preview** (stable URL); production untouched |
 | `npm run preview:deploy` | Builds and uploads a **preview** version; production is untouched   |
 | `npm run deploy`         | Builds and **publishes to production**                              |
 
