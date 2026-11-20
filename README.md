@@ -78,13 +78,12 @@ refuses server-side calls), so the checks here run in the page:
 | Only a fixed set of cleaned keys is sent | `lib/formRules.ts` (`serializeContact`), `lib/submitContact.ts` |
 | Honeypot field: a filled one shows success and sends nothing | `components/ContactForm.tsx` |
 | Too fast after page load (bot), 10s between sends, 3 per 15 min per browser | `components/ContactForm.tsx`, `lib/rateLimit.ts` |
-| Cloudflare Turnstile, when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is set | `components/Turnstile.tsx` |
 
-A bot that posts to the Web3Forms API directly skips all of that. What
-stops it is on Web3Forms' side: its spam filter, and the Turnstile check
-once the widget's **secret** key is entered in the Web3Forms dashboard
-(form Settings → captcha → turnstile, a Web3Forms Pro feature). Until
-then the widget only stops bots that drive this page.
+A bot that posts to the Web3Forms API directly skips all of that; what
+stops it is Web3Forms' own spam filter. A CAPTCHA (Cloudflare Turnstile)
+was tried and taken out: on a static site its tokens can only be checked
+by Web3Forms Pro, or by moving the form to a Worker endpoint, which would
+change the format of the notification emails.
 
 ## Deploy
 

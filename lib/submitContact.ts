@@ -46,8 +46,6 @@ export type ContactPayload = {
    * components/ContactForm.tsx for why it is named what it is.
    */
   referralNote: string;
-  /** Cloudflare Turnstile token, or "" when Turnstile isn't switched on. */
-  turnstileToken: string;
 };
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
@@ -68,7 +66,7 @@ export function contactConfigured(): boolean {
 const NOT_SENT = () => withPhone(client.form.errors.notSent);
 const NETWORK = () => withPhone(client.form.errors.network);
 
-export async function submitContact({ fields, referralNote, turnstileToken }: ContactPayload): Promise<SubmitResult> {
+export async function submitContact({ fields, referralNote }: ContactPayload): Promise<SubmitResult> {
   /*
    * Honeypot: report success so bots don't learn they were caught, but
    * send nothing.
@@ -92,7 +90,7 @@ export async function submitContact({ fields, referralNote, turnstileToken }: Co
 
   switch (PROVIDER) {
     case "web3forms":
-      return sendWeb3Forms(fields, turnstileToken);
+      return sendWeb3Forms(fields);
     case "hapticforms":
       // Not built yet. Fail loudly rather than pretend.
       console.error("[contact] PROVIDER is hapticforms, which is not implemented yet.");
@@ -100,7 +98,7 @@ export async function submitContact({ fields, referralNote, turnstileToken }: Co
   }
 }
 
-async function sendWeb3Forms(fields: SerializedContact, turnstileToken: string): Promise<SubmitResult> {
+async function sendWeb3Forms(fields: SerializedContact): Promise<SubmitResult> {
   if (!WEB3FORMS_KEY) {
     // The old site posted with an undefined key and showed whatever
     // came back. Unconfigured is a deploy bug; say so, and send the
@@ -125,8 +123,6 @@ async function sendWeb3Forms(fields: SerializedContact, turnstileToken: string):
     service: fields.service,
     urgency: fields.urgency,
     message: fields.message,
-    // Checked by Web3Forms once Turnstile is set up in its dashboard.
-    ...(turnstileToken ? { "cf-turnstile-response": turnstileToken } : {}),
   };
 
   try {

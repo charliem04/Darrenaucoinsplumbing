@@ -14,7 +14,6 @@ import { filter, LIMITS, serializeContact, validateContact } from "@/lib/formRul
 import { canSend, recordSend } from "@/lib/rateLimit";
 import { submitContact } from "@/lib/submitContact";
 import { Check } from "./Icons";
-import { Turnstile, TURNSTILE_SITE_KEY, type TurnstileHandle } from "./Turnstile";
 
 const f = client.form;
 
@@ -44,11 +43,7 @@ export function ContactForm() {
   const [state, setState] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
   const honeypot = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
   const shownAt = useRef(0);
-  const human = useRef<TurnstileHandle>(null);
-  const token = useRef("");
-  const [humanCheckFailed, setHumanCheckFailed] = useState(false);
   // Until the page's JavaScript is running, Submit is disabled: a click
   // before then would be a plain browser submit that skips every check.
   const [ready, setReady] = useState(false);
@@ -104,10 +99,6 @@ export function ContactForm() {
     // Anti-spam, cheapest first.
     if (now - shownAt.current < MIN_FILL_MS) return fail(f.errors.tooFast);
     if (!canSend(now)) return fail(f.errors.rateLimited);
-    if (TURNSTILE_SITE_KEY) {
-      if (humanCheckFailed) return fail(f.errors.humanCheckFailed);
-      if (!token.current) return fail(f.errors.verifying);
-    }
 
     recordSend(now);
     setState("sending");
@@ -116,10 +107,7 @@ export function ContactForm() {
     const result = await submitContact({
       fields: serializeContact(form),
       referralNote: honeypot.current?.value ?? "",
-      turnstileToken: token.current,
     });
-    // A token is good for one submission; get a fresh one either way.
-    human.current?.reset();
 
     if (result.ok) {
       // No timer: someone who glanced away still sees it when they look back.
@@ -132,7 +120,6 @@ export function ContactForm() {
 
   return (
     <form
-      ref={formRef}
       // POST, never the default GET: if a submit ever happens without
       // the JavaScript, the answers must not end up in the address bar,
       // browser history or server logs.
@@ -253,16 +240,6 @@ export function ContactForm() {
             defaultValue=""
           />
         </div>
-
-        <Turnstile
-          ref={human}
-          watch={formRef}
-          onToken={(t) => {
-            token.current = t;
-            if (t) setHumanCheckFailed(false);
-          }}
-          onError={() => setHumanCheckFailed(true)}
-        />
 
         {/* Sent: green, the page's "confirmed" colour. */}
         {state === "success" && (
